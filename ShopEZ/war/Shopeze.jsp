@@ -14,11 +14,14 @@
       padding: 10px 30px;
       background-color: white;
       font-style: italic;
-
+    }
+    p{
+    float:top
+    margin-top:50px;
     }
     #logo{
       color: black;
-      font-size: 80px;
+      font-size: 70px;
       text-align: left;
     }
     #nav{
@@ -29,21 +32,22 @@
     }
 
     #content{
-      padding-top: 200px;
+      padding-top: 5px;
       text-align: center;
-      font-size: 150px;
+      font-size: 85px;
       text-shadow: 2px 2px lightblue;
       color: black;
+      height: 200px;
 
     }
 
     #login, #guest {
-    padding: 16px 32px;
+    padding: 12px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 50px;
-    margin: 4px 2px;
+    font-size: 20px;
+    
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
     cursor: pointer;
@@ -78,7 +82,7 @@
       <div id="header">
         <div id="logo">
         SHOP-EZE
-        <img src="shoppingCart.png" alt="SHOPEZE.png" style="width:50px;height:50px;">
+        <img src="https://i.imgur.com/wtOuyHi.png" alt="SHOPEZE.png" style="width:50px;height:50px;">
         </div>
         <div id="nav">
           <button class="button" onclick="myFunction()">Login</button>
@@ -87,9 +91,9 @@
         </div>
       </div>
       <div id="content">
-          Find your Fastest Route!
-          <button id="login" onclick="loginpage.html">Login</button>
-          <button id="guest" onclick="guest()">Continue as Guest</button>
+          <p>Find your Fastest Route!</p>
+          <button id="login" onclick=href=login.jsp>Login</button>
+          <button id="guest" onclick="guest.jsp">Continue as Guest</button>
       </div>
       <div id="footer">
 
