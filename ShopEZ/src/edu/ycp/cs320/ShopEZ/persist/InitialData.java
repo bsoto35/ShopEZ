@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import edu.ycp.cs320.Shopeze.model.Account;
-import edu.ycp.cs320.Shopeze.model.Item;
+import edu.ycp.cs320.ShopEZ.model.Account;
+import edu.ycp.cs320.ShopEZ.model.Item;
 
 public class InitialData {
 	public static List<Item> getItems() throws IOException {
