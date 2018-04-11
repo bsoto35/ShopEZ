@@ -3,7 +3,9 @@ package edu.ycp.cs320.ShopEZ.persist;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
@@ -53,87 +55,92 @@ public class FakeDatabase implements IDatabase {
 		}
 		return result;
 	}
-
-	// query that retrieves all Books, for the Account's last name
+	
+	// query that retrieves Account by Account ID
 	@Override
-	public List<Pair<Account, GroceryList>> findGroceryListHistoryByAccountID(int id)
-	{
-		// create list of <Account, Item> for returning result of query
-		List<Pair<Account, GroceryList>> result = new ArrayList<Pair<Account, GroceryList>>();
-
-		// search through table of Accounts
+	public Account findAccountByAccountID(int id) throws SQLException {
+		Account result = new Account();
 		for (Account account : accountList) {
-			if (account.getAccountID() == (id)) {
-				result.addAll(account, account.getList())
+			if (account.getAccountID() == id) {
+				result = account;
 			}
 		}
 		return result;
 	}
 
-
-	// query that retrieves all Books, with their Authors, from DB
+	// query that retrieves all Books, for the Account's last name
 	@Override
-	public List<Pair<Account, Item>> findAllBooksWithAuthors() {
-		List<Pair<Account, Item>> result = new ArrayList<Pair<Account,Item>>();
+	public Set<String> getGroceryListHistoryByAccountID(int id)
+	{
+		// search through table of Accounts
+		for (Account account : accountList) {
+			if (account.getAccountID() == (id)) {
+				return account.getHistoryList();
+			}
+		}
+		return null;
+	}
+
+
+	// query that retrieves all items from DB
+	@Override
+	public ArrayList<Item> findAllItems() {
+		ArrayList<Item> result = new ArrayList<Item>();
 		for (Item item : itemList) {
-			Account account = findAuthorByAuthorId(item.getAuthorId());
-			result.add(new Pair<Account, Item>(account, item));
+			result.add(item);
 		}
 		return result;
 	}
 
 
-	// query that retrieves all Authors from DB
+	// query that retrieves all Accounts from DB
 	@Override
-	public List<Account> findAllAuthors() {
-		List<Account> result = new ArrayList<Account>();
+	public ArrayList<Account> findAllAccounts() {
+		ArrayList<Account> result = new ArrayList<Account>();
 		for (Account account : accountList) {
 			result.add(account);
 		}
 		return result;
 	}
 
-
-	// query that inserts a new Item, and possibly new Account, into Books and Authors lists
-	// insertion requires that we maintain Item and Account id's
-	// this can be a real PITA, if we intend to use the IDs to directly access the ArrayLists, since
-	// deleting a Item/Account in the list would mean updating the ID's, since other list entries are likely to move to fill the space.
-	// or we could mark Item/Account entries as deleted, and leave them open for reuse, but we could not delete an Account
-	//    unless they have no Books in the Books table
 	@Override
 	public String insertItemIntoItemsTable(String name, double price, int x, int y)
 	{
+		String result = "incomplete";
 		int itemId = -1;
+		
+		for (Item item : itemList) {
+			if (item.getItemName().equals(name)) {
+				if (item.getItemPrice() == price) {
+					if (item.getItemLocationX() == x) {
+						if (item.getItemLocationY() == y) {
+							System.out.println("Item already exists in items table!");
+							itemId = item.getItemID();
+						}
+					}
+				}
+			}
+		}
 
 		if (itemId < 0) {
-			// set author_id to size of Authors list + 1 (before adding Account)
+			// set item id to size of items list + 1 (before adding item)
 			itemId = itemList.size() + 1;
+			
+			int ID = itemId++;
 
 			// add new Account to Authors list
 			Item newItem = new Item();			
-			newItem.setItemID(itemId++);
+			newItem.setItemID(ID);
+			newItem.setItemName(name);
 			newItem.setItemPrice(price);
 			newItem.setItemLocationX(x);
 			newItem.setItemLocationY(y);
-			accountList.addAll(newItem);
+			itemList.add(newItem);
 
-			System.out.println("New item (ID: " + Id + ") " + "added to Items table: <" + name + ">");
+			System.out.println("New item (ID: " + ID + ") " + "added to Items table: <" + name + ">");
+			result = "complete";
 		}
-
-		// set book_id to size of Books list + 1 (before adding Item)
-		bookId = itemList.size() + 1;
-
-		// add new Item to Books list
-		Item newBook = new Item();
-		newBook.setBookId(bookId);
-		newBook.setAuthorId(authorId);
-		newBook.setTitle(itemName);
-		newBook.setIsbn(locationX);
-		newBook.setPublished(published);
-		itemList.add(newBook);
-
-		// return new Item Id
-		return bookId;
+		return result;
 	}
 
 	//not implemented in FakeDB
@@ -143,26 +150,27 @@ public class FakeDatabase implements IDatabase {
 		return accounts;
 	}
 
-
-	// query that retrieves an Account based on author_id
-	private Account findAccountByAccountId(int accountId) {
+	@Override
+	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(String username, String password) {
+		boolean result = false;
 		for (Account account : accountList) {
-			if (account.getAccountID() == accountId) {
-				return account;
+			if (account.getUsername().equals(username)) {
+				if (account.getPassword().equals(password)) {
+					result = true;
+				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	@Override
-	public boolean verifyAccountFromAccountsTable(String username, String password) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public double findItemPriceByItemName(Item item) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double findItemPriceByItemName(String name) {
+		double result = 0.00;
+		for (Item item : itemList) {
+			if (item.getItemName().equals(name)) {
+				result = item.getItemPrice();
+			}
+		}
+		return result;
 	}
 }

@@ -3,10 +3,12 @@ package edu.ycp.cs320.ShopEZ.model;
 import java.util.ArrayList;
 
 public class GroceryList {
-	private int AccountID;
+	private int groceryListID;
+	private int accountID;
+	private int historyID;
 	private String ListName;
-	private ArrayList<Item> Items = new ArrayList<Item>();
 	private double ListPrice;
+	private currentList items = new currentList();
 	
 	public GroceryList() {
 		
@@ -20,6 +22,10 @@ public class GroceryList {
 		return this.ListName;
 	}
 	
+	public void setListPrice(double cash) {
+		this.ListPrice = cash;
+	}
+	
 	public void updatePrice(double money) {
 		this.ListPrice += money;
 	}
@@ -28,32 +34,36 @@ public class GroceryList {
 		return this.ListPrice;
 	}
 	
-	public void addItem(Item name) {
-		this.Items.add(name);
+	public ArrayList<String> getCurrentList(){
+		return this.items.getItemsInCurrentList();
 	}
 
-	public void removeItem(Item name) {
-		this.Items.remove(name);
+	public void addToCurrentList(String item) {
+		this.items.addItemInCurrentList(item);
 	}
 	
-	public ArrayList<Item> getList(){
-		return this.Items;
-	}
-
 	public int getHistoryID() {
-		return HistoryID;
+		return historyID;
 	}
 
-	public void setHistoryID(int historyID) {
-		HistoryID = historyID;
+	public void setHistoryID(int id) {
+		this.historyID = id;
 	}
 
 	public int getAccountID() {
-		return AccountID;
+		return accountID;
 	}
 
-	public void setAccountID(int accountID) {
-		AccountID = accountID;
+	public void setAccountID(int id) {
+		accountID = id;
+	}
+
+	public int getGroceryListID() {
+		return this.groceryListID;
+	}
+
+	public void setGroceryListID(int groceryListID) {
+		this.groceryListID = groceryListID;
 	}
 	
 }
