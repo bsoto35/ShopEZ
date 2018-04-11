@@ -5,13 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.ycp.cs320.Shopeze.model.Guest;
-import edu.ycp.cs320.lab02.model.Account;
-import edu.ycp.cs320.lab02.model.Aisle;
-import edu.ycp.cs320.lab02.model.GroceryList;
-import edu.ycp.cs320.lab02.model.Item;
-import edu.ycp.cs320.lab02.model.Location;
-import edu.ycp.cs320.lab02.model.Route;
+import edu.ycp.cs320.sqldemo.Shopeze.model.Guest;
+import edu.ycp.cs320.sqldemo.lab02.model.Account;
+import edu.ycp.cs320.sqldemo.lab02.model.Aisle;
+import edu.ycp.cs320.sqldemo.lab02.model.GroceryList;
+import edu.ycp.cs320.sqldemo.lab02.model.Item;
+import edu.ycp.cs320.sqldemo.lab02.model.Location;
+import edu.ycp.cs320.sqldemo.lab02.model.Route;
 
 public class ShopezeTest {
 	private Account account;

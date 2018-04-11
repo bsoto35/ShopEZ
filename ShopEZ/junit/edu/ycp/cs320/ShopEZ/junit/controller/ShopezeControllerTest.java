@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.ycp.cs320.lab02.controller.ShopezeController;
-import edu.ycp.cs320.lab02.model.ShopezeModel;
+import edu.ycp.cs320.sqldemo.lab02.controller.ShopezeController;
+import edu.ycp.cs320.sqldemo.lab02.model.ShopezeModel;
 
 public class ShopezeControllerTest {
 	private ShopezeModel model;

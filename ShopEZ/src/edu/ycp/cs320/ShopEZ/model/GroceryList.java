@@ -3,6 +3,7 @@ package edu.ycp.cs320.ShopEZ.model;
 import java.util.ArrayList;
 
 public class GroceryList {
+	private int AccountID;
 	private String ListName;
 	private ArrayList<Item> Items = new ArrayList<Item>();
 	private double ListPrice;
@@ -37,6 +38,22 @@ public class GroceryList {
 	
 	public ArrayList<Item> getList(){
 		return this.Items;
+	}
+
+	public int getHistoryID() {
+		return HistoryID;
+	}
+
+	public void setHistoryID(int historyID) {
+		HistoryID = historyID;
+	}
+
+	public int getAccountID() {
+		return AccountID;
+	}
+
+	public void setAccountID(int accountID) {
+		AccountID = accountID;
 	}
 	
 }
