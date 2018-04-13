@@ -2,10 +2,10 @@ package edu.ycp.cs320.ShopEZ.controller;
 
 import java.sql.SQLException;
 
-import edu.ycp.cs320.lab02.model.Item;
-import edu.ycp.cs320.shopezedb.persist.DatabaseProvider;
-import edu.ycp.cs320.shopezedb.persist.DerbyDatabase;
-import edu.ycp.cs320.shopezedb.persist.IDatabase;
+import edu.ycp.cs320.sqldemo.lab02.model.Item;
+import edu.ycp.cs320.sqldemo.shopezedb.persist.DatabaseProvider;
+import edu.ycp.cs320.sqldemo.shopezedb.persist.DerbyDatabase;
+import edu.ycp.cs320.sqldemo.shopezedb.persist.IDatabase;
 
 public class InsertItemController {
 

@@ -7,7 +7,7 @@
 
 <html>
 <head>
-<title>Shopeze</title>
+<title>Login</title>
 <style>
 body {
 	background-image: url("https://i.imgur.com/tnhC0DF.jpg");
@@ -15,19 +15,19 @@ body {
 	background-size: cover;
 }
 
-#header {
-	background-color: white;
-	border: 1px solid black;
-	padding: 10px 30px;
-	background-color: white;
-	font-style: italic;
-}
+#header{
+      background-color: white;
+      border: 1px solid black;
+      padding: 10px 30px;
+      background-color: white;
+      font-style: italic;
+    }
 
-#logo {
-	color: black;
-	font-size: 80px;
-	text-align: left;
-}
+    #logo{
+      color: black;
+      font-size: 70px;
+      text-align: left;
+    }
 
 #nav {
 	text-align: right;
@@ -42,15 +42,15 @@ body {
 	text-align: center;
 	font-size: 40px;
 	color: black;
-	width: 800;
+	width: 500;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 100px 200px;
 }
 
 #existing {
-	width: 500px;
-	height: 500px;
+	width: 300px;
+	height: 400px;
 	background-color: lightblue;
 	border-style: outset;
 	border-width: 5px;
@@ -60,21 +60,21 @@ body {
 #existing .button {
 	background-color: white;
 	color: lightblue;
-	margin-left: 150px;
-	margin-right: 150px;
+	margin-left: 25px;
+	margin-right: 25px;
 	margin-top: 10px;
-	width: 200px;
-	font-size: 25px;
+	width: 50px;
+	font-size: 15px;
 	padding: 10px;
 }
 
 #existing .label {
-	
+	font-size: 25px;
 }
 
 #create {
-	width: 500px;
-	height: 500px;
+	width: 300px;
+	height: 400px;
 	background-color: white;
 	border-style: inset;
 	border-width: 5px;
@@ -85,12 +85,16 @@ body {
 #create .button {
 	background-color: lightblue;
 	color: white;
-	margin-left: 150px;
-	margin-right: 150px;
+	margin-left: 25px;
+	margin-right: 25px;
 	margin-top: 10px;
-	width: 200px;
+	width: 5px;
 	font-size: 25px;
 	padding: 10px;
+}
+
+#create .label {
+	font-size: 25px;
 }
 
 #footer {
@@ -101,8 +105,8 @@ body {
 <body>
 	<div id="header">
 		<div id="logo">
-			SHOP-EZE <img src="shoppingCart.png" alt="SHOPEZE.png"
-				style="width: 50px; height: 50px;">
+			SHOP-EZE <a href="https://imgur.com/wtOuyHi">
+			<img src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"  style="width: 50px; height: 50px;"/></a>
 		</div>
 		<div id="nav">
 			<button class="button" onclick="myFunction()">Login</button>
@@ -111,45 +115,32 @@ body {
 		</div>
 	</div>
 	<div id="content">
-		<div id="existing">
-			<h3>Existing User</h3>
-			<br>
-			<tr>
-				<td class="label">Email:</td>
-				<td><input type="text" name="Email" value="" /></td>
-			</tr>
-			</br>
-			<tr>
-				<td class="label">Password:</td>
-				<td><input type="text" name="Password" value="" /></td>
-			</tr>
-			</br>
-			<button class="button" onclick="signIn()">Sign In</button>
-			</br>
-			<button class="button" onclick="forgot()">Forgot Password</button>
-		</div>
-		<div id="create">
-			<h3>Create an Account</h3>
-			</br>
-			<tr>
-				<td class="label">Email:</td>
-				<td><input type="text" name="Email" value="${username}" /></td>
-			</tr>
-			</br>
-			<tr>
-				<td class="label">Password:</td>
-				<td><input type="text" name="Password" value="${password}" /></td>
-			</tr>
-			</br>
-			<tr>
-				<td class="label">Confirm Password:</td>
-				<td><input type="text" name="Confirm Password"
-					value="${confirm_password}" /></td>
-			</tr>
-			</br>
-			<button class="button" onclick="signUp()">Sign Up</button>
-		</div>
-	</div>
+        <div id="existing">
+          <h3>Existing User</h3>
+          			<div class="label">Username:</div>
+					<div><input type="text" name="Username" value="${inUsername}"/></div>				    
+           				   
+					<div class="label">Password:</div>
+					<div><input type="text" name="Password" value="${inPassword}" /></div>
+           
+           <button class="button" onclick="signIn()">Sign In</button>
+         
+           <button class="button" onclick="forgot()">Forgot Password</button>
+        </div>
+         <div id="create">
+            <h3>Create an Account</h3>
+          		
+			<div class="label">Username:</div>
+			<div><input type="text" name="Username" value="${upUsername}"/></div>
+            	
+			<div class="label">Password:</div>
+			<div><input type="text" name="Password" value="${upPassword}" /></div>
+           		
+           <div class="label">Confirm Password:</div>
+           <div><input type="text" name="Confirm Password" value="${confirm_password}" /></div>
+                  <button class="button" onclick="signUp()">Sign Up</button>
+          </div>
+      </div>
 	<div id="footer"></div>
 	<script>
     funtion signUp(){
