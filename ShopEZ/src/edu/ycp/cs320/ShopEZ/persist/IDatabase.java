@@ -14,10 +14,11 @@ public interface IDatabase {
 	
 	public String insertItemIntoItemsTable(String name, double price, int x, int y) throws SQLException;
 	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(String username, String password);
-	public double findItemPriceByItemName(String itemName);
-	public int findAccountIDbyUsernameAndPassword(String username, String password);
+	public double findItemPriceByItemName(String itemName) throws SQLException;
+	public int findAccountIDbyUsernameAndPassword(String username, String password) throws SQLException;
 	public Account findAccountByAccountID(int id) throws SQLException;
-	public Set<String> getGroceryListHistoryByAccountID(int id);
-	public ArrayList<Account> findAllAccounts();
-	public ArrayList<Item> findAllItems();
+	public Set<String> getGroceryListHistoryByAccountID(int id) throws SQLException;
+	public ArrayList<Account> findAllAccounts() throws SQLException;
+	public ArrayList<Item> findAllItems() throws SQLException; 
+	public String updateItemPrice(Item item, int quantity) throws SQLException;
 }

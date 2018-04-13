@@ -8,6 +8,7 @@ public class GroceryList {
 	private int historyID;
 	private String ListName;
 	private double ListPrice;
+	private int currentListID;
 	private currentList items = new currentList();
 	
 	public GroceryList() {
@@ -34,12 +35,12 @@ public class GroceryList {
 		return this.ListPrice;
 	}
 	
-	public ArrayList<String> getCurrentList(){
+	public ArrayList<Item> getCurrentList(){
 		return this.items.getItemsInCurrentList();
 	}
 
-	public void addToCurrentList(String item) {
-		this.items.addItemInCurrentList(item);
+	public void addToCurrentList(Item name) {
+		this.items.addItemInCurrentList(name);
 	}
 	
 	public int getHistoryID() {
@@ -64,6 +65,16 @@ public class GroceryList {
 
 	public void setGroceryListID(int groceryListID) {
 		this.groceryListID = groceryListID;
+	}
+	
+
+	public int getCurrentListID() {
+		return this.currentListID;
+	}
+	
+
+	public void setCurrentListID(int id) {
+		this.currentListID = id;
 	}
 	
 }

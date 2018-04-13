@@ -2,19 +2,19 @@ package edu.ycp.cs320.ShopEZ.controller;
 
 import java.sql.SQLException;
 
-import edu.ycp.cs320.sqldemo.lab02.model.Item;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.DatabaseProvider;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.DerbyDatabase;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.IDatabase;
+import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.persist.DatabaseProvider;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
+import edu.ycp.cs320.ShopEZ.persist.IDatabase;
 
 public class InsertItemController {
 
-	private IDatabase db = null;
+	private IDatabase db;
 
 	public InsertItemController() {
 		
 		// creating DB instance here
-		DatabaseProvider.setInstance(new DerbyDatabase());
+		DatabaseProvider.setInstance(db);
 		db = DatabaseProvider.getInstance();		
 	}
 

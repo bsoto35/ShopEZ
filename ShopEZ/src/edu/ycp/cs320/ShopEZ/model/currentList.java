@@ -7,7 +7,7 @@ public class currentList {
 	private int groceryListID;
 	private int accountID;
 	private int historyID;
-	private ArrayList<String> items = new ArrayList<String>();
+	private ArrayList<Item> items = new ArrayList<Item>();
 	
 	public int getCurrentListID() {
 		return this.currentListID;
@@ -41,11 +41,11 @@ public class currentList {
 		this.historyID = historyID;
 	}
 	
-	public ArrayList<String> getItemsInCurrentList(){
+	public ArrayList<Item> getItemsInCurrentList(){
 		return this.items;
 	}
 	
-	public void addItemInCurrentList(String name) {
+	public void addItemInCurrentList(Item name) {
 		this.items.add(name);
 	}
 }

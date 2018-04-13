@@ -17,11 +17,6 @@ import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
 public abstract class DerbyDatabase implements IDatabase {
-	
-	public DerbyDatabase() {
-		
-	}
-	
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -33,9 +28,48 @@ public abstract class DerbyDatabase implements IDatabase {
 	private interface Transaction<ResultType> {
 		public ResultType execute(Connection conn) throws SQLException;
 	}
-
+	
 	private static final int MAX_ATTEMPTS = 10;
-
+	
+	
+	public void dropTables() throws SQLException{
+		doExecuteTransaction(new Transaction<Boolean>() {
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement dropAccounts = null;
+				PreparedStatement dropGroceryLists = null;
+				PreparedStatement dropHistory = null;
+				PreparedStatement dropItems = null;
+				try {
+					dropAccounts = conn.prepareStatement
+							("drop table accounts" );
+					dropAccounts.execute();
+					dropAccounts.close();
+					dropGroceryLists = conn.prepareStatement
+							("drop table groceryLists" );
+					dropGroceryLists.execute();
+					dropGroceryLists.close();
+					dropHistory = conn.prepareStatement
+							("drop table history" );
+					dropHistory.execute();
+					dropHistory.close();
+					dropItems = conn.prepareStatement
+							("drop table items" );
+					dropItems.execute();
+					dropItems.close();
+					return true;
+				}catch (Exception ex) {
+					return true;
+				}finally {
+					DBUtil.closeQuietly(dropAccounts);
+					DBUtil.closeQuietly(dropGroceryLists);
+					DBUtil.closeQuietly(dropHistory);
+					DBUtil.closeQuietly(dropItems);
+				}
+			};
+		}};
+	}
+	
 	@Override
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
@@ -141,7 +175,6 @@ public abstract class DerbyDatabase implements IDatabase {
 
 	@Override
 	public String updateItemPrice(Item item, int quantity) throws SQLException {
-		// TODO Auto-generated method stub
 		
 		return null;
 	}
@@ -210,7 +243,7 @@ public abstract class DerbyDatabase implements IDatabase {
 		account.setHistoryListID(resultSet.getInt(index++));
 	}
 
-	
+
 	private void loadItem(Item item, ResultSet resultSet, int index) throws SQLException {
 		item.setItemID(resultSet.getInt(index++));
 		item.setItemName(resultSet.getString(index++));
@@ -242,6 +275,7 @@ public abstract class DerbyDatabase implements IDatabase {
 				PreparedStatement stmt1 = null;
 				PreparedStatement stmt2 = null;
 				PreparedStatement stmt3 = null;
+				PreparedStatement stmt4 = null;
 
 				try {
 					stmt1 = conn.prepareStatement(
@@ -276,6 +310,17 @@ public abstract class DerbyDatabase implements IDatabase {
 									")"
 							);
 					stmt3.executeUpdate();
+					
+					stmt4 = conn.prepareStatement(
+							"create table groceryLists (" +
+									"	groceryList_id integer primary key " +
+									"		generated always as identity (start with 1, increment by 1), " +
+									"	account_id integer, " +
+									"	history_id integer, " +
+									"	list_name varchar(70) " +
+									")"
+							);
+					stmt4.executeUpdate();
 
 					return true;
 				} finally {
@@ -334,7 +379,7 @@ public abstract class DerbyDatabase implements IDatabase {
 					insertItem.executeBatch();
 					
 					// populate history table (do this after items table)
-					insertHistory = conn.prepareStatement("insert into history (history_id, account_id, grocery_list_id) values (?, ?, ?)");
+					insertHistory = conn.prepareStatement("insert into history (account_id, grocery_list_id, ) values (?, ?, ?)");
 					for (History history : historyList) {
 						insertHistory.setInt(1, history.getHistoryID());
 						insertHistory.setInt(2, history.getAccountID());
@@ -367,16 +412,29 @@ public abstract class DerbyDatabase implements IDatabase {
 	}
 
 	// The main method creates the database tables and loads the initial data.
+	@SuppressWarnings("null")
 	public static void main(String[] args) throws IOException {
-		System.out.println("Creating tables...");
 		DerbyDatabase db = new DerbyDatabase();
+		System.out.println("Dropping tables...");
+		
+		db.dropTables();
+		
+		System.out.println("COMPLETE");
+		
+		System.out.println("Creating tables...");
+		
 		db.createTables();
+		
+		System.out.println("COMPLETE");
 
 		System.out.println("Loading initial data...");
+		
 		db.loadInitialData();
+		
+		System.out.println("Initial data loaded");
 
-		System.out.println("Success!");
+		System.out.println("MAIN COMPLETE");
 	}
-
-	
 }
+	
+

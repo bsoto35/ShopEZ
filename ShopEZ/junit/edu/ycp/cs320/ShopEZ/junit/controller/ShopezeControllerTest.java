@@ -11,12 +11,12 @@ import edu.ycp.cs320.sqldemo.lab02.model.ShopezeModel;
 
 public class ShopezeControllerTest {
 	private ShopezeModel model;
-	private ShopezeController controller;
+	private ShopezeViewController controller;
 	
 	@Before
 	public void setUp() {
 		model = new ShopezeModel();
-		controller = new ShopezeController();
+		controller = new ShopezeViewController();
 		
 		model.setMin(1);
 		model.setMax(100);
