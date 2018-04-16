@@ -2,7 +2,6 @@ package edu.ycp.cs320.ShopEZ.model;
 
 import java.util.Set;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.TreeMap;
 
 public class Account {
@@ -11,24 +10,9 @@ public class Account {
 	private String password;
 	private int historyListID;
 	private History history = new History();
-	private Map<String, String> credentials;
-	private ArrayList<String> usernames;
-	private ArrayList<String> passwords;
 	
 	public Account() {
-		setUsernames(new ArrayList<String>());
-		passwords = new ArrayList<String>();
-		credentials = new TreeMap<String, String>();
-		
-		usernames.add("admin");
-		usernames.add("guest");
 
-		passwords.add("pasword");
-		passwords.add("guest");
-		
-		for (int i = 0; i < usernames.size(); i++) {
-			credentials.put(usernames.get(i), passwords.get(i));
-		}
 	}
 	
 	public void setAccountID(int x) {
@@ -85,26 +69,5 @@ public class Account {
 
 	public void setHistoryListID(int historyListID) {
 		this.historyListID = historyListID;
-	}
-	
-	public boolean validatePW(String name, String pw) {
-		if (credentials.containsKey(name)) {
-			if  (credentials.get(name).equals(pw)) {
-				return true;
-			}
-		}			
-		return false;
-	}
-
-	public ArrayList<String> getUsernames() {
-		return usernames;
-	}
-	
-	public void addUsername(String name) {
-		this.usernames.add(name);
-	}
-	
-	public void setUsernames(ArrayList<String> usernames) {
-		this.usernames = usernames;
 	}
 }

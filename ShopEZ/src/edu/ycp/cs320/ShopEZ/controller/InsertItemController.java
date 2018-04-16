@@ -22,8 +22,8 @@ public class InsertItemController {
 		boolean result = false;
 		// insert new book (and possibly new author) into DB
 		String item_id = null;
-		try {
-			item_id = db.insertItemIntoItemsTable(item_name.getItemName(), item_name.getItemPrice(), item_name.getItemLocationX(), item_name.getItemLocationY(), item_name.getItemQuantity());
+		try { 
+			item_id = db.insertItemIntoItemsTable(item_name.getItemName(), item_name.getItemPrice(), item_name.getItemLocationX(), item_name.getItemLocationY());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
