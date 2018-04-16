@@ -2,19 +2,19 @@ package edu.ycp.cs320.ShopEZ.controller;
 
 import java.sql.SQLException;
 
-import edu.ycp.cs320.sqldemo.lab02.model.Item;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.DatabaseProvider;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.DerbyDatabase;
-import edu.ycp.cs320.sqldemo.shopezedb.persist.IDatabase;
+import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.persist.DatabaseProvider;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
+import edu.ycp.cs320.ShopEZ.persist.IDatabase;
 
 public class InsertItemController {
 
-	private IDatabase db = null;
+	private IDatabase db;
 
 	public InsertItemController() {
 		
 		// creating DB instance here
-		DatabaseProvider.setInstance(new DerbyDatabase());
+		DatabaseProvider.setInstance(db);
 		db = DatabaseProvider.getInstance();		
 	}
 
@@ -22,8 +22,8 @@ public class InsertItemController {
 		boolean result = false;
 		// insert new book (and possibly new author) into DB
 		String item_id = null;
-		try {
-			item_id = db.insertItemIntoItemsTable(item_name.getItemName(), item_name.getItemPrice(), item_name.getItemLocationX(), item_name.getItemLocationY(), item_name.getItemQuantity());
+		try { 
+			item_id = db.insertItemIntoItemsTable(item_name.getItemName(), item_name.getItemPrice(), item_name.getItemLocationX(), item_name.getItemLocationY());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

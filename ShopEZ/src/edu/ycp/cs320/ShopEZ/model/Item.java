@@ -7,7 +7,6 @@ public class Item {
 	private String item_name;
 	private double Price;
 	private Location itemLocation;
-	private int quantity;
 	
 	public Item() {
 		
@@ -35,14 +34,6 @@ public class Item {
 	
 	public double getItemPrice() {
 		return this.Price;
-	}
-	
-	public void setItemQuantity(int num) {
-		this.quantity = num;
-	}
-	
-	public int getItemQuantity() {
-		return this.quantity;
 	}
 	
 	public void setItemLocationX(int here) {

@@ -10,9 +10,10 @@ package edu.ycp.cs320.ShopEZ.model;
 public class ShopezeModel {
 	private GroceryList shopList;
 	private int mapWidth;
-	private int mapLength;
+	private int mapHeight;
 	private Aisle upperWalkPath;
 	private Aisle lowerWalkPath;
+	private 
 	
 	public ShopezeModel() {
 		
@@ -26,8 +27,8 @@ public class ShopezeModel {
 		this.mapWidth = width;
 	}
 	
-	public void setMapLength(int length) {
-		this.mapLength = length;
+	public void setMapHeight(int length) {
+		this.mapHeight = length;
 	}
 	
 	public void setUpperWalkPath(Aisle upper) {
@@ -46,8 +47,8 @@ public class ShopezeModel {
 		return this.mapWidth;
 	}
 	
-	public int getMapLength() {
-		return this.mapLength;
+	public int getMapHeight() {
+		return this.mapHeight;
 	}
 	
 	public Aisle getUpperWalkPath() {

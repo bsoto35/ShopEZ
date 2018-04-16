@@ -5,10 +5,10 @@ import edu.ycp.cs320.ShopEZ.model.ShopezeModel;
 /**
  * Controller for the guessing game.
  */
-public class ShopezeController {
+public class ShopezeViewController {
 	private ShopezeModel model;
 	
-	public ShopezeController() {
+	public ShopezeViewController() {
 		
 	}
 

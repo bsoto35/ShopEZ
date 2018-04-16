@@ -1,15 +1,18 @@
 package edu.ycp.cs320.ShopEZ.model;
 
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Account {
 	private int accountID;
 	private String username;
 	private String password;
-	private ArrayList<GroceryList> historyList = new ArrayList<GroceryList>();
+	private int historyListID;
+	private History history = new History();
 	
 	public Account() {
-		
+
 	}
 	
 	public void setAccountID(int x) {
@@ -28,12 +31,10 @@ public class Account {
 		this.password = x;
 	}
 	
-	// get the account's username
 	public String getUsername() {
 		return this.username;
 	}
 	
-	// get the account's password1
 	public String getPassword() {
 		return this.password;
 	}
@@ -51,11 +52,22 @@ public class Account {
 	
 	// store the String name for the GroceryList and the GroceryList itself into the HashMap 
 	public void addToHistoryList(GroceryList list) {
-		this.historyList.add(list);
+		this.history.addToHistoryList(list);
 	}
 	
-	public ArrayList<GroceryList> getList(){
-		return this.historyList;
+	public Set<String> getHistoryList(){
+		return this.history.getHistoryListNames();
 	}
 	
+	public GroceryList getGroceryList(String listName){
+		return this.history.getHistoryList(listName);
+	}
+
+	public int getHistoryListID() {
+		return this.historyListID;
+	}
+
+	public void setHistoryListID(int historyListID) {
+		this.historyListID = historyListID;
+	}
 }
