@@ -28,10 +28,10 @@ public abstract class DerbyDatabase implements IDatabase {
 	private interface Transaction<ResultType> {
 		public ResultType execute(Connection conn) throws SQLException;
 	}
-	
+
 	private static final int MAX_ATTEMPTS = 10;
-	
-	
+
+	@Override
 	public void dropTables() throws SQLException{
 		doExecuteTransaction(new Transaction<Boolean>() {
 			@Override
@@ -66,10 +66,75 @@ public abstract class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(dropHistory);
 					DBUtil.closeQuietly(dropItems);
 				}
-			};
-		}};
+			}
+		});
 	}
-	
+
+	@Override
+	public Boolean updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
+		return executeTransaction(new Transaction<Boolean>() {
+			@SuppressWarnings("finally")
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Boolean result = false;
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"UPDATE items " +
+									"set items.item_price = '?' " +
+									"where items.item_name =  ? "
+							);
+					stmt.setDouble(1, price);
+					stmt.setString(2, name);
+
+					stmt.executeUpdate();
+
+					result = true;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					return result;
+				}
+			}
+		});
+	}
+
+	@Override
+	public Boolean updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
+		return executeTransaction(new Transaction<Boolean>() {
+			@SuppressWarnings("finally")
+			@Override
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Boolean result = false;
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"UPDATE items " +
+									" set items.item_location_x = '?', items.item_location_y = '?' " +
+									" where items.item_name = ? "
+							);
+					stmt.setInt(1, x);
+					stmt.setInt(2, y);
+					stmt.setString(3, item);
+
+					stmt.executeUpdate();
+
+					result = true;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					return result;
+				}
+			}
+		});
+	}
+
 	@Override
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
@@ -79,7 +144,7 @@ public abstract class DerbyDatabase implements IDatabase {
 				ResultSet resultSet = null;
 
 				try {
-					
+
 					stmt = conn.prepareStatement(
 							"select items.item_price " +
 									"  from items " +
@@ -119,69 +184,122 @@ public abstract class DerbyDatabase implements IDatabase {
 			}
 		});
 	}
+
+
+	public String insertItemIntoItemsTable(final String name, final double price, final int x, final int y) throws SQLException {
+		return executeTransaction(new Transaction<String>() {
+			@Override
+			public String execute(Connection conn) throws SQLException {
+				// TODO Auto-generated method stub
+				String finalResult = "incomplete";
+				// load Derby JDBC driver
+				try {
+					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				} catch (Exception e) {
+					System.err.println("Could not load Derby JDBC driver");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"insert into items(item_name, item_price, item_location_x, item_location_x) "
+									+ "  values (?, ?, ?, ?, ?) "
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, name);
+					stmt.setDouble(2, price);
+					stmt.setInt(3, x);
+					stmt.setInt(4, y);
+
+					// execute the query
+					stmt.executeUpdate();
+
+					finalResult = "Complete";
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+				return finalResult;
+			}});
+	}
+
 	
-	@SuppressWarnings("null")
-	@Override
-	public String insertItemIntoItemsTable(String name, double price, int x, int y) throws SQLException {
-		// TODO Auto-generated method stub
-		String finalResult = "incomplete";
-		// load Derby JDBC driver
-		try {
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-		} catch (Exception e) {
-			System.err.println("Could not load Derby JDBC driver");
-			System.err.println(e.getMessage());
-			System.exit(1);
-		}
+	public int findAccountIDbyUsernameAndPassword(final String username, final String password) throws SQLException {
+		return executeTransaction(new Transaction<Integer>() {
+			@Override
+			public Integer execute(Connection conn) throws SQLException {
+				// TODO Auto-generated method stub
+				int finalResult = -1;
+				// load Derby JDBC driver
+				try {
+					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				} catch (Exception e) {
+					System.err.println("Could not load Derby JDBC driver");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
 
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet resultSet = null;
-		try {
-			conn.setAutoCommit(true);
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select accounts.account_id " +
+									"from accounts " +
+									"	   where accounts.account_username = ? " +
+									"	   AND accounts.account_password = ? "	
+							);
 
-			// a canned query to find book information (including author name) from title
-			stmt = conn.prepareStatement(
-					"insert into items(item_name, item_price, item_location_x, item_location_x) "
-							+ "  values (?, ?, ?, ?, ?) "
-					);
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, username);
+					stmt.setString(2, password);
 
-			// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-			stmt.setString(1, name);
-			stmt.setDouble(2, price);
-			stmt.setInt(3, x);
-			stmt.setInt(4, y);
+					// execute the query
+					resultSet = stmt.executeQuery();
 
-			// execute the query
-			stmt.executeUpdate();
-			
-			finalResult = "Complete";
+					// for testing that a result was returned
+					Boolean found = false;
 
-		} finally {
-			// close result set, statement, connection
-			DBUtil.closeQuietly(resultSet);
-			DBUtil.closeQuietly(stmt);
-			DBUtil.closeQuietly(conn);
-		}
-		return finalResult;
+					while (resultSet.next()) {
+						found = true;
+
+						// create new item object
+						// retrieve attributes from resultSet starting at index
+						Account account = new Account();
+						loadAccount(account, resultSet, account.getAccountID());
+
+						finalResult = account.getAccountID();
+						System.out.println("Found account in the accounts table");
+					}
+
+					// check if the item was found
+					if (!found) {
+						System.out.println("Either <" + username + "or" + password +"> is not valid");
+					}
+
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+			}});
 	}
 
-	@Override
-	public int findAccountIDbyUsernameAndPassword(String username, String password) throws SQLException {
-		int result = -1;
-		for ()
-		return result;
-	}
+	// ---------------------------------- Utility Functions ---------------------------------- //
 
-	@Override
-	public String updateItemPrice(Item item, int quantity) throws SQLException {
-		
-		return null;
-	}
-
-
-// ---------------------------------- Utility Functions ---------------------------------- //
-	
 	public<ResultType> ResultType executeTransaction(Transaction<ResultType> txn) {
 		try {
 			return doExecuteTransaction(txn);
@@ -235,7 +353,7 @@ public abstract class DerbyDatabase implements IDatabase {
 		return conn;
 	}
 
-	
+
 	private void loadAccount(Account account, ResultSet resultSet, int index) throws SQLException {
 		account.setAccountID(resultSet.getInt(index++));
 		account.setUsername(resultSet.getString(index++));
@@ -251,13 +369,13 @@ public abstract class DerbyDatabase implements IDatabase {
 		item.setItemLocationX(resultSet.getInt(index++));
 		item.setItemLocationY(resultSet.getInt(index++));
 	}
-	
+
 	private void loadHistory(History history, ResultSet resultSet, int index) throws SQLException{
 		history.setAccountID(resultSet.getInt(index++));
 		history.setHistoryID(resultSet.getInt(index++));
 		history.setGroceryListID(resultSet.getInt(index++));
 	}
-	
+
 	private void loadGroceryList(GroceryList groceryList, ResultSet resultSet, int index) throws SQLException{
 		groceryList.setGroceryListID(resultSet.getInt(index++));
 		groceryList.setAccountID(resultSet.getInt(index++));
@@ -265,8 +383,8 @@ public abstract class DerbyDatabase implements IDatabase {
 		groceryList.setListName(resultSet.getString(index++));
 		groceryList.setListPrice(resultSet.getDouble(index++));
 	}
-	
-	
+
+
 
 	public void createTables() {
 		executeTransaction(new Transaction<Boolean>() {
@@ -300,7 +418,7 @@ public abstract class DerbyDatabase implements IDatabase {
 									")"
 							);
 					stmt2.executeUpdate();
-					
+
 					stmt3 = conn.prepareStatement(
 							"create table history (" +
 									"	history_id integer primary key " +
@@ -310,7 +428,7 @@ public abstract class DerbyDatabase implements IDatabase {
 									")"
 							);
 					stmt3.executeUpdate();
-					
+
 					stmt4 = conn.prepareStatement(
 							"create table groceryLists (" +
 									"	groceryList_id integer primary key " +
@@ -377,7 +495,7 @@ public abstract class DerbyDatabase implements IDatabase {
 						insertItem.addBatch();
 					}
 					insertItem.executeBatch();
-					
+
 					// populate history table (do this after items table)
 					insertHistory = conn.prepareStatement("insert into history (account_id, grocery_list_id, ) values (?, ?, ?)");
 					for (History history : historyList) {
@@ -387,7 +505,7 @@ public abstract class DerbyDatabase implements IDatabase {
 						insertHistory.addBatch();
 					}
 					insertHistory.executeBatch();
-					
+
 					// populate groceryList table (do this after items table)
 					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, history_id, name, price) values (?, ?, ?, ?)");
 					for (GroceryList list : groceryList) {
@@ -413,28 +531,28 @@ public abstract class DerbyDatabase implements IDatabase {
 
 	// The main method creates the database tables and loads the initial data.
 	@SuppressWarnings("null")
-	public static void main(String[] args) throws IOException {
-		DerbyDatabase db = new DerbyDatabase();
+	public static void main(String[] args) throws IOException, SQLException {
+		DerbyDatabase db = null;
 		System.out.println("Dropping tables...");
-		
+
 		db.dropTables();
-		
+
 		System.out.println("COMPLETE");
-		
+
 		System.out.println("Creating tables...");
-		
+
 		db.createTables();
-		
+
 		System.out.println("COMPLETE");
 
 		System.out.println("Loading initial data...");
-		
+
 		db.loadInitialData();
-		
+
 		System.out.println("Initial data loaded");
 
 		System.out.println("MAIN COMPLETE");
 	}
 }
-	
+
 

@@ -20,5 +20,7 @@ public interface IDatabase {
 	public Set<String> getGroceryListHistoryByAccountID(int id) throws SQLException;
 	public ArrayList<Account> findAllAccounts() throws SQLException;
 	public ArrayList<Item> findAllItems() throws SQLException; 
-	public String updateItemPrice(Item item, int quantity) throws SQLException;
+	public Boolean updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException;
+	public Boolean updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException;
+	void dropTables() throws SQLException;
 }

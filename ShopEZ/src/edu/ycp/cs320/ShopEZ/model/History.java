@@ -7,7 +7,7 @@ public class History {
 	private int historyID;
 	private int accountID;
 	private int groceryListID;
-	private ArrayList<GroceryList> historyList = new ArrayList<GroceryList>();
+	private GroceryList historyList = new GroceryList();
 	
 	public History() {
 		
@@ -29,7 +29,6 @@ public class History {
 		this.historyID = historyID;
 	}
 
-	@SuppressWarnings("null")
 	public Set<String> getHistoryListNames() {
 		Set<String> result = null;
 		for (GroceryList list : this.historyList) {

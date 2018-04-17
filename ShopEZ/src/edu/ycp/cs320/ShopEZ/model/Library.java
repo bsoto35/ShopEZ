@@ -32,7 +32,7 @@ public class Library {
 	}
 
 	// login credentials - test version
-	public boolean validatePW(String name, String pw) {
+	public boolean validateCredentials(String name, String pw) {
 		if (credentials.containsKey(name)) {
 			if  (credentials.get(name).equals(pw)) {
 				return true;
