@@ -13,7 +13,7 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
-public abstract class DerbyDatabase implements IDatabase {
+public class DerbyDatabase implements IDatabase {
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
