@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-
+				
 				if (!validLogin) {
 					errorMessage = "Username and/or password invalid";
 				}

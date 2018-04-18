@@ -6,12 +6,12 @@ import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.Item;
-import edu.ycp.cs320.ShopEZ.model.Pair;
 
 public interface IDatabase {
 	
 	//public List<Pair<Item, Integer>> findAllItemsWithPrice() throws SQLException;
 	public String addAccountIntoAccountsTable(final String username, final String password) throws SQLException;
+	public Item findItemByItemName(final String itemName) throws SQLException;
 	public String insertItemIntoItemsTable(String name, double price, int x, int y) throws SQLException;
 	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(String username, String password) throws SQLException;
 	public double findItemPriceByItemName(String itemName) throws SQLException;

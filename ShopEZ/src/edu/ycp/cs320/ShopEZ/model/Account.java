@@ -4,15 +4,7 @@ public class Account {
 	private int accountID;
 	private String username;
 	private String password;
-<<<<<<< HEAD
-	private int historyListID;
-	private History history = new History();
-	private Boolean success;
 
-
-=======
-	
->>>>>>> pmnorris
 	public Account() {
 
 	}
@@ -40,7 +32,6 @@ public class Account {
 	public String getPassword() {
 		return this.password;
 	}
-<<<<<<< HEAD
 
 	// check to see if the repeated username and password strings match up with the account's username and passord
 	public boolean confirmAccount(String name, String password) {
@@ -53,26 +44,6 @@ public class Account {
 		return result;
 	}
 
-	// store the String name for the GroceryList and the GroceryList itself into the HashMap 
-	public void addToHistoryList(GroceryList list) {
-		this.history.addToHistoryList(list);
-	}
-
-	public Set<String> getHistoryList(){
-		return this.history.getHistoryListNames();
-	}
-
-	public GroceryList getGroceryList(String listName){
-		return this.history.getHistoryList(listName);
-	}
-
-	public int getHistoryListID() {
-		return this.historyListID;
-	}
-
-	public void setHistoryListID(int historyListID) {
-		this.historyListID = historyListID;
-	}
 	public Boolean isPasswordCorrect(String Password) {
 		if(this.password.equals(password)) {
 			return true;
@@ -88,6 +59,6 @@ public class Account {
 		this.success = success;
 	}
 }
-=======
-}
->>>>>>> pmnorris
+
+
+
