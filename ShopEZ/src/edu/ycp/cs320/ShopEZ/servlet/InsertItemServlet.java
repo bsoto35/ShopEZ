@@ -78,7 +78,7 @@ public class InsertItemServlet extends HttpServlet {
 			
 			removeItemFromTheList(remItem, amount);
 		}
-
+		// pointless comment delete pls
 		String successMessage = null;
 		String item_name      = null;
 		double item_price     = 0.0;
