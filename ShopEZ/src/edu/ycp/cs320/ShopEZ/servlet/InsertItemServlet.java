@@ -81,18 +81,12 @@ public class InsertItemServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-		String item_name      = null;
-		double item_price     = 0.0;
-		int item_locationX    = 0;
-		int item_locationY    = 0;
-		int item_quantity     = 0;
 
 		// Add result objects as request attributes
 		req.setAttribute("errorMessage",   errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
-		// Forward to view to render the result HTML document
-		req.getRequestDispatcher("/_view/insertBook.jsp").forward(req, resp);
+		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}	
 	private int getIntFromParameter(String s) {
 		if (s == null || s.equals("")) {

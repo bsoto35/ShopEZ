@@ -65,7 +65,7 @@ tr.label {
 
 		<div class="label">Quantity:</div>
 		<div>
-			<input type="text" name="quantityR" value="${amount}" />
+			<input type="text" name="quantity" value="${amount}" />
 		</div>
 		<form id="Remove" name="form1" method="POST" action="remove">
 			<input type="submit" name="submit" value="Remove">

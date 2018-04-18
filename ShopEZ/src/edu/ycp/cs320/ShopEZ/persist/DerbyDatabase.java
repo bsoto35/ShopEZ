@@ -195,7 +195,6 @@ public abstract class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-
 				}
 				return result;
 			}
