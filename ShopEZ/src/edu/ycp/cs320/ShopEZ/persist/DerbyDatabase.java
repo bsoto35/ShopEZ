@@ -81,6 +81,7 @@ public abstract class DerbyDatabase implements IDatabase {
 					stmt.setString(2, name);
 
 					stmt.executeUpdate();
+
 					result = findItemByItemName(name);
 				}catch (Exception ex) {
 					return result;
@@ -90,7 +91,6 @@ public abstract class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(conn);
 					return result;
 				}
-				return result;
 			}
 		});
 	}
@@ -102,7 +102,6 @@ public abstract class DerbyDatabase implements IDatabase {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				Item result = new Item();
-
 
 				try {
 
@@ -134,20 +133,12 @@ public abstract class DerbyDatabase implements IDatabase {
 	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
 			
-=======
-	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
-		return executeTransaction(new Transaction<Item>() {
-
 			@SuppressWarnings("finally")
 			@Override
 			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
-
 				Item result = new Item();
-
-				Item result=new Item();
-
 
 				try {
 
@@ -168,14 +159,12 @@ public abstract class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					
+					return result;
 				}
-				return result;
 			}
 		});
 	}
 	
-
 
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
