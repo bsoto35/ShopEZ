@@ -19,8 +19,8 @@ public interface IDatabase {
 	public Account findAccountByAccountID(int id) throws SQLException;
 	public ArrayList<Account> findAllAccounts() throws SQLException;
 	public List<Item> findAllItemsForAccount(int id) throws SQLException; 
-	public void updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException;
-	public void updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException;
+	public Item updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException;
+	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException;
 	void dropTables() throws SQLException;
 	public Item findItemByItemName(String name);
 }

@@ -64,14 +64,14 @@ public abstract class DerbyDatabase implements IDatabase {
 		});
 	}
 
-	public void updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
-		return executeTransaction(new Transaction<>() {
+	public Item updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
 			@SuppressWarnings("finally")
 			@Override
-			public Boolean execute(Connection conn) throws SQLException {
+			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
-				Boolean result = false;
+				Item result = new Item();
 
 				try {
 
@@ -85,25 +85,25 @@ public abstract class DerbyDatabase implements IDatabase {
 
 					stmt.executeUpdate();
 
-					result = true;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
 					
 				}
+				return result;
 			}
 		});
 	}
 
-	public Boolean updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
-		return executeTransaction(new Transaction<Boolean>() {
+	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
 			@SuppressWarnings("finally")
 			@Override
-			public Boolean execute(Connection conn) throws SQLException {
+			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
-				Boolean result = false;
+				Item result=new Item();
 
 				try {
 
@@ -118,17 +118,19 @@ public abstract class DerbyDatabase implements IDatabase {
 
 					stmt.executeUpdate();
 
-					result = true;
+					
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					return result;
+					
 				}
+				return result;
 			}
 		});
 	}
 	
+
 
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
