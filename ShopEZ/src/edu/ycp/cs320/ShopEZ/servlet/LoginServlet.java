@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.ShopEZ.model.Library;
 import edu.ycp.cs320.ShopEZ.persist.DatabaseProvider;
 import edu.ycp.cs320.ShopEZ.persist.IDatabase;
 import edu.ycp.cs320.ShopEZ.model.Account;
@@ -60,6 +59,23 @@ public class LoginServlet extends HttpServlet {
 		if(req.getParameter("SignUp") !=null) {
 			login.setUsername(req.getParameter("upUsername"));
 			login.setPassword(req.getParameter("upPassword"));
+
+			if(login.getPassword().equals(req.getParameter("confirmPassword"))){
+				IDatabase db = DatabaseProvider.getInstance();
+				try {
+					db.addAccountIntoAccountsTable(login.getUsername(), login.getPassword());
+				} catch (SQLException e) {
+					e.printStackTrace();
+
+
+					if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
+						errorMessage = "Please specify both user name and password";
+					} else {
+
+					}
+				}
+			}
+
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else{
@@ -75,6 +91,8 @@ public class LoginServlet extends HttpServlet {
 				}
 			}
 		}
+
+
 
 
 		// Add parameters as request attributes
@@ -95,12 +113,17 @@ public class LoginServlet extends HttpServlet {
 			// redirect to /index page
 			resp.sendRedirect(req.getContextPath() + "/index");
 
+
 			return;
 		}
 
 		System.out.println("Invalid login - returning to /Login");
 
+
+		System.out.println("   Invalid login - returning to /Login");
+
 		// Forward to view to render the result HTML document
 		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 }
+

@@ -123,7 +123,7 @@ body {
 					<div class="label">Password:</div>
 					<div><input type="text" name="Password" value="${inPassword}" /></div>
           
-           <form id="login" name ="form1" method="POST" action="login">
+           <form id="login" name ="form1" method="POST" action="Login">
            <input type="submit"name = "submit" value = "Sign In">
           </form>
            
@@ -144,7 +144,7 @@ body {
            <div class="label">Confirm Password:</div>
            <div><input type="text" name="Confirm Password" value="${confirm_password}" /></div>
            
-           <form id="guest" name ="form1" method="POST" action= "guest">
+           <form id="guest" name ="form1" method="POST" action= "SignUp">
            <input type="submit"name = "submit" value = "SignUp ">
           </form>
           </div>

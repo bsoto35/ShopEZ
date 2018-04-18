@@ -7,21 +7,22 @@ public class GroceryList {
 	private int itemID;
 	private double ListPrice;
 	private ArrayList<Item> theList = new ArrayList<Item>();
-	
+
 	public GroceryList() {
-		
+
 	}
-	
+
 	public void setListPrice(double cash) {
 		this.ListPrice = cash;
 	}
-	
-	public void updatePrice(double money) {
-		this.ListPrice += money;
+
+	public double getupdatedPrice() {
+		this.ListPrice = getTotalPrice();
+		return this.ListPrice;
 	}
-	
+
 	public double getTotalPrice() {
-		double total=0; 
+		double total = 00.00; 
 		for(int i=0; i< theList.size(); i++) {
 			theList.get(i).getItemPrice(); 
 		}
@@ -35,11 +36,30 @@ public class GroceryList {
 	public void setAccountID(int id) {
 		accountID = id;
 	}
-    
+
 	public ArrayList<Item> getTheList() {
-		return this.theList;
+		return theList;
 	}
-	
+
+	public void addItem(Item item, int qty) {
+		for (int i = 0; i < qty; i++) {
+			theList.add(item);
+		}
+	}
+
+	public void removeItemFromTheList(Item item, int qty) {
+		int x = 0;
+		while(x < qty) {
+			for (int i = 0; (i < theList.size()) && (x < qty); i++) {
+				if (theList.get(i).equals(item)) {
+					theList.remove(i);
+					i--;
+					x++;
+				}
+			}
+		}
+	}
+
 	public ArrayList<Integer> getTheListOfItemIds(){
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		for (Item item : this.theList) {
@@ -55,9 +75,5 @@ public class GroceryList {
 	public void setItemID(int itemID) {
 		this.itemID = itemID;
 	}
-	
-	public void addItem(Item item) {
-		theList.add(item);
-	}
-	
+
 }
