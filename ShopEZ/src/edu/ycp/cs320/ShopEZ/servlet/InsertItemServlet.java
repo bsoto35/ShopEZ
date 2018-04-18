@@ -54,10 +54,11 @@ public class InsertItemServlet extends HttpServlet {
 		String errorMessage = null;
 		boolean validLogin  = false;
 		login= new Account();
-		req.setAttribute("quantity", 1); 
+		double amount=1;
+		req.setAttribute("quantityA", amount); 
 		if(req.getParameter("Add") !=null) {
 			if(req.getParameter("Item")!= null) {				
-				int amount = req.getParameter("quantity");
+				amount = getDoubleFromParameter(req.getParameter("quantityA"));
 				newItem.setItemName(req.getParameter("Add"));
 				IDatabase db = DatabaseProvider.getInstance();
 				try {
@@ -67,16 +68,17 @@ public class InsertItemServlet extends HttpServlet {
 					errorMessage="Invalid Item";
 					
 				}
-				grocerys.addItem(newItem);
+				grocerys.addItem(newItem, amount);
 				grocerys.setAccountID(login.getAccountID());
 				double sum= grocerys.getTotalPrice(); 
 				grocerys.setListPrice(sum);
 			}	
 		}
 		if(req.getParameter("Remove") !=null) {
-
+			
+			removeItemFromTheList(remItem, amount);
 		}
-
+		// pointless comment delete pls
 		String successMessage = null;
 		String item_name      = null;
 		double item_price     = 0.0;
@@ -124,4 +126,11 @@ public class InsertItemServlet extends HttpServlet {
 		// Forward to view to render the result HTML document
 		req.getRequestDispatcher("/_view/insertBook.jsp").forward(req, resp);
 	}	
+	private Double getDoubleFromParameter(String s) {
+		if (s == null || s.equals("")) {
+			return null;
+		} else {
+			return Double.parseDouble(s);
+		}
+	}
 }

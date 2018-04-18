@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-	
+
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -15,19 +15,19 @@ body {
 	background-size: cover;
 }
 
-#header{
-      background-color: white;
-      border: 1px solid black;
-      padding: 10px 30px;
-      background-color: white;
-      font-style: italic;
-    }
+#header {
+	background-color: white;
+	border: 1px solid black;
+	padding: 10px 30px;
+	background-color: white;
+	font-style: italic;
+}
 
-    #logo{
-      color: black;
-      font-size: 70px;
-      text-align: left;
-    }
+#logo {
+	color: black;
+	font-size: 70px;
+	text-align: left;
+}
 
 #nav {
 	text-align: right;
@@ -105,8 +105,9 @@ body {
 <body>
 	<div id="header">
 		<div id="logo">
-			SHOP-EZE <a href="https://imgur.com/wtOuyHi">
-			<img src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"  style="width: 50px; height: 50px;"/></a>
+			SHOP-EZE <a href="https://imgur.com/wtOuyHi"> <img
+				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
+				style="width: 50px; height: 50px;" /></a>
 		</div>
 		<div id="nav">
 			<button class="button" onclick="myFunction()">Login</button>
@@ -134,10 +135,13 @@ body {
         </div>
          <div id="create">
             <h3>Create an Account</h3>
-          		
+		<div id="existing">
+			<h3>Existing User</h3>
 			<div class="label">Username:</div>
-			<div><input type="text" name="Username" value="${upUsername}"/></div>
-            	
+			<div>
+				<input type="text" name="Username" value="${inUsername}" />
+			</div>
+
 			<div class="label">Password:</div>
 			<div><input type="text" name="Password" value="${upPassword}" /></div>
            		
@@ -149,6 +153,43 @@ body {
           </form>
           </div>
       </div>
+			<div>
+				<input type="text" name="Password" value="${inPassword}" />
+			</div>
+
+			<form id="login" name="form1" method="POST" action="login">
+				<input type="submit" name="submit" value="Sign In">
+			</form>
+
+			<form id="guest" name="form2" method="POST" action="guest">
+				<input type="submit" name="submit" value="Forgot Password">
+			</form>
+
+		</div>
+		<div id="create">
+			<h3>Create an Account</h3>
+
+			<div class="label">Username:</div>
+			<div>
+				<input type="text" name="Username" value="${upUsername}" />
+			</div>
+
+			<div class="label">Password:</div>
+			<div>
+				<input type="text" name="Password" value="${upPassword}" />
+			</div>
+
+			<div class="label">Confirm Password:</div>
+			<div>
+				<input type="text" name="Confirm Password"
+					value="${confirm_password}" />
+			</div>
+
+			<form id="guest" name="form1" method="POST" action="guest">
+				<input type="submit" name="submit" value="SignUp ">
+			</form>
+		</div>
+	</div>
 	<div id="footer"></div>
 	<script>
     funtion signUp(){
