@@ -5,15 +5,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
-import edu.ycp.cs320.ShopEZ.model.Pair;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
 public abstract class DerbyDatabase implements IDatabase {
@@ -84,26 +81,73 @@ public abstract class DerbyDatabase implements IDatabase {
 					stmt.setString(2, name);
 
 					stmt.executeUpdate();
-
+					result = findItemByItemName(name);
+				}catch (Exception ex) {
+					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					
+					return result;
 				}
 				return result;
+			}
+		});
+	}
+	
+	public Item findItemByItemName(final String itemName) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+			@Override
+			public Item execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Item result = new Item();
+
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"Select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
+								"from items " +
+								"where items.item_name =  ? "
+							);
+					stmt.setString(1, itemName);
+
+					resultSet = stmt.executeQuery();
+					while(resultSet.next()) {
+						result.setItemID(resultSet.getInt(1));
+						result.setItemName(resultSet.getString(2));
+						result.setItemPrice(resultSet.getDouble(3));
+						result.setItemLocationX(resultSet.getInt(4));
+						result.setItemLocationY(resultSet.getInt(5));
+					}
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
 			}
 		});
 	}
 
 	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
+			
+=======
+	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+
 			@SuppressWarnings("finally")
 			@Override
 			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
+
+				Item result = new Item();
+
 				Item result=new Item();
+
 
 				try {
 
@@ -117,7 +161,8 @@ public abstract class DerbyDatabase implements IDatabase {
 					stmt.setString(3, item);
 
 					stmt.executeUpdate();
-
+					
+					result = findItemByItemName(item);
 					
 				} finally {
 					DBUtil.closeQuietly(resultSet);
@@ -477,8 +522,7 @@ public abstract class DerbyDatabase implements IDatabase {
 		groceryList.setListPrice(resultSet.getDouble(index++));
 	}
 
-
-
+	
 	public void createTables() {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override
