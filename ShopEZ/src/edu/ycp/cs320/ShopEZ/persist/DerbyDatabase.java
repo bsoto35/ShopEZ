@@ -11,7 +11,6 @@ import java.util.List;
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
-import edu.ycp.cs320.ShopEZ.model.Pair;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
 public abstract class DerbyDatabase implements IDatabase {

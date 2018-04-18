@@ -6,7 +6,6 @@ import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.Item;
-import edu.ycp.cs320.ShopEZ.model.Pair;
 
 public interface IDatabase {
 	
