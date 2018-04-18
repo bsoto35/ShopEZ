@@ -21,7 +21,11 @@ public class GroceryList {
 	}
 	
 	public double getTotalPrice() {
-		return this.ListPrice;
+		double total=0; 
+		for(int i=0; i< theList.size(); i++) {
+			theList.get(i).getItemPrice(); 
+		}
+		return total; 
 	}
 
 	public int getAccountID() {
@@ -50,6 +54,10 @@ public class GroceryList {
 
 	public void setItemID(int itemID) {
 		this.itemID = itemID;
+	}
+	
+	public void addItem(Item item) {
+		theList.add(item);
 	}
 	
 }
