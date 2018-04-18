@@ -52,10 +52,27 @@ public class Account {
 			return false;	
 		}
 	}
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	public Boolean getSuccess() {
+		return this.success;
+	}
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+>>>>>>> master
 }
 
 
 
+<<<<<<< HEAD
 
 
 
+=======
+=======
+}
+
+>>>>>>> bsoto
+>>>>>>> master
