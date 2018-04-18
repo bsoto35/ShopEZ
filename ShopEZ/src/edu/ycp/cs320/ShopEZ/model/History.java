@@ -29,31 +29,18 @@ public class History {
 		this.historyID = historyID;
 	}
 
-	public Set<String> getHistoryListNames() {
-		Set<String> result = null;
-		for (GroceryList list : this.historyList) {
-			result.add(list.getListName());
+	public ArrayList<String> getHistoryListNames() {
+		ArrayList<String> result = new ArrayList<String>();
+		for (Item name : this.historyList.getTheList()) {
+			result.add(name.getItemName());
 		}
 		return result;
 	}
 	
 	public GroceryList getHistoryList(String name) {
-		GroceryList result = new GroceryList();
-		for (GroceryList list : this.historyList) {
-			if (list.getListName().equals(name)) {
-				result = list;
-			}
-		}
-		return result;
-	}
-
-	public void addToHistoryList(GroceryList list) {
-		this.historyList.add(list);
+		return this.historyList;
 	}
 	
-	public void removeHistoryList(GroceryList list) {
-		this.historyList.remove(list);
-	}
 
 	public int getGroceryListID() {
 		return groceryListID;

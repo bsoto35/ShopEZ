@@ -3,24 +3,13 @@ package edu.ycp.cs320.ShopEZ.model;
 import java.util.ArrayList;
 
 public class GroceryList {
-	private int groceryListID;
 	private int accountID;
-	private int historyID;
-	private String ListName;
+	private int itemID;
 	private double ListPrice;
-	private int currentListID;
-	private currentList items = new currentList();
+	private ArrayList<Item> theList = new ArrayList<Item>();
 	
 	public GroceryList() {
 		
-	}
-	
-	public void setListName(String x) {
-		this.ListName = x;
-	}
-	
-	public String getListName() {
-		return this.ListName;
 	}
 	
 	public void setListPrice(double cash) {
@@ -34,22 +23,6 @@ public class GroceryList {
 	public double getTotalPrice() {
 		return this.ListPrice;
 	}
-	
-	public ArrayList<Item> getCurrentList(){
-		return this.items.getItemsInCurrentList();
-	}
-
-	public void addToCurrentList(Item name) {
-		this.items.addItemInCurrentList(name);
-	}
-	
-	public int getHistoryID() {
-		return historyID;
-	}
-
-	public void setHistoryID(int id) {
-		this.historyID = id;
-	}
 
 	public int getAccountID() {
 		return accountID;
@@ -58,23 +31,25 @@ public class GroceryList {
 	public void setAccountID(int id) {
 		accountID = id;
 	}
-
-	public int getGroceryListID() {
-		return this.groceryListID;
-	}
-
-	public void setGroceryListID(int groceryListID) {
-		this.groceryListID = groceryListID;
+    
+	public ArrayList<Item> getTheList() {
+		return this.theList;
 	}
 	
-
-	public int getCurrentListID() {
-		return this.currentListID;
+	public ArrayList<Integer> getTheListOfItemIds(){
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (Item item : this.theList) {
+			result.add(item.getItemID());
+		}
+		return result;
 	}
-	
 
-	public void setCurrentListID(int id) {
-		this.currentListID = id;
+	public int getItemID() {
+		return itemID;
+	}
+
+	public void setItemID(int itemID) {
+		this.itemID = itemID;
 	}
 	
 }

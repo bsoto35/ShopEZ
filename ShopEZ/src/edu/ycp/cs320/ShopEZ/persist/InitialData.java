@@ -53,7 +53,6 @@ public class InitialData {
 				account.setAccountID(accountId++);
 				account.setUsername(i.next());
 				account.setPassword(i.next());
-				account.setHistoryListID(Integer.parseInt(i.next()));
 				accountList.add(account);
 			}
 			return accountList;
@@ -62,36 +61,10 @@ public class InitialData {
 		}
 	}
 
-	public static List<History> getHistory() throws IOException{
-		List<History> historyList = new ArrayList<History>();
-		ReadCSV readHistory = new ReadCSV("history.csv");
-		try {
-			// auto-generated primary key for books table
-			Integer historyId = 1;
-			while (true) {
-				List<String> tuple = readHistory.next();
-				if (tuple == null) {
-					break;
-				}
-				Iterator<String> i = tuple.iterator();
-				History history = new History();
-				history.setHistoryID(historyId++);
-				history.setAccountID(Integer.parseInt(i.next()));
-				history.setGroceryListID(Integer.parseInt(i.next()));
-				historyList.add(history);
-			}
-			return historyList;
-		} finally {
-			readHistory.close();
-		}
-	}
-
 	public static List<GroceryList> getGroceryLists() throws IOException{
 		List<GroceryList> list = new ArrayList<GroceryList>();
 		ReadCSV readGroceryLists = new ReadCSV("groceryLists.csv");
 		try {
-			// auto-generated primary key for books table
-			Integer groceryListId = 1;
 			while (true) {
 				List<String> tuple = readGroceryLists.next();
 				if (tuple == null) {
@@ -99,14 +72,9 @@ public class InitialData {
 				}
 				Iterator<String> i = tuple.iterator();
 				GroceryList groceryList = new GroceryList();
-				groceryList.setGroceryListID(groceryListId++);
 				groceryList.setAccountID(Integer.parseInt(i.next()));
-				groceryList.setHistoryID(Integer.parseInt(i.next()));
-				groceryList.setGroceryListID(Integer.parseInt(i.next()));
-				groceryList.setListName(i.next());
-				while (i.hasNext()) {
-					groceryList.addToCurrentList(i.next());
-				}
+				groceryList.setItemID(Integer.parseInt(i.next()));
+				groceryList.setListPrice(Double.parseDouble(i.next()));
 				list.add(groceryList);
 			}
 			return list;
