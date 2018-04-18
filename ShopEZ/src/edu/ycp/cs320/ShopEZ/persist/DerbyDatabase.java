@@ -94,7 +94,7 @@ public abstract class DerbyDatabase implements IDatabase {
 			}
 		});
 	}
-	
+
 	public Item findItemByItemName(final String itemName) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
 			@Override
@@ -107,8 +107,8 @@ public abstract class DerbyDatabase implements IDatabase {
 
 					stmt = conn.prepareStatement(
 							"Select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-								"from items " +
-								"where items.item_name =  ? "
+									"from items " +
+									"where items.item_name =  ? "
 							);
 					stmt.setString(1, itemName);
 
@@ -132,7 +132,7 @@ public abstract class DerbyDatabase implements IDatabase {
 
 	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
-			
+
 			@SuppressWarnings("finally")
 			@Override
 			public Item execute(Connection conn) throws SQLException {
@@ -152,9 +152,9 @@ public abstract class DerbyDatabase implements IDatabase {
 					stmt.setString(3, item);
 
 					stmt.executeUpdate();
-					
+
 					result = findItemByItemName(item);
-					
+
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
@@ -164,7 +164,43 @@ public abstract class DerbyDatabase implements IDatabase {
 			}
 		});
 	}
-	
+
+	public String removeItemFromTheList(final Account account, final String itemName, final int qty) throws SQLException{
+		return executeTransaction(new Transaction<String>() {
+			@Override
+			public String execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				String result = "Incomplete";
+
+				try {
+
+					int item_ID = findItemByItemName(itemName).getItemID();
+					
+					stmt = conn.prepareStatement(
+							"DELETE TOP(?)" +
+									"from groceryLists " +
+									"where groveryLists.account_id = ? " +
+										"and groceryLists.item_id = ? "
+							);
+					stmt.setInt(1, qty);
+					stmt.setInt(2, account.getAccountID());
+					stmt.setInt(3, item_ID);
+
+					stmt.executeUpdate();
+					
+					result = "Complete";
+				}
+				finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+				return result;
+			}
+		});
+	}		
+
 
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
@@ -491,7 +527,6 @@ public abstract class DerbyDatabase implements IDatabase {
 		account.setAccountID(resultSet.getInt(index++));
 		account.setUsername(resultSet.getString(index++));
 		account.setPassword(resultSet.getString(index++));
-		//account.setHistoryListID(resultSet.getInt(index++));
 	}
 
 
@@ -511,7 +546,7 @@ public abstract class DerbyDatabase implements IDatabase {
 		groceryList.setListPrice(resultSet.getDouble(index++));
 	}
 
-	
+
 	public void createTables() {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override

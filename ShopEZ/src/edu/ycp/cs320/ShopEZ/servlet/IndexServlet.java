@@ -22,6 +22,7 @@ public class IndexServlet extends HttpServlet {
 		if(req.getParameter("Login") !=null)
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 		else if(req.getParameter("Continue as Guest") !=null)
+			
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}
 }
