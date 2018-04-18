@@ -16,12 +16,13 @@ public class GroceryList {
 		this.ListPrice = cash;
 	}
 	
-	public void updatePrice(double money) {
-		this.ListPrice += money;
+	public double getupdatedPrice() {
+		this.ListPrice = getTotalPrice();
+		return this.ListPrice;
 	}
 	
 	public double getTotalPrice() {
-		double total=0; 
+		double total = 00.00; 
 		for(int i=0; i< theList.size(); i++) {
 			theList.get(i).getItemPrice(); 
 		}

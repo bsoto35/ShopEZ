@@ -52,18 +52,10 @@ public class Account {
 			return false;	
 		}
 	}
-<<<<<<< HEAD
-	public Boolean getSuccess() {
-		return this.success;
-	}
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
 }
 
 
 
-=======
-}
 
->>>>>>> bsoto
+
+

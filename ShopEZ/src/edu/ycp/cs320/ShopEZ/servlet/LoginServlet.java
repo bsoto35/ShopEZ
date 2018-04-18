@@ -50,11 +50,7 @@ public class LoginServlet extends HttpServlet {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-<<<<<<< HEAD
-				
-=======
 
->>>>>>> bsoto
 				if (!validLogin) {
 					errorMessage = "Username and/or password invalid";
 				}
@@ -63,7 +59,7 @@ public class LoginServlet extends HttpServlet {
 		if(req.getParameter("SignUp") !=null) {
 			login.setUsername(req.getParameter("upUsername"));
 			login.setPassword(req.getParameter("upPassword"));
-<<<<<<< HEAD
+
 			if(login.getPassword().equals(req.getParameter("confirmPassword"))){
 				IDatabase db = DatabaseProvider.getInstance();
 				try {
@@ -79,7 +75,7 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 			}
-=======
+
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else{
@@ -96,38 +92,38 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 
->>>>>>> bsoto
 
 
-			// Add parameters as request attributes
-			req.setAttribute("Username", req.getParameter("inUsername"));
-			req.setAttribute("Password", req.getParameter("inPassword"));
 
-			// Add result objects as request attributes
-			req.setAttribute("errorMessage", errorMessage);
-			req.setAttribute("login",        validLogin);
+		// Add parameters as request attributes
+		req.setAttribute("Username", req.getParameter("inUsername"));
+		req.setAttribute("Password", req.getParameter("inPassword"));
 
-			// if login is valid, start a session
-			if (validLogin) {
-				System.out.println("   Valid login - starting session, redirecting to /index");
+		// Add result objects as request attributes
+		req.setAttribute("errorMessage", errorMessage);
+		req.setAttribute("login",        validLogin);
 
-				// store user object in session
-				req.getSession().setAttribute("user", login.getUsername());
+		// if login is valid, start a session
+		if (validLogin) {
+			System.out.println("   Valid login - starting session, redirecting to /index");
 
-				// redirect to /index page
-				resp.sendRedirect(req.getContextPath() + "/index");
+			// store user object in session
+			req.getSession().setAttribute("user", login.getUsername());
 
-<<<<<<< HEAD
-				return;
-			}
-=======
-		System.out.println("Invalid login - returning to /Login");
->>>>>>> bsoto
+			// redirect to /index page
+			resp.sendRedirect(req.getContextPath() + "/index");
 
-			System.out.println("   Invalid login - returning to /Login");
 
-			// Forward to view to render the result HTML document
-			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
+			return;
 		}
+
+		System.out.println("Invalid login - returning to /Login");
+
+
+		System.out.println("   Invalid login - returning to /Login");
+
+		// Forward to view to render the result HTML document
+		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 }
+
