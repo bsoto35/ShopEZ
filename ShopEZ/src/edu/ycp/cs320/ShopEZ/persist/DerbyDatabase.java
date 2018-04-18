@@ -153,7 +153,7 @@ public abstract class DerbyDatabase implements IDatabase {
 
 					stmt.executeUpdate();
 					
-					
+					result = findItemByItemName(item);
 					
 				} finally {
 					DBUtil.closeQuietly(resultSet);
