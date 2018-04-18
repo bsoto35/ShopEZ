@@ -60,6 +60,7 @@ public class GroceryList {
 		}
 	}
 
+	
 	public ArrayList<Integer> getTheListOfItemIds(){
 		ArrayList<Integer> result = new ArrayList<Integer>();
 		for (Item item : this.theList) {
