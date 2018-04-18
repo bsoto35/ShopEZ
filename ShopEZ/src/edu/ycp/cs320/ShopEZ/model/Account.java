@@ -1,18 +1,18 @@
 package edu.ycp.cs320.ShopEZ.model;
 
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.TreeMap;
-
 public class Account {
 	private int accountID;
 	private String username;
 	private String password;
+<<<<<<< HEAD
 	private int historyListID;
 	private History history = new History();
 	private Boolean success;
 
 
+=======
+	
+>>>>>>> pmnorris
 	public Account() {
 
 	}
@@ -40,6 +40,7 @@ public class Account {
 	public String getPassword() {
 		return this.password;
 	}
+<<<<<<< HEAD
 
 	// check to see if the repeated username and password strings match up with the account's username and passord
 	public boolean confirmAccount(String name, String password) {
@@ -87,3 +88,6 @@ public class Account {
 		this.success = success;
 	}
 }
+=======
+}
+>>>>>>> pmnorris
