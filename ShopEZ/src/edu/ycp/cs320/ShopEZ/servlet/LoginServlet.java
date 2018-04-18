@@ -50,7 +50,11 @@ public class LoginServlet extends HttpServlet {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+<<<<<<< HEAD
 				
+=======
+
+>>>>>>> bsoto
 				if (!validLogin) {
 					errorMessage = "Username and/or password invalid";
 				}
@@ -59,6 +63,7 @@ public class LoginServlet extends HttpServlet {
 		if(req.getParameter("SignUp") !=null) {
 			login.setUsername(req.getParameter("upUsername"));
 			login.setPassword(req.getParameter("upPassword"));
+<<<<<<< HEAD
 			if(login.getPassword().equals(req.getParameter("confirmPassword"))){
 				IDatabase db = DatabaseProvider.getInstance();
 				try {
@@ -74,6 +79,24 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 			}
+=======
+			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
+				errorMessage = "Please specify both user name and password";
+			} else{
+
+				if(login.getPassword().equals(req.getParameter("confirmPassword"))){
+					IDatabase db = DatabaseProvider.getInstance();
+
+					try {
+						db.addAccountIntoAccountsTable(login.getUsername(), login.getPassword());
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}			
+				}
+			}
+		}
+
+>>>>>>> bsoto
 
 
 			// Add parameters as request attributes
@@ -94,8 +117,12 @@ public class LoginServlet extends HttpServlet {
 				// redirect to /index page
 				resp.sendRedirect(req.getContextPath() + "/index");
 
+<<<<<<< HEAD
 				return;
 			}
+=======
+		System.out.println("Invalid login - returning to /Login");
+>>>>>>> bsoto
 
 			System.out.println("   Invalid login - returning to /Login");
 

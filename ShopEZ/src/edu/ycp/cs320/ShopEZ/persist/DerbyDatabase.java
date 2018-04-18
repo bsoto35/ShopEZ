@@ -64,8 +64,8 @@ public abstract class DerbyDatabase implements IDatabase {
 		});
 	}
 
-	public Boolean updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
-		return executeTransaction(new Transaction<Boolean>() {
+	public void updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
+		return executeTransaction(new Transaction<>() {
 			@SuppressWarnings("finally")
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
@@ -90,7 +90,7 @@ public abstract class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					return result;
+					
 				}
 			}
 		});
@@ -163,6 +163,7 @@ public abstract class DerbyDatabase implements IDatabase {
 			}
 		});
 	}
+	
 
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {

@@ -52,6 +52,7 @@ public class Account {
 			return false;	
 		}
 	}
+<<<<<<< HEAD
 	public Boolean getSuccess() {
 		return this.success;
 	}
@@ -62,3 +63,7 @@ public class Account {
 
 
 
+=======
+}
+
+>>>>>>> bsoto
