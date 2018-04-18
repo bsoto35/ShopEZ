@@ -53,17 +53,39 @@ public class Account {
 		}
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> master
+<<<<<<< HEAD
 	public Boolean getSuccess() {
 		return this.success;
 	}
 	public void setSuccess(boolean success) {
 		this.success = success;
 	}
+<<<<<<< HEAD
+>>>>>>> master
+=======
+>>>>>>> master
 }
+
+
+
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
 =======
+=======
 }
 
 >>>>>>> bsoto
+>>>>>>> master
+=======
+=======
+}
+
+>>>>>>> bsoto
+>>>>>>> master

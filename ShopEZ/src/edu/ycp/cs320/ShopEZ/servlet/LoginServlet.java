@@ -51,10 +51,20 @@ public class LoginServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 <<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+=======
+>>>>>>> master
+<<<<<<< HEAD
 				
 =======
 
 >>>>>>> bsoto
+<<<<<<< HEAD
+>>>>>>> master
+=======
+>>>>>>> master
 				if (!validLogin) {
 					errorMessage = "Username and/or password invalid";
 				}
@@ -64,6 +74,13 @@ public class LoginServlet extends HttpServlet {
 			login.setUsername(req.getParameter("upUsername"));
 			login.setPassword(req.getParameter("upPassword"));
 <<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+>>>>>>> master
+=======
+>>>>>>> master
 			if(login.getPassword().equals(req.getParameter("confirmPassword"))){
 				IDatabase db = DatabaseProvider.getInstance();
 				try {
@@ -79,7 +96,15 @@ public class LoginServlet extends HttpServlet {
 					}
 				}
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
+
 =======
+=======
+>>>>>>> master
+=======
+=======
+>>>>>>> master
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else{
@@ -96,7 +121,14 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 >>>>>>> bsoto
+>>>>>>> master
+=======
+>>>>>>> bsoto
+>>>>>>> master
 
 
 			// Add parameters as request attributes
@@ -118,11 +150,22 @@ public class LoginServlet extends HttpServlet {
 				resp.sendRedirect(req.getContextPath() + "/index");
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+			// redirect to /index page
+			resp.sendRedirect(req.getContextPath() + "/index");
+=======
+=======
+>>>>>>> master
+<<<<<<< HEAD
 				return;
 			}
 =======
 		System.out.println("Invalid login - returning to /Login");
 >>>>>>> bsoto
+<<<<<<< HEAD
+>>>>>>> master
+=======
+>>>>>>> master
 
 			System.out.println("   Invalid login - returning to /Login");
 

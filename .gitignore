@@ -22,3 +22,4 @@
 hs_err_pid*
 ShopEZ/src/edu/ycp/cs320/ShopEZ/persist/res/groceryLists.csv
 ShopEZ/src/edu/ycp/cs320/ShopEZ/model/Account.java
+*.java
