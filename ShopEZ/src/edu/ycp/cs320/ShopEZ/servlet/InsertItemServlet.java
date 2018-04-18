@@ -65,7 +65,7 @@ public class InsertItemServlet extends HttpServlet {
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
-					blah
+					
 				}
 				grocerys.addItem(newItem);
 				grocerys.setAccountID(login.getAccountID());
