@@ -46,7 +46,15 @@ public class GroceryList {
 			theList.add(item);
 		}
 	}
-
+	
+	public ArrayList<Integer> getTheListOfItemIds(){
+		ArrayList<Integer> result = new ArrayList<Integer>();
+		for (Item item : this.theList) {
+			result.add(item.getItemID());
+		}
+		return result;
+	}
+	
 	public void removeItemFromTheList(Item item, int qty) {
 		int x = 0;
 		while(x < qty) {
@@ -60,14 +68,6 @@ public class GroceryList {
 		}
 	}
 
-	
-	public ArrayList<Integer> getTheListOfItemIds(){
-		ArrayList<Integer> result = new ArrayList<Integer>();
-		for (Item item : this.theList) {
-			result.add(item.getItemID());
-		}
-		return result;
-	}
 
 	public int getItemID() {
 		return itemID;
