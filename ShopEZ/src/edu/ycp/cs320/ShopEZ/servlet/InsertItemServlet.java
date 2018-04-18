@@ -8,11 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
+import edu.ycp.cs320.ShopEZ.model.Account;
+import edu.ycp.cs320.ShopEZ.model.GroceryList;
 
 public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private InsertItemController controller = null;	
+	private Account login= new Account();
+	private GroceryList grocerys;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)

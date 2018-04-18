@@ -10,11 +10,15 @@ public class LoginController {
 		this.model = model;
 	}
 	
-	public boolean checkUserName(String name) {
-		return model.UserName(name);
-	}
+	public boolean checkUserName() {
+		boolean valid=false;
+		if(model.getUsername() != null)
+			valid=true;
+		return valid;
+	} 
 	
 	public boolean validateCredentials(String name, String pw) {
 		return model.confirmAccount(name, pw);
 	}
+	
 }

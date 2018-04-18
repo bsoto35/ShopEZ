@@ -122,10 +122,15 @@ body {
            				   
 					<div class="label">Password:</div>
 					<div><input type="text" name="Password" value="${inPassword}" /></div>
+          
+           <form id="login" name ="form1" method="POST" action="login">
+           <input type="submit"name = "submit" value = "Sign In">
+          </form>
            
-           <button class="button" onclick="signIn()">Sign In</button>
-         
-           <button class="button" onclick="forgot()">Forgot Password</button>
+         	<form id="guest" name ="form2" method="POST" action="guest">
+           <input type="submit"name = "submit" value = "Forgot Password">
+          </form>
+       
         </div>
          <div id="create">
             <h3>Create an Account</h3>
@@ -138,7 +143,10 @@ body {
            		
            <div class="label">Confirm Password:</div>
            <div><input type="text" name="Confirm Password" value="${confirm_password}" /></div>
-                  <button class="button" onclick="signUp()">Sign Up</button>
+           
+           <form id="guest" name ="form1" method="POST" action= "guest">
+           <input type="submit"name = "submit" value = "SignUp ">
+          </form>
           </div>
       </div>
 	<div id="footer"></div>

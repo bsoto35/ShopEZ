@@ -1,21 +1,22 @@
 package edu.ycp.cs320.ShopEZ.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.ShopEZ.controller.LoginController;
 import edu.ycp.cs320.ShopEZ.model.Library;
+import edu.ycp.cs320.ShopEZ.persist.DatabaseProvider;
+import edu.ycp.cs320.ShopEZ.persist.IDatabase;
 import edu.ycp.cs320.ShopEZ.model.Account;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Library model;
-	private LoginController controller;
 	private Account login;
+	private boolean exist, signUp;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -24,7 +25,7 @@ public class LoginServlet extends HttpServlet {
 		System.out.println("\nLoginServlet: doGet");
 		
 
-		req.getRequestDispatcher("/login.jsp").forward(req, resp);
+		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 
 	@Override
@@ -37,22 +38,45 @@ public class LoginServlet extends HttpServlet {
 		boolean validLogin  = false;
 		login= new Account();
 		// Decode form parameters and dispatch to controller
-		login.setUsername(req.getParameter("inUsername"));
-		login.setPassword(req.getParameter("inPassword"));
 
-		System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");			
-
+		if(req.getParameter("Login") !=null) {
+			login.setUsername(req.getParameter("inUsername"));
+			login.setPassword(req.getParameter("inPassword"));
+			System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");			
 		if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
-			errorMessage = "Please specify both user login.getUsername() and password";
+			errorMessage = "Please specify both user name and password";
 		} else {
-			model      = new Library();
-			controller = new LoginController(model);
-			validLogin = controller.validateCredentials(login.getUsername(), login.getPassword());
-
+			IDatabase db = DatabaseProvider.getInstance();
+			try {
+				validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
 			if (!validLogin) {
 				errorMessage = "Username and/or password invalid";
 			}
 		}
+		}
+		if(signUp) {
+			login.setUsername(req.getParameter("upUsername"));
+			login.setPassword(req.getParameter("upPassword"));
+			if(login.getPassword().equals(req.getParameter("confirmPassword"))){
+				IDatabase db = DatabaseProvider.getInstance();
+			}
+			try {
+				db.addAccountIntoAccountsTable(login.getUsername(), login.getPassword());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			
+				
+			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
+				errorMessage = "Please specify both user name and password";
+			} else {
+		
+			}
+		}
+		
 
 		// Add parameters as request attributes
 		req.setAttribute("Username", req.getParameter("inUsername"));
@@ -78,6 +102,6 @@ public class LoginServlet extends HttpServlet {
 		System.out.println("   Invalid login - returning to /Login");
 
 		// Forward to view to render the result HTML document
-		req.getRequestDispatcher("/login.jsp").forward(req, resp);
+		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 }
