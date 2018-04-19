@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
@@ -13,7 +14,7 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
-public abstract class DerbyDatabase implements IDatabase {
+public class DerbyDatabase implements IDatabase {
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -176,19 +177,19 @@ public abstract class DerbyDatabase implements IDatabase {
 				try {
 
 					int item_ID = findItemByItemName(itemName).getItemID();
-					
+
 					stmt = conn.prepareStatement(
 							"DELETE TOP(?)" +
 									"from groceryLists " +
 									"where groveryLists.account_id = ? " +
-										"and groceryLists.item_id = ? "
+									"and groceryLists.item_id = ? "
 							);
 					stmt.setInt(1, qty);
 					stmt.setInt(2, account.getAccountID());
 					stmt.setInt(3, item_ID);
 
 					stmt.executeUpdate();
-					
+
 					result = "Complete";
 				}
 				finally {
@@ -689,6 +690,160 @@ public abstract class DerbyDatabase implements IDatabase {
 		System.out.println("Initial data loaded");
 
 		System.out.println("MAIN COMPLETE");
+	}
+
+	public Account findAccountByAccountID(final int id) throws SQLException {
+		return executeTransaction(new Transaction<Account>() {
+			@Override
+			public Account execute(Connection conn) throws SQLException {
+
+				// load Derby JDBC driver
+				try {
+					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				} catch (Exception e) {
+					System.err.println("Could not load Derby JDBC driver");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				Account finalResult = new Account();
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select accounts.account_id, accounts.account_username, accounts.account_password " +
+									"from accounts " +
+									"	   where accounts.account_id = ? "	
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setInt(1, id);
+
+					// execute the query
+					resultSet = stmt.executeQuery();
+
+					// for testing that a result was returned
+					Boolean found = false;
+
+					while (resultSet.next()) {
+						found = true;
+						
+						loadAccount(finalResult, resultSet, 1);
+						
+						System.out.println("Found account in the accounts table");
+					}
+
+					// check if the item was found
+					if (!found) {
+						System.out.println("Either <" + id +"> is not valid");
+					}
+
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+			}});
+	}
+
+	public ArrayList<Account> findAllAccounts() throws SQLException {
+		return executeTransaction(new Transaction<ArrayList<Account>>() {
+			@Override
+			public ArrayList<Account> execute(Connection conn) throws SQLException {
+
+				ArrayList<Account> finalResult = new ArrayList<Account>();
+				// load Derby JDBC driver
+				try {
+					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				} catch (Exception e) {
+					System.err.println("Could not load Derby JDBC driver");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select * from accounts"
+							);
+
+					// execute the query
+					resultSet = stmt.executeQuery();
+					
+					while (resultSet.next()) {
+						Account account = new Account();
+						loadAccount(account, resultSet, 1);
+						finalResult.add(account);
+
+						System.out.println("Found account in the accounts table");
+					}
+
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+			}});
+	}
+
+	public ArrayList<Item> findAllItemsForAccount(final int id) throws SQLException {
+		return executeTransaction(new Transaction<ArrayList<Item>>() {
+			@Override
+			public ArrayList<Item> execute(Connection conn) throws SQLException {
+
+				ArrayList<Item> finalResult = new ArrayList<Item>();
+				// load Derby JDBC driver
+				try {
+					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+				} catch (Exception e) {
+					System.err.println("Could not load Derby JDBC driver");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select from groceryLists.account_id, groceryLists.item_id, groceryLists.list_price" +
+							"	from groceryLists" +
+							"	where groceryLists.account_id = ?"
+							);
+					
+					stmt.setInt(1, id);
+					// execute the query
+					resultSet = stmt.executeQuery();
+					
+					while (resultSet.next()) {
+						Item item = new Item();
+						loadItem(item, resultSet, 1);
+						finalResult.add(item);
+
+						System.out.println("Found account in the accounts table");
+					}
+
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+			}});
 	}
 }
 
