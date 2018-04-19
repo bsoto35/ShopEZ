@@ -64,7 +64,6 @@ public class DerbyDatabase implements IDatabase {
 
 	public Item updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
-			@SuppressWarnings("finally")
 			@Override
 			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
@@ -90,8 +89,8 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					return result;
 				}
+				return result;
 			}
 		});
 	}
@@ -133,8 +132,6 @@ public class DerbyDatabase implements IDatabase {
 
 	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
-
-			@SuppressWarnings("finally")
 			@Override
 			public Item execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
@@ -156,51 +153,15 @@ public class DerbyDatabase implements IDatabase {
 
 					result = findItemByItemName(item);
 
+					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 					DBUtil.closeQuietly(conn);
-					return result;
 				}
 			}
 		});
 	}
-
-	public String removeItemFromTheList(final Account account, final String itemName, final int qty) throws SQLException{
-		return executeTransaction(new Transaction<String>() {
-			@Override
-			public String execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				String result = "Incomplete";
-
-				try {
-
-					int item_ID = findItemByItemName(itemName).getItemID();
-
-					stmt = conn.prepareStatement(
-							"DELETE TOP(?)" +
-									"from groceryLists " +
-									"where groveryLists.account_id = ? " +
-									"and groceryLists.item_id = ? "
-							);
-					stmt.setInt(1, qty);
-					stmt.setInt(2, account.getAccountID());
-					stmt.setInt(3, item_ID);
-
-					stmt.executeUpdate();
-
-					result = "Complete";
-				}
-				finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-				return result;
-			}
-		});
-	}		
 
 
 	public double findItemPriceByItemName(final String name) {
@@ -258,14 +219,6 @@ public class DerbyDatabase implements IDatabase {
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
 
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -317,14 +270,6 @@ public class DerbyDatabase implements IDatabase {
 			public String execute(Connection conn) throws SQLException {
 
 				String finalResult = "incomplete";
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -363,14 +308,6 @@ public class DerbyDatabase implements IDatabase {
 			public String execute(Connection conn) throws SQLException {
 
 				String finalResult = "incomplete";
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -409,14 +346,6 @@ public class DerbyDatabase implements IDatabase {
 			public Integer execute(Connection conn) throws SQLException {
 
 				int finalResult = -1;
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -528,6 +457,7 @@ public class DerbyDatabase implements IDatabase {
 		account.setAccountID(resultSet.getInt(index++));
 		account.setUsername(resultSet.getString(index++));
 		account.setPassword(resultSet.getString(index++));
+		//account.setHistoryListID(resultSet.getInt(index++));
 	}
 
 
@@ -623,7 +553,6 @@ public class DerbyDatabase implements IDatabase {
 					// populate accounts table (do accounts first, since account_id is foreign key in history table)
 					insertAccount = conn.prepareStatement("insert into accounts (account_username, account_password) values (?, ?)");
 					for (Account account : accountList) {
-						//insertAccount.setInt(1, author.getAuthorId());	// auto-generated primary key, don't insert this
 						insertAccount.setString(1, account.getUsername());
 						insertAccount.setString(2, account.getPassword());
 						insertAccount.addBatch();
@@ -646,7 +575,7 @@ public class DerbyDatabase implements IDatabase {
 					System.out.print("Items table populated");
 
 					// populate groceryList table (do this after items table)
-					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id, price) values (?, ?, ?)");
+					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id, list_price) values (?, ?, ?)");
 					for (GroceryList list : groceryList) {
 						insertGroceryList.setInt(1, list.getAccountID());
 						insertGroceryList.setInt(2, list.getItemID());
@@ -667,62 +596,49 @@ public class DerbyDatabase implements IDatabase {
 		});
 	}
 
-	// The main method creates the database tables and loads the initial data.
-	@SuppressWarnings("null")
-	public static void main(String[] args) throws IOException, SQLException {
-		DerbyDatabase db = null;
-		System.out.println("Dropping tables...");
+	public String removeItemFromTheList(final Account account, final String itemName, final int qty) throws SQLException {
+		return executeTransaction(new Transaction<String>() {
+			@Override
+			public String execute(Connection conn) throws SQLException {
+				String finalResult = "Incomplete";
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				int item_id = findItemByItemName(itemName).getItemID();
+				try {
 
-		db.dropTables();
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"DELETE TOP(?)" +
+									"from groceryLists " +
+									"	where gorceryLists.account_id = ? " +
+									"		and gorceryLists.item_id = ? "
+							);
 
-		System.out.println("COMPLETE");
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setInt(1, qty);
+					stmt.setInt(2, account.getAccountID());
+					stmt.setInt(3, item_id);
 
-		System.out.println("Creating tables...");
+					// execute the query
+					stmt.executeQuery();
 
-		db.createTables();
+					finalResult = "Complete";
 
-		System.out.println("COMPLETE");
+					return finalResult;
 
-		System.out.println("Loading initial data...");
-
-		db.loadInitialData();
-
-		System.out.println("Initial data loaded");
-
-		System.out.println("MAIN COMPLETE");
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(conn);
+				}
+			}});
 	}
 
-<<<<<<< HEAD
-	@Override
-	public Account findAccountByAccountID(int id) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ArrayList<Account> findAllAccounts() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Item> findAllItemsForAccount(int id) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-=======
 	public Account findAccountByAccountID(final int id) throws SQLException {
 		return executeTransaction(new Transaction<Account>() {
 			@Override
 			public Account execute(Connection conn) throws SQLException {
-
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				Account finalResult = new Account();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
@@ -747,9 +663,9 @@ public class DerbyDatabase implements IDatabase {
 
 					while (resultSet.next()) {
 						found = true;
-						
+
 						loadAccount(finalResult, resultSet, 1);
-						
+
 						System.out.println("Found account in the accounts table");
 					}
 
@@ -775,14 +691,6 @@ public class DerbyDatabase implements IDatabase {
 			public ArrayList<Account> execute(Connection conn) throws SQLException {
 
 				ArrayList<Account> finalResult = new ArrayList<Account>();
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -795,7 +703,7 @@ public class DerbyDatabase implements IDatabase {
 
 					// execute the query
 					resultSet = stmt.executeQuery();
-					
+
 					while (resultSet.next()) {
 						Account account = new Account();
 						loadAccount(account, resultSet, 1);
@@ -814,6 +722,8 @@ public class DerbyDatabase implements IDatabase {
 				}
 			}});
 	}
+	
+	
 
 	public ArrayList<Item> findAllItemsForAccount(final int id) throws SQLException {
 		return executeTransaction(new Transaction<ArrayList<Item>>() {
@@ -821,14 +731,6 @@ public class DerbyDatabase implements IDatabase {
 			public ArrayList<Item> execute(Connection conn) throws SQLException {
 
 				ArrayList<Item> finalResult = new ArrayList<Item>();
-				// load Derby JDBC driver
-				try {
-					Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-				} catch (Exception e) {
-					System.err.println("Could not load Derby JDBC driver");
-					System.err.println(e.getMessage());
-					System.exit(1);
-				}
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -837,14 +739,14 @@ public class DerbyDatabase implements IDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"select from groceryLists.account_id, groceryLists.item_id, groceryLists.list_price" +
-							"	from groceryLists" +
-							"	where groceryLists.account_id = ?"
+									"	from groceryLists" +
+									"	where groceryLists.account_id = ?"
 							);
-					
+
 					stmt.setInt(1, id);
 					// execute the query
 					resultSet = stmt.executeQuery();
-					
+
 					while (resultSet.next()) {
 						Item item = new Item();
 						loadItem(item, resultSet, 1);
@@ -862,7 +764,29 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(conn);
 				}
 			}});
->>>>>>> pmnorris
+	}
+	// The main method creates the database tables and loads the initial data.
+	public static void main(String[] args) throws IOException, SQLException {
+		DerbyDatabase db = new DerbyDatabase();
+		System.out.println("Dropping tables...");
+
+		db.dropTables();
+
+		System.out.println("COMPLETE");
+
+		System.out.println("Creating tables...");
+
+		db.createTables();
+
+		System.out.println("COMPLETE");
+
+		System.out.println("Loading initial data...");
+
+		db.loadInitialData();
+
+		System.out.println("Initial data loaded");
+
+		System.out.println("MAIN COMPLETE");
 	}
 }
 

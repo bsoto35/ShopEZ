@@ -83,7 +83,7 @@ public class InsertItemServlet extends HttpServlet {
 
 			try {
 				remItem=db.findItemByItemName(remItem.getItemName());
-				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
+				successMessage=db.removeItemFromTheList(login, remItem.getItemName(), amount);;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
