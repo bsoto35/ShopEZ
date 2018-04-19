@@ -7,7 +7,6 @@ import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
-import edu.ycp.cs320.ShopEZ.model.History;
 import edu.ycp.cs320.ShopEZ.model.Item;
 
 public class InitialData {
