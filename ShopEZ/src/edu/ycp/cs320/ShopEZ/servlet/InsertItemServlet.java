@@ -16,10 +16,11 @@ import edu.ycp.cs320.ShopEZ.persist.IDatabase;
 
 public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Account login= new Account();
 	private GroceryList grocerys;
-	private Item newItem; 
+	private Item newItem;
+	private Item remItem;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -48,51 +49,65 @@ public class InsertItemServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		System.out.println("\nInsertItemServlet: doPost");	
-		String successMessage = "failed";
+		System.out.println("\nInsertItemServlet: doPost");		
+		IDatabase db = DatabaseProvider.getInstance();
 		String errorMessage = null;
+		String successMessage = null;
 		login= new Account();
+		req.setAttribute("quantity", 1); 
 		int amount=1;
+
 		req.setAttribute("quantityA", amount); 
+		req.setAttribute("quantityR", amount); 
 		if(req.getParameter("Add") !=null) {
 			if(req.getParameter("Item")!= null) {				
-				amount = getIntFromParameter(req.getParameter("quantity"));
+				amount = getIntFromParameter(req.getParameter("quantityA"));
 				newItem.setItemName(req.getParameter("Add"));
-				IDatabase db = DatabaseProvider.getInstance();
 				try {
 					newItem=db.findItemByItemName(newItem.getItemName());
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
-					
+
+
 				}
-				grocerys.addItem(newItem, amount);
+				grocerys.addItem(newItem, amount);//use database method
 				grocerys.setAccountID(login.getAccountID());
-				double sum = grocerys.getupdatedPrice();
+				double sum= grocerys.getTotalPrice(); 
 				grocerys.setListPrice(sum);
 			}	
 		}
-		if(req.getParameter("Remove") !=null) {
-			IDatabase db = DatabaseProvider.getInstance();
-			try {
-				successMessage = db.removeItemFromTheList(login, req.getParameter("remItem"), amount);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		if(req.getParameter("Remove") !=null) {	
+			amount = getIntFromParameter(req.getParameter("quantityR"));
+			remItem.setItemName(req.getParameter("Remove"));
 
-		// Add result objects as request attributes
-		req.setAttribute("errorMessage",   errorMessage);
+			try {
+				remItem=db.findItemByItemName(remItem.getItemName());
+				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				errorMessage="Invalid Item";
+
+			}
+			
+			// Forward to view to render the result HTML document
+		}	
+		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
-	}	
-	private int getIntFromParameter(String s) {
+	}
+
+	// Decode form parameters and dispatch to controller
+
+	// Add parameters as request attributes
+	private Integer getIntFromParameter(String s) {
 		if (s == null || s.equals("")) {
-			return 0;
+			return null;
 		} else {
 			return Integer.parseInt(s);
 		}
 	}
+
+
 }

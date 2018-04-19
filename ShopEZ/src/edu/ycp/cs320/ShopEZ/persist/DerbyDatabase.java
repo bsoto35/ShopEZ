@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
@@ -13,7 +14,7 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
-public abstract class DerbyDatabase implements IDatabase {
+public class DerbyDatabase implements IDatabase {
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -689,6 +690,24 @@ public abstract class DerbyDatabase implements IDatabase {
 		System.out.println("Initial data loaded");
 
 		System.out.println("MAIN COMPLETE");
+	}
+
+	@Override
+	public Account findAccountByAccountID(int id) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Account> findAllAccounts() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Item> findAllItemsForAccount(int id) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 
