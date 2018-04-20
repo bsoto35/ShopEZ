@@ -53,6 +53,17 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 		
+		else if(req.getParameter("forgot") !=null) {			
+			try {
+				login=db.findAccountByUsername("guest");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}			
+			req.getSession().setAttribute("user", login.getUsername());
+			resp.sendRedirect(req.getContextPath() + "/insertItem");
+			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
+			}
+		
 		else if(req.getParameter("SignUp") !=null) {
 			System.out.print("sign up pressed");
 			login.setUsername(req.getParameter("upUsername"));
