@@ -34,7 +34,7 @@
 		<form action="${pageContext.servletContext.contextPath}/insertItem"
 			method="post">
 			<div class="addItem">
-				<div class="Item">Add Item:</div>
+				<div class="item">Item to Add:</div>
 				<div>
 					<input id="add" type="text" name="itemA" value="${app.ItemName}" />
 				</div>
@@ -43,7 +43,7 @@
 				<div>
 					<input id="qty" type="text" name="quantityA" value="${amount}" />
 				</div>
-				<input type="submit" name="add" value="Add">
+				<input class= "button" type="submit" name="add" value="Add">
 			</div>
 			<div class="removeItem">
 				<div class="item">Remove Item:</div>
@@ -55,7 +55,7 @@
 				<div>
 					<input id="qty" type="text" name="quantityR" value="${amount}" />
 				</div>
-				<input type="submit" name="rem" value="Remove">
+				<input class= "button" type="submit" name="rem" value="Remove">
 			</div>
 		</form>
 
