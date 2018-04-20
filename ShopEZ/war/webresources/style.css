@@ -23,7 +23,7 @@ p{
       text-align: left;
 }
 
-#nav, .qty, #qty, .button{
+#nav, .button{
       float: right;
 }
 
@@ -42,8 +42,7 @@ p{
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 20px;
-    
+    font-size: 20px;    
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
     cursor: pointer;
@@ -147,21 +146,21 @@ p{
 	color: black;
 	width: 800px;
 	height: 200px;
-	
 	margin: auto;
-	padding: 10px 200px;
+	margin-top: 50px;
+	padding: 40px 200px;
 }
 
 .addItem{
 	text-align: center;
 	float: top;
 	width: 600px;
-	height: 80px;
+	height: 50px;
 	background-color: white;
 	border-style: inset;
 	border-width: 5px;
 	border-color: lightblue;	
-	padding: 20px;
+	padding: 25px;
 	margin-left: auto;
 	margin-right: auto;
 	
@@ -169,13 +168,16 @@ p{
 
 .removeItem{
 	width: 600px;
-	height: 98px;
+	height: 50px;
 	background-color: lightblue;
 	border-style: inset;
 	border-width: 5px;
 	border-color: white;
 	float: bottom;
-	padding: 20px;
+	padding: 25px;
 	margin-left: auto;
 	margin-right: auto;
 }
+.qty, #qty, .item, #add, #remove{
+	float: left;
+	}

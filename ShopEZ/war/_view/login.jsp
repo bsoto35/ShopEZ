@@ -43,8 +43,8 @@
 				<input type="submit" name="SignIn" value="Sign In">
 			</form>
 
-			<form name="form2" method="POST" action="login">
-				<input type="submit" name="submit" value="Forgot Password">
+			<form name="form2" method="POST" action="${pageContext.servletContext.contextPath}/login">
+				<input type="submit" name="forgot" value="Forgot Password">
 			</form>
 
 		</div>
