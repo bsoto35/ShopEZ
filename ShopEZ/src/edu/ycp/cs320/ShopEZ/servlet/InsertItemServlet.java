@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
+//import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
@@ -18,8 +18,8 @@ public class InsertItemServlet extends HttpServlet {
 
 	private Account login= new Account();
 	//private GroceryList grocerys;
-	private Item item;
-	private InsertItemController controller;
+	private Item item= new Item();
+	//private InsertItemController controller;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -54,9 +54,8 @@ public class InsertItemServlet extends HttpServlet {
 		String errorMessage = null;
 		String successMessage = null;
 		login= new Account();
-		controller= new InsertItemController();
+		//controller= new InsertItemController();
 		int amount=1;
-		String name; 
 		boolean passed;
 		//login=controller.getAccountbyUser(user);
 		try {
@@ -68,32 +67,37 @@ public class InsertItemServlet extends HttpServlet {
 		}
 		req.setAttribute("quantityA", amount); 
 		req.setAttribute("quantityR", amount); 
-		if(req.getParameter("Add") !=null) {
-			if(req.getParameter("Item")!= null) {				
+		if(req.getParameter("add") !=null) {
+			if(req.getParameter("itemA")!= null) {				
 				amount = getIntFromParameter(req.getParameter("quantityA"));
-				name=req.getParameter("Add");
+				item.setItemName(req.getParameter("itemA"));
 				try {
 					//item=controller.findItemByName(name);
 					item=db.findItemByItemName(item.getItemName());
+					System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 					passed=db.insertItemIntoGroceryListTable(login.getAccountID(), item, amount);//use database method
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
 				}
+				System.out.println("item inserted into list: "+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 				double sum=item.getItemPrice();
 			}	
 		}
-		if(req.getParameter("Remove") !=null) {	
+		if(req.getParameter("rem") !=null) {	
 			amount = getIntFromParameter(req.getParameter("quantityR"));
-			item.setItemName(req.getParameter("Remove"));
+			item.setItemName(req.getParameter("itemR"));
 			try {
 				item=db.findItemByItemName(item.getItemName());
+				System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 				passed=db.removeItemFromGroceryListTable(login.getAccountID(), item, amount);
 				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
 			}
+			System.out.println("item removed into list: "+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
+
 			//passed=controller.removeItem(login, item, amount);
 			// Forward to view to render the result HTML document
 		}	

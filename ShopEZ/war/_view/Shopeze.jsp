@@ -2,8 +2,7 @@
 <html>
   <head>
     <title> Shopeze </title>   
-  	<link rel="stylesheet" href="webresources/style.css" />
-    
+  	<link rel="stylesheet" href="webresources/style.css" /> 
   </head>
   <body>
     <div id="container">

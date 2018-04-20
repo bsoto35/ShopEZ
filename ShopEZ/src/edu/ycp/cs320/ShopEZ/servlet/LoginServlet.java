@@ -54,12 +54,12 @@ public class LoginServlet extends HttpServlet {
 		}
 		
 		else if(req.getParameter("SignUp") !=null) {
-			System.out.print("sign in pressed");
+			System.out.print("sign up pressed");
+			login.setUsername(req.getParameter("upUsername"));
+			login.setPassword(req.getParameter("upPassword"));
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else{
-				login.setUsername(req.getParameter("upUsername"));
-				login.setPassword(req.getParameter("upPassword"));
 				System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");	
 				if(login.getPassword().equals(req.getParameter("ConfirmPassword"))){
 					db = new DerbyDatabase();
