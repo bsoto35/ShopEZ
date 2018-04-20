@@ -19,8 +19,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("\nLoginServlet: doGet");
-
-
+		
 		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 
@@ -31,32 +30,37 @@ public class LoginServlet extends HttpServlet {
 		System.out.println("\nLoginServlet: doPost");
 
 		String errorMessage = null;
-		boolean validLogin  = false;
+		boolean validLogin =false;
 		login= new Account();
 		DerbyDatabase db = new DerbyDatabase(); 
 		// Decode form parameters and dispatch to controller
 
-		if(req.getParameter("Sign In") !=null) {
+		if(req.getParameter("SignIn") !=null) {
+			System.out.print("sign in pressed");
 			login.setUsername(req.getParameter("inUsername"));
 			login.setPassword(req.getParameter("inPassword"));
 			System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");			
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else {
-				try {
+				try {					
 					validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
+					System.out.print("check if gets here");
+					
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 		
-		if(req.getParameter("Sign Up") !=null) {
+		else if(req.getParameter("SignUp") !=null) {
+			System.out.print("sign in pressed");
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else{
 				login.setUsername(req.getParameter("upUsername"));
 				login.setPassword(req.getParameter("upPassword"));
+				System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");	
 				if(login.getPassword().equals(req.getParameter("ConfirmPassword"))){
 					db = new DerbyDatabase();
 					try {
@@ -68,24 +72,13 @@ public class LoginServlet extends HttpServlet {
 				}
 			}
 		}
-
-
-		req.setAttribute("app", login);
-		// Add parameters as request attributes
-		req.setAttribute("Username", req.getParameter("inUsername"));
-
-		// Add result objects as request attributes
-		req.setAttribute("errorMessage", errorMessage);
-
-		// if login is valid, start a session
-		if (validLogin) {
+		if (validLogin==true) {
 			System.out.println("   Valid login - starting session, redirecting to /insertItem");
 
 			// store user object in session
 			req.getSession().setAttribute("user", login.getUsername());
-
-			// redirect to /index page
-			resp.sendRedirect(req.getContextPath() + "/_view/insertItem.jsp");
+			resp.sendRedirect(req.getContextPath() + "/insertItem");
+			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 			// redirect to /index page
 
 			return;
@@ -93,7 +86,16 @@ public class LoginServlet extends HttpServlet {
 		else{
 			errorMessage = "Username and/or password invalid";
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
-			System.out.println("   Invalid login - redirecting to /login");
-		}		
+			System.out.println("Invalid login - redirecting to /login");
+		}
+
+		req.setAttribute("app", login);
+		// Add parameters as request attributes
+		req.setAttribute("Username", req.getParameter("inUsername"));
+
+		// Add result objects as request attributes
+		req.setAttribute("errorMessage", errorMessage);
+		// if login is valid, start a session	
+		System.out.println("check");
 	}
 }

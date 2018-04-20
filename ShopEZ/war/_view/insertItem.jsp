@@ -126,25 +126,25 @@ body {
 		method="post">
 		<div class="label">Add Item:</div>
 		<div>
-			<input type="text" name="Add" value="${}" />
+			<input type="text" name="Add" value="${app.ItemName}" />
 		</div>
 
 		<div class="label">Quantity:</div>
 		<div>
 			<input type="text" name="quantityA" value="${amount}" />
 		</div>
-		<input type="submit" name="submit" value="Add">
+		<input type="submit" name="add" value="Add">
 
 
 		<div class="label">Remove Item:</div>
 		<div>
-			<input type="text" name="Remove" value="${}" />
+			<input type="text" name="Remove" value="${app.ItemName}" />
 		</div>
 
 		<div class="label">Quantity:</div>
 		<div>
 			<input type="text" name="quantity" value="${amount}" />
 		</div>
-		<input type="submit" name="submit" value="Add">
+		<input type="submit" name="rem" value="Remove">
 	</form>
 </body>

@@ -21,10 +21,10 @@
       <div id="content">
           <p>Find your Fastest Route!</p>
           <form name ="form1" method="GET" action="${pageContext.servletContext.contextPath}/login">
-           <input id="login" type="submit"  value = "Login">
+           <input id="login" type="submit" name = "login"  value = "Login">
           </form>
-           <form name ="form2" method="GET" action="insertItem">
-           <input id="guest" type="submit"name = "submit" value = "Continue as Guest">
+           <form name ="form2" method="POST" action="${pageContext.servletContext.contextPath}/welcome">
+           <input id="guest" type="submit" name = "guest" value = "Continue as Guest">
           </form>
       </div>
       <div id="footer">

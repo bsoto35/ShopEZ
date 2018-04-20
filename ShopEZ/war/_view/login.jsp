@@ -132,7 +132,7 @@ body {
 				<input type="text" name="inPassword" value="${app.password}" />
 			</div>
 
-				<input type="submit" name="submit" value="Sign In">
+				<input type="submit" name="SignIn" value="Sign In">
 			</form>
 
 			<form name="form2" method="POST" action="login">
@@ -159,7 +159,7 @@ body {
 			<div>
 				<input type="text" name="ConfirmPassword" value="${confirm_password}" />
 			</div>		
-				<input type="submit" name="submit" value="Sign Up ">
+				<input type="submit" name="Sign Up" value="Sign Up ">
 			</form>
 		</div>
 	</div>
