@@ -151,11 +151,11 @@ public class ShopEZTest {
 	tmp.setItemName("tmp");
 	tmp.setItemPrice(1.5);
 	derby.insertItemIntoItemsTable("tmp", 1.5, 0, 0);
-	//assertEquals(derby.findItemByItemName("tmp"), tmp);
-	//assertEquals(derby.findItemByItemName("tmp").getItemLocationX(), 0);
-	//assertEquals(derby.findItemByItemName("tmp").getItemLocationY(), 0);
-	//assertEquals(derby.findItemByItemName("tmp").getItemPrice(), 1.5, 0.01);
-	//derby.removeItemFromItemsTable(tmp);
+	assertEquals(derby.findItemByItemName("tmp"), tmp);
+	assertEquals(derby.findItemByItemName("tmp").getItemLocationX(), 0);
+	assertEquals(derby.findItemByItemName("tmp").getItemLocationY(), 0);
+	assertEquals(derby.findItemByItemName("tmp").getItemPrice(), 1.5, 0.01);
+	derby.removeItemFromItemsTable(tmp);
 	}
 	
 	@Test
@@ -175,11 +175,11 @@ public class ShopEZTest {
 		item.setItemName("something");
 		item.setItemPrice(1.5);
 		assertTrue(derby.insertItemIntoGroceryListTable(1, item, 2)) ;
-		//assertEquals(derby.findAllItemsForAccount(1), item);
-		//derby.removeItemFromGroceryListTable(1, item, 2);
-		//assertNotEquals(derby.findAllItemsForAccount(1), item);
-		//derby.insertItemIntoGroceryListTable(1, item, 2);
-		//assertTrue(derby.clearGroceryListForAccount(1));
+		assertEquals(derby.findAllItemsForAccount(1), item);
+		derby.removeItemFromGroceryListTable(1, item, 2);
+		assertNotEquals(derby.findAllItemsForAccount(1), item);
+		derby.insertItemIntoGroceryListTable(1, item, 2);
+		assertTrue(derby.clearGroceryListForAccount(1));
 	}
 }
  
