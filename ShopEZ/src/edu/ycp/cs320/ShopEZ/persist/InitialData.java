@@ -15,7 +15,7 @@ public class InitialData {
 		ReadCSV readItems = new ReadCSV("items.csv");
 		try {
 			// auto-generated primary key for authors table
-			Integer itemId = 1;
+			int itemId = 1;
 			while (true) {
 				List<String> tuple = readItems.next();
 				if (tuple == null) {
@@ -23,11 +23,16 @@ public class InitialData {
 				}
 				Iterator<String> i = tuple.iterator();
 				Item item = new Item();
-				item.setItemID(itemId++);				
+				item.setItemID(itemId++);
+				System.out.println(item.getItemID());
 				item.setItemName(i.next());
+				System.out.println(item.getItemName());
 				item.setItemPrice(Double.parseDouble(i.next()));
-				item.setItemLocationX(Integer.parseInt(i.next()));
-				item.setItemLocationY(Integer.parseInt(i.next()));
+				System.out.println(item.getItemPrice());
+				//item.setItemLocationX(Integer.parseInt(i.next()));
+				System.out.println(i.next());
+				//item.setItemLocationY(Integer.parseInt(i.next()));
+				System.out.println(i.next());
 				itemList.add(item);
 			}
 			return itemList;

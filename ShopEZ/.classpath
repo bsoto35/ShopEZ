@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="junit"/>
-	<classpathentry kind="src" path="main"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/CS320_Jetty9"/>
+	<classpathentry kind="src" output="test-bin" path="junit"/>
+	<classpathentry kind="src" output="bin" path="main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CS320_Derby"/>
+	<classpathentry kind="lib" path="/CS320_Jetty9/lib/servlet-api-3.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-8.0-doc/servletapi/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/CS320_Jetty9"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

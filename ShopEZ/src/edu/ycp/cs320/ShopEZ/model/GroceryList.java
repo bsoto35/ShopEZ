@@ -24,7 +24,7 @@ public class GroceryList {
 	public double getTotalPrice() {
 		double total = 0.00; 
 		for(int i=0; i< theList.size(); i++) {
-			theList.get(i).getItemPrice(); 
+			total += theList.get(i).getItemPrice(); 
 		}
 		return total; 
 	}

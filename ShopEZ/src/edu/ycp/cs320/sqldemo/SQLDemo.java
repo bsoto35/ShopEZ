@@ -1,21 +1,12 @@
 package edu.ycp.cs320.sqldemo;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * An interactive query tool for SQLite.
@@ -44,10 +35,10 @@ public class SQLDemo {
 		Connection conn = null;
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2018/library.db;create=true");
+			conn = DriverManager.getConnection("jdbc:derby:test.db;create=true");
 			conn.setAutoCommit(true);
 	
-			queryLoop(conn);
+			//queryLoop(conn);
 		} catch (SQLException e) {
 			System.out.println("Error: " + e.getMessage());
 		} finally {
@@ -55,7 +46,7 @@ public class SQLDemo {
 		}
 }
 
-	private static void queryLoop(Connection conn) throws IOException {
+/*	private static void queryLoop(Connection conn) throws IOException {
 		StatementReader stmtReader = new StatementReader(new InputStreamReader(System.in));
 
 		boolean done = false;
@@ -198,7 +189,7 @@ public class SQLDemo {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public static void readCSV(Connection conn, String tableName,
+/*	public static void readCSV(Connection conn, String tableName,
 			BufferedReader reader) throws IOException, SQLException {
 		PreparedStatement stmt = null;
 		
@@ -226,16 +217,20 @@ public class SQLDemo {
 // DJH2: What really needs to be done is that the column names should be read from the CSV file,
 // DJH2: and then substituted into the 'insert' statement
 				System.out.println("Importing data for table: <" + tableName + ">");
-				if (tableName.toLowerCase().equals("books"))
+				if (tableName.toLowerCase().equals("items"))
 				{
-					buf.append("insert into " + tableName + " (title, isbn, published) values (");
+					buf.append("insert into " + tableName + " (item_name, item_price, item_location_x, item_location_y) values (");
 				}
-				else if (tableName.toLowerCase().equals("authors"))
+				else if (tableName.toLowerCase().equals("accounts"))
 				{
-					buf.append("insert into " + tableName + " (lastname, firstname) values (");
+					buf.append("insert into " + tableName + " (account_username, account_password) values (");
 				}
 // DJH2: this is the original code - it will not import into a table with an auto-incrementing primary key
 // DJH2: The primary key values must be manually determined and included in the CSV file.
+				else if (tableName.toLowerCase().equals("groceryLists"))
+				{
+					buf.append("insert into " + tableName + " (account_id, item_id, list_price) values (");
+				}
 				else
 				{
 					buf.append("insert into " + tableName + " values (");					
@@ -267,4 +262,5 @@ public class SQLDemo {
 		
 		System.out.println("Successful import");
 	}
+*/
 }

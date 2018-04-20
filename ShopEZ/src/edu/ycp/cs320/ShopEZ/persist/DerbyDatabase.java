@@ -14,7 +14,7 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
-public class DerbyDatabase implements IDatabase {
+public class DerbyDatabase {
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -28,376 +28,6 @@ public class DerbyDatabase implements IDatabase {
 	}
 
 	private static final int MAX_ATTEMPTS = 10;
-
-	public void dropTables() throws SQLException{
-		doExecuteTransaction(new Transaction<Boolean>() {
-			@Override
-			public Boolean execute(Connection conn) throws SQLException {
-				PreparedStatement dropAccounts = null;
-				PreparedStatement dropGroceryLists = null;
-				PreparedStatement dropItems = null;
-				try {
-					dropAccounts = conn.prepareStatement
-							("drop table accounts" );
-					dropAccounts.execute();
-					dropAccounts.close();
-					dropGroceryLists = conn.prepareStatement
-							("drop table groceryLists" );
-					dropGroceryLists.execute();
-					dropGroceryLists.close();
-					dropItems = conn.prepareStatement
-							("drop table items" );
-					dropItems.execute();
-					dropItems.close();
-					return true;
-				}catch (Exception ex) {
-					return true;
-				}finally {
-					DBUtil.closeQuietly(dropAccounts);
-					DBUtil.closeQuietly(dropGroceryLists);
-					DBUtil.closeQuietly(dropItems);
-					DBUtil.closeQuietly(conn);
-				}
-			}
-		});
-	}
-
-	public Item updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
-		return executeTransaction(new Transaction<Item>() {
-			@Override
-			public Item execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				Item result = new Item();
-
-				try {
-
-					stmt = conn.prepareStatement(
-							"UPDATE items " +
-									"set items.item_price = '?' " +
-									"where items.item_name =  ? "
-							);
-					stmt.setDouble(1, price);
-					stmt.setString(2, name);
-
-					stmt.executeUpdate();
-
-					result = findItemByItemName(name);
-				}catch (Exception ex) {
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-				return result;
-			}
-		});
-	}
-
-	public Item findItemByItemName(final String itemName) throws SQLException{
-		return executeTransaction(new Transaction<Item>() {
-			@Override
-			public Item execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				Item result = new Item();
-
-				try {
-
-					stmt = conn.prepareStatement(
-							"Select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"from items " +
-									"where items.item_name =  ? "
-							);
-					stmt.setString(1, itemName);
-
-					resultSet = stmt.executeQuery();
-					while(resultSet.next()) {
-						result.setItemID(resultSet.getInt(1));
-						result.setItemName(resultSet.getString(2));
-						result.setItemPrice(resultSet.getDouble(3));
-						result.setItemLocationX(resultSet.getInt(4));
-						result.setItemLocationY(resultSet.getInt(5));
-					}
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-			}
-		});
-	}
-
-	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
-		return executeTransaction(new Transaction<Item>() {
-			@Override
-			public Item execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				Item result = new Item();
-
-				try {
-
-					stmt = conn.prepareStatement(
-							"UPDATE items " +
-									" set items.item_location_x = '?', items.item_location_y = '?' " +
-									" where items.item_name = ? "
-							);
-					stmt.setInt(1, x);
-					stmt.setInt(2, y);
-					stmt.setString(3, item);
-
-					stmt.executeUpdate();
-
-					result = findItemByItemName(item);
-
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-			}
-		});
-	}
-
-
-	public double findItemPriceByItemName(final String name) {
-		return executeTransaction(new Transaction<Double>() {
-			@Override
-			public Double execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-
-				try {
-
-					stmt = conn.prepareStatement(
-							"select items.item_price " +
-									"  from items " +
-									" where items.item_name = ? "
-							);
-					stmt.setString(1, name);
-
-					double result = 0.0;
-
-					resultSet = stmt.executeQuery();
-
-					// for testing that a result was returned
-					Boolean found = false;
-
-					while (resultSet.next()) {
-						found = true;
-
-						// create new item object
-						// retrieve attributes from resultSet starting at index
-						Item item = new Item();
-						loadItem(item, resultSet, item.getItemID());
-
-						result = item.getItemPrice();
-						System.out.println("Found <" + name + "> in the items table");
-					}
-
-					// check if the item was found
-					if (!found) {
-						System.out.println("<" + name + "> was not found in the items table");
-					}
-
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-			}
-		});
-	}
-
-	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(final String username, final String password) throws SQLException{
-		return executeTransaction(new Transaction<Boolean>() {
-			@Override
-			public Boolean execute(Connection conn) throws SQLException {
-
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				try {
-					conn.setAutoCommit(true);
-
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"select accounts.account_id " +
-									"from accounts " +
-									"	   where accounts.account_username = ? " +
-									"	   AND accounts.account_password = ? "	
-							);
-
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, username);
-					stmt.setString(2, password);
-
-					// execute the query
-					resultSet = stmt.executeQuery();
-
-					// for testing that a result was returned
-					Boolean found = false;
-
-					while (resultSet.next()) {
-						found = true;
-
-						System.out.println("Found account in the accounts table");
-					}
-
-					// check if the item was found
-					if (!found) {
-						System.out.println("Either <" + username + "or" + password +"> is not valid");
-					}
-
-					return found;
-
-				} finally {
-					// close result set, statement, connection
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-			}});
-	}
-
-	public String insertItemIntoItemsTable(final String name, final double price, final int x, final int y) throws SQLException {
-		return executeTransaction(new Transaction<String>() {
-			@Override
-			public String execute(Connection conn) throws SQLException {
-
-				String finalResult = "incomplete";
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				try {
-					conn.setAutoCommit(true);
-
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"insert into items(item_name, item_price, item_location_x, item_location_x) "
-									+ "  values (?, ?, ?, ?, ?) "
-							);
-
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, name);
-					stmt.setDouble(2, price);
-					stmt.setInt(3, x);
-					stmt.setInt(4, y);
-
-					// execute the query
-					stmt.executeUpdate();
-
-					finalResult = "Complete";
-
-				} finally {
-					// close result set, statement, connection
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-				return finalResult;
-			}});
-	}
-
-	public String addAccountIntoAccountsTable(final String username, final String password) throws SQLException {
-		return executeTransaction(new Transaction<String>() {
-			@Override
-			public String execute(Connection conn) throws SQLException {
-
-				String finalResult = "incomplete";
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				try {
-					conn.setAutoCommit(true);
-
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"insert into accounts(account_username, account_password) "
-									+ "  values (?, ?) "
-							);
-
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, username);
-					stmt.setString(2, password);
-
-					// execute the query
-					stmt.executeUpdate();
-
-					if (verifyAccountFromAccountsTableByUsernameAndPassword(username, password) == true) {
-						finalResult = "Complete";
-					}
-				} finally {
-					// close result set, statement, connection
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-				return finalResult;
-			}});
-	}
-
-
-	public int findAccountIDbyUsernameAndPassword(final String username, final String password) throws SQLException {
-		return executeTransaction(new Transaction<Integer>() {
-			@Override
-			public Integer execute(Connection conn) throws SQLException {
-
-				int finalResult = -1;
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				try {
-					conn.setAutoCommit(true);
-
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"select accounts.account_id " +
-									"from accounts " +
-									"	   where accounts.account_username = ? " +
-									"	   AND accounts.account_password = ? "	
-							);
-
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, username);
-					stmt.setString(2, password);
-
-					// execute the query
-					resultSet = stmt.executeQuery();
-
-					// for testing that a result was returned
-					Boolean found = false;
-
-					while (resultSet.next()) {
-						found = true;
-
-						// create new item object
-						// retrieve attributes from resultSet starting at index
-						Account account = new Account();
-						loadAccount(account, resultSet, account.getAccountID());
-
-						finalResult = account.getAccountID();
-						System.out.println("Found account in the accounts table");
-					}
-
-					// check if the item was found
-					if (!found) {
-						System.out.println("Either <" + username + "or" + password +"> is not valid");
-					}
-
-					return finalResult;
-
-				} finally {
-					// close result set, statement, connection
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
-				}
-			}});
-	}
-
-	// ---------------------------------- Utility Functions ---------------------------------- //
 
 	public<ResultType> ResultType executeTransaction(Transaction<ResultType> txn) {
 		try {
@@ -469,7 +99,6 @@ public class DerbyDatabase implements IDatabase {
 		item.setItemLocationY(resultSet.getInt(index++));
 	}
 
-
 	@SuppressWarnings("unused")
 	private void loadGroceryList(GroceryList groceryList, ResultSet resultSet, int index) throws SQLException{
 		groceryList.setAccountID(resultSet.getInt(index++));
@@ -477,10 +106,41 @@ public class DerbyDatabase implements IDatabase {
 		groceryList.setListPrice(resultSet.getDouble(index++));
 	}
 
+	public void dropTables() throws SQLException{
+		doExecuteTransaction(new Transaction<Boolean>() {
+
+			public Boolean execute(Connection conn) throws SQLException {
+				PreparedStatement dropAccounts = null;
+				PreparedStatement dropGroceryLists = null;
+				PreparedStatement dropItems = null;
+				try {
+					dropGroceryLists = conn.prepareStatement
+							("drop table groceryLists" );
+					dropGroceryLists.execute();
+					dropGroceryLists.close();
+					dropAccounts = conn.prepareStatement
+							("drop table accounts" );
+					dropAccounts.execute();
+					dropAccounts.close();
+					dropItems = conn.prepareStatement
+							("drop table items" );
+					dropItems.execute();
+					dropItems.close();
+					return true;
+				}catch (Exception ex) {
+					return true;
+				}finally {
+					DBUtil.closeQuietly(dropAccounts);
+					DBUtil.closeQuietly(dropGroceryLists);
+					DBUtil.closeQuietly(dropItems);
+				}
+			}
+		});
+	}
 
 	public void createTables() {
 		executeTransaction(new Transaction<Boolean>() {
-			@Override
+
 			public Boolean execute(Connection conn) throws SQLException {
 				PreparedStatement stmt1 = null;
 				PreparedStatement stmt2 = null;
@@ -492,8 +152,9 @@ public class DerbyDatabase implements IDatabase {
 									"	account_id integer primary key " +
 									"		generated always as identity (start with 1, increment by 1), " +									
 									"	account_username varchar(40)," +
-									"	account_password varchar(40)," +
+									"	account_password varchar(40)" +
 									")"
+									
 							);	
 					stmt1.executeUpdate();
 
@@ -502,7 +163,7 @@ public class DerbyDatabase implements IDatabase {
 									"	item_id integer primary key " +
 									"		generated always as identity (start with 1, increment by 1), " +
 									"	item_name varchar(70), " +
-									"	item_price varchar(70)," +
+									"	item_price double," +
 									"	item_location_x integer," +
 									"	item_location_y integer" +
 									")"
@@ -511,13 +172,13 @@ public class DerbyDatabase implements IDatabase {
 
 					stmt3 = conn.prepareStatement(
 							"create table groceryLists (" +
-									"	account_id integer primary key " +
-									"		generated always as identity (start with 1, increment by 1), " +
-									"	item_id integer, " +
-									"	list_price varchar(70) " +
+									"	account_id   integer constraint account_id references accounts, " +
+									"	item_id integer constraint item_id references items, " +
+									"	list_price double" +
 									")"
 							);
 					stmt3.executeUpdate();
+
 
 					return true;
 				} finally {
@@ -529,9 +190,10 @@ public class DerbyDatabase implements IDatabase {
 		});
 	}
 
+
 	public void loadInitialData() {
 		executeTransaction(new Transaction<Boolean>() {
-			@Override
+
 			public Boolean execute(Connection conn) throws SQLException {
 				List<Account> accountList;
 				List<Item> itemList;
@@ -559,7 +221,7 @@ public class DerbyDatabase implements IDatabase {
 					}
 					insertAccount.executeBatch();
 
-					System.out.print("Accounts table populated ");
+					System.out.println("Accounts table populated ");
 
 					// populate items table (do this after accounts table)
 					insertItem = conn.prepareStatement("insert into items (item_name, item_price, item_location_x, item_location_y) values (?, ?, ?, ?)");
@@ -572,7 +234,7 @@ public class DerbyDatabase implements IDatabase {
 					}
 					insertItem.executeBatch();
 
-					System.out.print("Items table populated");
+					System.out.println("Items table populated");
 
 					// populate groceryList table (do this after items table)
 					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id, list_price) values (?, ?, ?)");
@@ -584,7 +246,7 @@ public class DerbyDatabase implements IDatabase {
 					}
 					insertGroceryList.executeBatch();
 
-					System.out.print("Grocery List table populated");
+					System.out.println("Grocery List table populated");
 
 					return true;
 				} finally {
@@ -596,9 +258,347 @@ public class DerbyDatabase implements IDatabase {
 		});
 	}
 
+
+
+
+	public Item updateItemPriceByItemNameAndPrice(final String name, final double price) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+
+			public Item execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Item result = new Item();
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"UPDATE items " +
+									"set items.item_price = '?' " +
+									"where items.item_name =  ? "
+							);
+					stmt.setDouble(1, price);
+					stmt.setString(2, name);
+
+					stmt.executeUpdate();
+
+					result = findItemByItemName(name);
+				}catch (Exception ex) {
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+				return result;
+			}
+		});
+	}
+
+
+	public Item findItemByItemName(final String itemName) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+
+			public Item execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Item result = new Item();
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"Select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
+									"from items " +
+									"where items.item_name =  ? "
+							);
+					stmt.setString(1, itemName);
+
+					resultSet = stmt.executeQuery();
+					while(resultSet.next()) {
+						result.setItemID(resultSet.getInt(1));
+						result.setItemName(resultSet.getString(2));
+						result.setItemPrice(resultSet.getDouble(3));
+						result.setItemLocationX(resultSet.getInt(4));
+						result.setItemLocationY(resultSet.getInt(5));
+					}
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+
+	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+
+			public Item execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Item result = new Item();
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"UPDATE items " +
+									" set items.item_location_x = '?', items.item_location_y = '?' " +
+									" where items.item_name = ? "
+							);
+					stmt.setInt(1, x);
+					stmt.setInt(2, y);
+					stmt.setString(3, item);
+
+					stmt.executeUpdate();
+
+					result = findItemByItemName(item);
+
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+
+	public double findItemPriceByItemName(final String name) {
+		return executeTransaction(new Transaction<Double>() {
+
+			public Double execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"select items.item_price " +
+									"  from items " +
+									" where items.item_name = ? "
+							);
+					stmt.setString(1, name);
+
+					double result = 0.0;
+
+					resultSet = stmt.executeQuery();
+
+					// for testing that a result was returned
+					Boolean found = false;
+
+					while (resultSet.next()) {
+						found = true;
+
+						// create new item object
+						// retrieve attributes from resultSet starting at index
+						Item item = new Item();
+						loadItem(item, resultSet, item.getItemID());
+
+						result = item.getItemPrice();
+						System.out.println("Found <" + name + "> in the items table");
+					}
+
+					// check if the item was found
+					if (!found) {
+						System.out.println("<" + name + "> was not found in the items table");
+					}
+
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+
+	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(final String username, final String password) throws SQLException{
+		return executeTransaction(new Transaction<Boolean>() {
+
+			public Boolean execute(Connection conn) throws SQLException {
+
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select accounts.account_id " +
+									"from accounts " +
+									"	   where accounts.account_username = ? " +
+									"	   AND accounts.account_password = ? "	
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, username);
+					stmt.setString(2, password);
+
+					// execute the query
+					resultSet = stmt.executeQuery();
+
+					// for testing that a result was returned
+					Boolean found = false;
+
+					while (resultSet.next()) {
+						found = true;
+
+						System.out.println("Found account in the accounts table");
+					}
+
+					// check if the item was found
+					if (!found) {
+						System.out.println("Either <" + username + "or" + password +"> is not valid");
+					}
+
+					return found;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}});
+	}
+
+
+	public String insertItemIntoItemsTable(final String name, final double price, final int x, final int y) throws SQLException {
+		return executeTransaction(new Transaction<String>() {
+
+			public String execute(Connection conn) throws SQLException {
+
+				String finalResult = "incomplete";
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"insert into items(item_name, item_price, item_location_x, item_location_x) "
+									+ "  values (?, ?, ?, ?, ?) "
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, name);
+					stmt.setDouble(2, price);
+					stmt.setInt(3, x);
+					stmt.setInt(4, y);
+
+					// execute the query
+					stmt.executeUpdate();
+
+					finalResult = "Complete";
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+				return finalResult;
+			}});
+	}
+
+
+	public String addAccountIntoAccountsTable(final String username, final String password) throws SQLException {
+		return executeTransaction(new Transaction<String>() {
+
+			public String execute(Connection conn) throws SQLException {
+
+				String finalResult = "incomplete";
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"insert into accounts(account_username, account_password) "
+									+ "  values (?, ?) "
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, username);
+					stmt.setString(2, password);
+
+					// execute the query
+					stmt.executeUpdate();
+
+					if (verifyAccountFromAccountsTableByUsernameAndPassword(username, password) == true) {
+						finalResult = "Complete";
+					}
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+				return finalResult;
+			}});
+	}
+
+
+	public int findAccountIDbyUsernameAndPassword(final String username, final String password) throws SQLException {
+		return executeTransaction(new Transaction<Integer>() {
+
+			public Integer execute(Connection conn) throws SQLException {
+
+				int finalResult = -1;
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"select accounts.account_id " +
+									"from accounts " +
+									"	   where accounts.account_username = ? " +
+									"	   AND accounts.account_password = ? "	
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setString(1, username);
+					stmt.setString(2, password);
+
+					// execute the query
+					resultSet = stmt.executeQuery();
+
+					// for testing that a result was returned
+					Boolean found = false;
+
+					while (resultSet.next()) {
+						found = true;
+
+						// create new item object
+						// retrieve attributes from resultSet starting at index
+						Account account = new Account();
+						loadAccount(account, resultSet, account.getAccountID());
+
+						finalResult = account.getAccountID();
+						System.out.println("Found account in the accounts table");
+					}
+
+					// check if the item was found
+					if (!found) {
+						System.out.println("Either <" + username + "or" + password +"> is not valid");
+					}
+
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}});
+	}
+
+
+
+
 	public String removeItemFromTheList(final Account account, final String itemName, final int qty) throws SQLException {
 		return executeTransaction(new Transaction<String>() {
-			@Override
+
 			public String execute(Connection conn) throws SQLException {
 				String finalResult = "Incomplete";
 				PreparedStatement stmt = null;
@@ -609,7 +609,7 @@ public class DerbyDatabase implements IDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"DELETE TOP(?)" +
-									"from groceryLists " +
+									"	from groceryLists " +
 									"	where gorceryLists.account_id = ? " +
 									"		and gorceryLists.item_id = ? "
 							);
@@ -630,14 +630,13 @@ public class DerbyDatabase implements IDatabase {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
 				}
 			}});
 	}
 
 	public Account findAccountByAccountID(final int id) throws SQLException {
 		return executeTransaction(new Transaction<Account>() {
-			@Override
+
 			public Account execute(Connection conn) throws SQLException {
 				Account finalResult = new Account();
 				PreparedStatement stmt = null;
@@ -648,7 +647,7 @@ public class DerbyDatabase implements IDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"select accounts.account_id, accounts.account_username, accounts.account_password " +
-									"from accounts " +
+									"	from accounts " +
 									"	   where accounts.account_id = ? "	
 							);
 
@@ -680,14 +679,13 @@ public class DerbyDatabase implements IDatabase {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
 				}
 			}});
 	}
 
 	public ArrayList<Account> findAllAccounts() throws SQLException {
 		return executeTransaction(new Transaction<ArrayList<Account>>() {
-			@Override
+
 			public ArrayList<Account> execute(Connection conn) throws SQLException {
 
 				ArrayList<Account> finalResult = new ArrayList<Account>();
@@ -718,16 +716,15 @@ public class DerbyDatabase implements IDatabase {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
 				}
 			}});
 	}
-	
-	
+
+
 
 	public ArrayList<Item> findAllItemsForAccount(final int id) throws SQLException {
 		return executeTransaction(new Transaction<ArrayList<Item>>() {
-			@Override
+
 			public ArrayList<Item> execute(Connection conn) throws SQLException {
 
 				ArrayList<Item> finalResult = new ArrayList<Item>();
@@ -761,10 +758,10 @@ public class DerbyDatabase implements IDatabase {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
-					DBUtil.closeQuietly(conn);
 				}
 			}});
 	}
+
 	// The main method creates the database tables and loads the initial data.
 	public static void main(String[] args) throws IOException, SQLException {
 		DerbyDatabase db = new DerbyDatabase();

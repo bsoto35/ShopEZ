@@ -13,7 +13,6 @@ public class ShopezeModel {
 	private int mapHeight;
 	private Aisle upperWalkPath;
 	private Aisle lowerWalkPath;
-	private 
 	
 	public ShopezeModel() {
 		
