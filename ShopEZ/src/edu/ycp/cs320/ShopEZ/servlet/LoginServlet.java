@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
 			} else{
 				login.setUsername(req.getParameter("upUsername"));
 				login.setPassword(req.getParameter("upPassword"));
-				if(login.getPassword().equals(req.getParameter("confirm_Password"))){
+				if(login.getPassword().equals(req.getParameter("ConfirmPassword"))){
 					db = new DerbyDatabase();
 					try {
 						db.addAccountIntoAccountsTable(login.getUsername(), login.getPassword());
@@ -70,7 +70,7 @@ public class LoginServlet extends HttpServlet {
 		}
 
 
-		
+		req.setAttribute("app", login);
 		// Add parameters as request attributes
 		req.setAttribute("Username", req.getParameter("inUsername"));
 
@@ -94,12 +94,6 @@ public class LoginServlet extends HttpServlet {
 			errorMessage = "Username and/or password invalid";
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 			System.out.println("   Invalid login - redirecting to /login");
-		}
-
-
-
-
-		// Forward to view to render the result HTML document
+		}		
 	}
 }
-

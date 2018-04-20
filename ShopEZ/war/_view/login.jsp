@@ -97,7 +97,6 @@ body {
 	font-size: 25px;
 }
 
-
 #footer {
 	clear: both;
 }
@@ -121,63 +120,49 @@ body {
 	</div>
 	<div id="content">
 		<div id="existing">
-		<form id="login" name="form1" method="POST" action="${pageContext.servletContext.contextPath}/login">
+		<form name="form1" method="POST" action="${pageContext.servletContext.contextPath}/login">
 			<h3>Existing User</h3>
 			<div class="label">Username:</div>
 			<div>
-				<input type="text" name="Username" value="${inUsername}" />
+				<input type="text" name="inUsername" value="${app.username}" />
 			</div>
 
 			<div class="label">Password:</div>
 			<div>
-				<input type="text" name="Password" value="${inPassword}" />
+				<input type="text" name="inPassword" value="${app.password}" />
 			</div>
 
 				<input type="submit" name="submit" value="Sign In">
 			</form>
 
-			<form id="guest" name="form2" method="POST" action="login">
+			<form name="form2" method="POST" action="login">
 				<input type="submit" name="submit" value="Forgot Password">
 			</form>
 
 		</div>
 
 		<div id="create">
+		<form id="new" name="form1" method="POST" action="${pageContext.servletContext.contextPath}/login">
 			<h3>Create an Account</h3>
 
 			<div class="label">Username:</div>
 			<div>
-				<input type="text" name="Username" value="${upUsername}" />
+				<input type="text" name="upUsername" value="${app.username}" />
 			</div>
 
 			<div class="label">Password:</div>
 			<div>
-				<input type="text" name="Password" value="${upPassword}" />
+				<input type="text" name="upPassword" value="${app.password}" />
 			</div>
 
 			<div class="label">Confirm Password:</div>
 			<div>
-				<input type="text" name="Confirm Password"
-					value="${confirm_password}" />
-			</div>
-
-			<form id="new" name="form1" method="POST" action="guest">
+				<input type="text" name="ConfirmPassword" value="${confirm_password}" />
+			</div>		
 				<input type="submit" name="submit" value="Sign Up ">
 			</form>
 		</div>
 	</div>
 	<div id="footer"></div>
-	<script>
-    funtion signUp(){
-
-    }
-    funtion signIn(){
-
-    }
-
-    funtion forgot(){
-
-    }
-    </script>
 </body>
 </html>
