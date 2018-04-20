@@ -9,24 +9,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
-import edu.ycp.cs320.ShopEZ.controller.LoginController;
 import edu.ycp.cs320.ShopEZ.model.Account;
-import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
 public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private Account login= new Account();
-	private GroceryList grocerys;
-	private Item newItem;
-	private Item remItem;
+	//private GroceryList grocerys;
+	private Item item;
 	private InsertItemController controller;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		System.out.println("check1");
 		System.out.println("\nInsertItemServlet: doGet");
 
 		String user = (String) req.getSession().getAttribute("user");
@@ -49,7 +47,9 @@ public class InsertItemServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		System.out.println("check2");
 		String user = (String) req.getSession().getAttribute("user");
+		DerbyDatabase db= new DerbyDatabase();
 		System.out.println("\nInsertItemServlet: doPost");		
 		String errorMessage = null;
 		String successMessage = null;
@@ -58,7 +58,14 @@ public class InsertItemServlet extends HttpServlet {
 		int amount=1;
 		String name; 
 		boolean passed;
-		login=controller.getAccountbyUser(user);
+		//login=controller.getAccountbyUser(user);
+		try {
+			//item=controller.findItemByName(name);
+			login=db.findAccountByUsername(user);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			errorMessage="Invalid Item";
+		}
 		req.setAttribute("quantityA", amount); 
 		req.setAttribute("quantityR", amount); 
 		if(req.getParameter("Add") !=null) {
@@ -66,35 +73,42 @@ public class InsertItemServlet extends HttpServlet {
 				amount = getIntFromParameter(req.getParameter("quantityA"));
 				name=req.getParameter("Add");
 				try {
-					newItem=controller.findItemByName(name);
-					//newItem=db.findItemByItemName(newItem.getItemName());
+					//item=controller.findItemByName(name);
+					item=db.findItemByItemName(item.getItemName());
+					passed=db.insertItemIntoGroceryListTable(login.getAccountID(), item, amount);//use database method
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
 				}
-				grocerys.insertItemIntoGroceryListTable(newItem, amount);//use database method
-				grocerys.setAccountID(login.getAccountID());
-				double sum= grocerys.getTotalPrice(); 
-				grocerys.setListPrice(sum);
+				double sum=item.getItemPrice();
 			}	
 		}
 		if(req.getParameter("Remove") !=null) {	
 			amount = getIntFromParameter(req.getParameter("quantityR"));
-			remItem.setItemName(req.getParameter("Remove"));
+			item.setItemName(req.getParameter("Remove"));
 			try {
-				remItem=db.findItemByItemName(remItem.getItemName());
+				item=db.findItemByItemName(item.getItemName());
+				passed=db.removeItemFromGroceryListTable(login.getAccountID(), item, amount);
 				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
 			}
-			passed=controller.removeItem(login, remItem, amount);
+			//passed=controller.removeItem(login, item, amount);
 			// Forward to view to render the result HTML document
 		}	
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
+		
+		req.setAttribute("app", item);
+		// Add parameters as request attributes
+		req.setAttribute("Username", req.getParameter("inUsername"));
+
+		// Add result objects as request attributes
+		req.setAttribute("errorMessage", errorMessage);
+		
 	}
 
 	// Decode form parameters and dispatch to controller
