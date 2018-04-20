@@ -1,3 +1,4 @@
+
 package edu.ycp.cs320.ShopEZ.junit.model;
 
 import static org.junit.Assert.*;
@@ -12,117 +13,130 @@ import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.model.Location;
 import edu.ycp.cs320.ShopEZ.model.Route;
 import edu.ycp.cs320.ShopEZ.model.Pair;
-import edu.ycp.cs320.ShopEZ.model.Library;
+import edu.ycp.cs320.ShopEZ.model.History;
+
 
 public class ShopEZTest {
 	private Account account;
 	private Aisle aisle;
 	private GroceryList list;
 	private Item item;
-	private Location locate;
-	private Route route;
-	private Pair pair;
-	private Library lib;
-	private Location location;
-	
-	
-	@Before
-	public void setUp() {//set up models
-		account = new Account(); 
-		aisle = new Aisle();
-		list = new GroceryList();
-		item = new Item();
-		locate = new Location();
-		route = new Route();
-		
-	}
-	
+ 	private Route route;
+ 	private Pair pair;
+ 	private Location location;
+ 	private History hist;
+ 	@Before
+ 	public void setUp() {//set up models
+ 		account = new Account(); 
+ 		aisle = new Aisle();
+ 		list = new GroceryList();
+ 		item = new Item();
+ 		location = new Location();
+ 		route = new Route();
+ 		hist = new History();
+ 	}
+ 	
+ 	@Test
+ 	public void testAisle() {//test isle returns 
+ 		aisle.setX1(1);//set test cases
+ 		aisle.setX2(1);
+ 		aisle.setY1(1);
+ 		aisle.setY2(1);
+ 		assertEquals(aisle.getX1(), 1);//test that the correct numbers are returned
+ 		assertEquals(aisle.getX2(), 1);
+ 		assertEquals(aisle.getY1(), 1);
+ 		assertEquals(aisle.getY2(), 1);
+ 		assertNotEquals(aisle.getX1(), 2);
+ 		assertNotEquals(aisle.getX2(), 2);
+ 		assertNotEquals(aisle.getY1(), 2);
+ 		assertNotEquals(aisle.getY2(), 2);
+ 		
+ 	}
+ 	
+ 	@Test
+ 	public void testItem(){
+ 		item.setItemID(0);
+ 		item.setItemLocationX(1);
+ 		item.setItemLocationY(2);
+ 		item.setItemName("Test");
+ 		item.setItemPrice(1.5);
+ 		assertEquals(item.getItemPrice(), 1.5, 0.01);
+ 		assertEquals(item.getItemID(), 0);
+ 		assertEquals(item.getItemName(), "Test");
+ 		assertEquals(item.getItemLocationX(), 1);
+ 		assertEquals(item.getItemLocationY(), 2);
+ 		
+ 	}
+ 	
+ 	@Test
+ 	public void testGroceryList() {
+ 		list.setItemID(0);
+ 		list.setAccountID(1);
+ 		assertEquals(list.getItemID(), 0);
+ 		assertEquals(list.getAccountID(), 1);
+ 	}
+ 	
+ 	@Test
+ 	public void testAccount(){
+ 		
+ 		account.setAccountID(0);
+ 		account.setPassword("password");
+ 		account.setUsername("username");
+ 		assertEquals(account.getAccountID(), 0);
+ 		assertEquals(account.getPassword(), "password");
+ 		assertEquals(account.getUsername(), "username");
+ 		
+ 	}
+ 	
+ 	@SuppressWarnings("unchecked")
 	@Test
-	public void testAisle() {//test isle returns 
-		aisle.setX1(1);//set test cases
-		aisle.setX2(1);
-		aisle.setY1(1);
-		aisle.setY2(1);
-		assertEquals(aisle.getX1(), 1);//test that the correct numbers are returned
-		assertEquals(aisle.getX2(), 1);
-		assertEquals(aisle.getY1(), 1);
-		assertEquals(aisle.getY2(), 1);
-		assertNotEquals(aisle.getX1(), 2);
-		assertNotEquals(aisle.getX2(), 2);
-		assertNotEquals(aisle.getY1(), 2);
-		assertNotEquals(aisle.getY2(), 2);
-		
-	}
-	
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testItem(){
-		Item test = new Item();
-		test.setItemID(0);
-		test.setItemLocationX(1);
-		test.setItemLocationY(1);
-		test.setItemName("Test");
-		test.setItemPrice(1.5);
-		test.setItemQuantity(3);
-		assertEquals(test.getItemPrice(), 1.5);
-		assertEquals(test.getItemQuantity(), 3);
-		assertEquals(test.getItemID(), 0);
-		assertEquals(test.getItemName(), "Test");
-		assertEquals(test.getItemLocationX(), 1);
-		assertEquals(test.getItemLocationY(), 1);
-		
-	}
-	@Test
-	public void testGroceryList() {
-		assertEquals(list.getTotalPrice(), 0, 0);//get starting value
-		list.updatePrice(1.5);
-		assertEquals(list.getTotalPrice(), 1.5, 0);//1 addition
-		list.updatePrice(1.5);
-		assertEquals(list.getTotalPrice(), 3.0, 0);//2 additions
-		Item test = new Item();
-		list.addItem(test);
-		assertTrue(list.getList().contains(test));//check if fake item is added
-		list.removeItem(test);
-		assertFalse(list.getList().contains(test));//check to see if item is removed
-	}
-	@Test
-	public void testAccount(){
-		Account test = new Account();
-		test.setAccountID(0);
-		test.setPassword("password");
-		test.setUsername("username");
-		assertEquals(test.getAccountID(), 0);
-		assertEquals(test.getPassword(), "password");
-		assertEquals(test.getUsername(), "username");
-		assertTrue(test.confirmAccount("username", "password"));
-	}
-	@Test
+ 	
 	public void testPair(){
-		pair.setLeft(item);
-		pair.setRight(account);
-		assertEquals(pair.getLeft(), item);
-		assertEquals(pair.getRight(), account);
-	}
-	@Test
-	public void testLibrary(){
-		assertTrue(lib.validateUserName("student"));
-		assertFalse(lib.validateUserName("fakeName"));
-		assertTrue(lib.validatePW("student","ycp"));
-		assertFalse(lib.validatePW("faculty","ycp"));
-		assertTrue(lib.validatePW("faculty","E&CS"));
-		assertFalse(lib.validatePW("student","E&CS"));
-		
-	}
-	@Test
-	public void testLocation(){
-		location.setAisleInfo();
-		location.setCurrentAisle(aisle);
-		location.setX(1);
-		location.setY(2);
-		assertEquals(location.getX(), 1);
-		assertEquals(location.getY(), 2);
-		assertEquals(location.getCurrentAisle(), aisle);
-	}
+ 		Object left = null;
+		pair.setLeft(left);
+ 		Object right = null;
+		pair.setRight(right);
+ 		assertEquals(pair.getLeft(), left);
+ 		assertEquals(pair.getRight(), right);
+ 	}
+ 	
+ 	@Test
+ 	public void testLocation(){
+ 		location.setAisleInfo();
+ 		location.setCurrentAisle(aisle);
+ 		location.setX(1);
+ 		location.setY(2);
+ 		assertEquals(location.getX(), 1);
+ 		assertEquals(location.getY(), 2);
+ 		assertEquals(location.getCurrentAisle(), aisle);
+ 	}
+ 	
+ 	@Test
+ 	public void testHistory(){
+ 		hist.setAccountID(0);
+ 		hist.setGroceryListID(1);
+ 		hist.setHistoryID(2);
+ 		assertTrue(false);
+ 	}
+ 
+ 	@Test
+ 	public void testRoute(){
+ 		Location checkout = location;
+ 		Location start = location;
+ 		route.setCheckoutLocation(checkout);
+ 		route.setGroceryList(list);
+ 		Item first = item;
+		route.setRouteOrder(first, 0);
+		Item second = item;
+		route.setRouteOrder(second, 1);
+		Item third = item;
+		route.setRouteOrder(third, 2);
+ 		route.setStartLocation(start);
+ 		assertEquals(route.getCheckoutLocation(), checkout);
+ 		assertEquals(route.getDistance(), 4);
+ 		assertEquals(route.getGroceryList(), list);
+ 		assertEquals(route.getStartLocation(), start);
+ 	}
 }
-
-
+ 
+ 
