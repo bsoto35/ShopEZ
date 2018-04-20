@@ -82,13 +82,11 @@ public class DerbyDatabase {
 		return conn;
 	}
 
-
 	private void loadAccount(Account account, ResultSet resultSet, int index) throws SQLException {
 		account.setAccountID(resultSet.getInt(index++));
 		account.setUsername(resultSet.getString(index++));
 		account.setPassword(resultSet.getString(index++));
 	}
-
 
 	private void loadItem(Item item, ResultSet resultSet, int index) throws SQLException {
 		item.setItemID(resultSet.getInt(index++));
@@ -285,7 +283,6 @@ public class DerbyDatabase {
 		});
 	}
 
-
 	public Item findItemByItemName(final String itemName) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
 
@@ -320,7 +317,6 @@ public class DerbyDatabase {
 		});
 	}
 
-
 	public Item updateItemLocationByItemNameAndXYCoords(final String item, final int x, final int y) throws SQLException{
 		return executeTransaction(new Transaction<Item>() {
 
@@ -352,7 +348,6 @@ public class DerbyDatabase {
 			}
 		});
 	}
-
 
 	public double findItemPriceByItemName(final String name) {
 		return executeTransaction(new Transaction<Double>() {
@@ -401,8 +396,7 @@ public class DerbyDatabase {
 		});
 	}
 
-
-	public boolean verifyAccountFromAccountsTableByUsernameAndPassword(final String username, final String password) throws SQLException{
+	public Boolean verifyAccountFromAccountsTableByUsernameAndPassword(final String username, final String password) throws SQLException{
 		return executeTransaction(new Transaction<Boolean>() {
 
 			public Boolean execute(Connection conn) throws SQLException {
@@ -450,8 +444,37 @@ public class DerbyDatabase {
 			}});
 	}
 
+	public Boolean removeItemFromItemsTable(final Item itemName) throws SQLException {
+		return executeTransaction(new Transaction<Boolean>() {
+			public Boolean execute(Connection conn) throws SQLException {
+				Boolean finalResult = false;
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
 
-	
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"DELETE " +
+									"	from items " +
+									"	where items.item_id = ? "
+							);
+
+					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+					stmt.setInt(1, itemName.getItemID());
+
+					// execute the query
+					stmt.executeQuery();
+
+					finalResult = true;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+				return finalResult;
+			}});
+	}
 	
 	public Account findAccountByUsername(final String username) throws SQLException{
 		return executeTransaction(new Transaction<Account>() {
@@ -550,13 +573,12 @@ public class DerbyDatabase {
 					conn.setAutoCommit(true);
 					int iter = 0;
 					while (iter < qty) {
-						// a canned query to find book information (including author name) from title
+						
 						stmt = conn.prepareStatement(
 								"insert into groceryLists(account_id, item_id) "
 										+ "  values (?, ?) "
 								);
-
-						// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+						
 						stmt.setInt(1, id);
 						stmt.setInt(2, item_id);
 
@@ -610,7 +632,6 @@ public class DerbyDatabase {
 				return finalResult;
 			}});
 	}
-
 
 	public int findAccountIDbyUsernameAndPassword(final String username, final String password) throws SQLException {
 		return executeTransaction(new Transaction<Integer>() {
@@ -699,7 +720,6 @@ public class DerbyDatabase {
 			}});
 	}
 
-
 	public Boolean removeItemFromGroceryListTable(final int id, final Item itemName, final int qty) throws SQLException {
 		return executeTransaction(new Transaction<Boolean>() {
 			public Boolean execute(Connection conn) throws SQLException {
@@ -786,7 +806,6 @@ public class DerbyDatabase {
 			}});
 	}
 
-
 	public ArrayList<Account> findAllAccounts() throws SQLException {
 		return executeTransaction(new Transaction<ArrayList<Account>>() {
 
@@ -823,7 +842,6 @@ public class DerbyDatabase {
 				}
 			}});
 	}
-
 
 	public ArrayList<Item> findAllItemsForAccount(final int id) throws SQLException {
 		return executeTransaction(new Transaction<ArrayList<Item>>() {
