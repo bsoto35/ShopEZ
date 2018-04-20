@@ -1,8 +1,5 @@
 package edu.ycp.cs320.ShopEZ.model;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 public class History {
 	private int historyID;
 	private int accountID;
@@ -29,13 +26,6 @@ public class History {
 		this.historyID = historyID;
 	}
 
-	public ArrayList<String> getHistoryListNames() {
-		ArrayList<String> result = new ArrayList<String>();
-		for (Item name : this.historyList.getTheList()) {
-			result.add(name.getItemName());
-		}
-		return result;
-	}
 	
 	public GroceryList getHistoryList(String name) {
 		return this.historyList;
