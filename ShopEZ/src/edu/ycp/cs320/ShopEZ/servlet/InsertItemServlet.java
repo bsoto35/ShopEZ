@@ -84,7 +84,7 @@ public class InsertItemServlet extends HttpServlet {
 				double sum=item.getItemPrice();
 			}	
 		}
-		if(req.getParameter("rem") !=null) {	
+		else if(req.getParameter("rem") !=null) {	
 			amount = getIntFromParameter(req.getParameter("quantityR"));
 			item.setItemName(req.getParameter("itemR"));
 			try {
@@ -92,6 +92,7 @@ public class InsertItemServlet extends HttpServlet {
 				System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 				passed=db.removeItemFromGroceryListTable(login.getAccountID(), item, amount);
 				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
+				System.out.println("test1");
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
