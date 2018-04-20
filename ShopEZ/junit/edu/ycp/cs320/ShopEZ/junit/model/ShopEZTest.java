@@ -3,6 +3,8 @@ package edu.ycp.cs320.ShopEZ.junit.model;
 
 import static org.junit.Assert.*;
 
+import java.sql.SQLException;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,9 +14,10 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.model.Location;
 import edu.ycp.cs320.ShopEZ.model.Route;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 import edu.ycp.cs320.ShopEZ.model.Pair;
 import edu.ycp.cs320.ShopEZ.model.History;
-
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
 public class ShopEZTest {
 	private Account account;
@@ -25,6 +28,7 @@ public class ShopEZTest {
  	private Pair pair;
  	private Location location;
  	private History hist;
+ 	private DerbyDatabase derby;
  	@Before
  	public void setUp() {//set up models
  		account = new Account(); 
@@ -34,6 +38,7 @@ public class ShopEZTest {
  		location = new Location();
  		route = new Route();
  		hist = new History();
+ 		derby = new DerbyDatabase();
  	}
  	
  	@Test
@@ -69,7 +74,7 @@ public class ShopEZTest {
  	}
  	
  	@Test
- 	public void testGroceryList() {
+ 	public void testGroceryListmethod() {
  		list.setItemID(0);
  		list.setAccountID(1);
  		assertEquals(list.getItemID(), 0);
@@ -92,9 +97,9 @@ public class ShopEZTest {
 	@Test
  	
 	public void testPair(){
- 		Object left = null;
+ 		Object left = new Object();
 		pair.setLeft(left);
- 		Object right = null;
+ 		Object right = new Object();
 		pair.setRight(right);
  		assertEquals(pair.getLeft(), left);
  		assertEquals(pair.getRight(), right);
@@ -137,6 +142,45 @@ public class ShopEZTest {
  		assertEquals(route.getGroceryList(), list);
  		assertEquals(route.getStartLocation(), start);
  	}
+ 	
+ 	@Test
+	public void testItemList() throws SQLException{
+	Item tmp = new Item();
+	tmp.setItemLocationX(0);
+	tmp.setItemLocationY(0);
+	tmp.setItemName("tmp");
+	tmp.setItemPrice(1.5);
+	derby.insertItemIntoItemsTable("tmp", 1.5, 0, 0);
+	assertEquals(derby.findItemByItemName("tmp"), tmp);
+	assertEquals(derby.findItemByItemName("tmp").getItemLocationX(), 0);
+	assertEquals(derby.findItemByItemName("tmp").getItemLocationY(), 0);
+	assertEquals(derby.findItemByItemName("tmp").getItemPrice(), 1.5, 0.01);
+	derby.removeItemFromItemsTable(tmp);
+	}
+	
+	@Test
+	public void testAccounts() throws SQLException{
+		derby.addAccountIntoAccountsTable("test", "pass");
+		assertEquals(derby.findAccountByUsername("test").getPassword(), "pass");
+		assertTrue(derby.verifyAccountFromAccountsTableByUsernameAndPassword("test", "pass"));
+		
+	}
+	
+	@Test
+	public void testGroceryList() throws SQLException{
+		Item item = new Item();
+		item.setItemID(30);
+		item.setItemLocationX(1);
+		item.setItemLocationY(1);
+		item.setItemName("something");
+		item.setItemPrice(1.5);
+		assertTrue(derby.insertItemIntoGroceryListTable(1, item, 2)) ;
+		assertEquals(derby.findAllItemsForAccount(1), item);
+		derby.removeItemFromGroceryListTable(1, item, 2);
+		assertNotEquals(derby.findAllItemsForAccount(1), item);
+		derby.insertItemIntoGroceryListTable(1, item, 2);
+		assertTrue(derby.clearGroceryListForAccount(1));
+	}
 }
  
  

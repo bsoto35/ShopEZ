@@ -537,7 +537,7 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"insert into items(item_name, item_price, item_location_x, item_location_x) "
+							"insert into items(item_name, item_price, item_location_x, item_location_y) "
 									+ "  values (?, ?, ?, ?, ?) "
 							);
 
