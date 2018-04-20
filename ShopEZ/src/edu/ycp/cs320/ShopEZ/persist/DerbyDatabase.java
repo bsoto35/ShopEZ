@@ -700,7 +700,7 @@ public class DerbyDatabase {
 					stmt = conn.prepareStatement(
 							"DELETE" +
 									"	from groceryLists " +
-									"	where gorceryLists.account_id = ? "
+									"	where groceryLists.account_id = ? "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -734,8 +734,8 @@ public class DerbyDatabase {
 					stmt = conn.prepareStatement(
 							"DELETE TOP(?)" +
 									"	from groceryLists " +
-									"	where gorceryLists.account_id = ? " +
-									"		and gorceryLists.item_id = ? "
+									"	where groceryLists.account_id = ? " +
+									"		and groceryLists.item_id = ? "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
