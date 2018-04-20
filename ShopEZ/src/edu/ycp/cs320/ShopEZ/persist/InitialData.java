@@ -29,10 +29,10 @@ public class InitialData {
 				System.out.println(item.getItemName());
 				item.setItemPrice(Double.parseDouble(i.next()));
 				System.out.println(item.getItemPrice());
-				//item.setItemLocationX(Integer.parseInt(i.next()));
-				System.out.println(i.next());
-				//item.setItemLocationY(Integer.parseInt(i.next()));
-				System.out.println(i.next());
+				item.setItemLocationX(Integer.parseInt(i.next()));
+				System.out.println(item.getItemLocationX());
+				item.setItemLocationY(Integer.parseInt(i.next()));
+				System.out.println(item.getItemLocationY());
 				itemList.add(item);
 			}
 			return itemList;
@@ -55,8 +55,11 @@ public class InitialData {
 				Iterator<String> i = tuple.iterator();
 				Account account = new Account();
 				account.setAccountID(accountId++);
+				System.out.println(account.getAccountID());
 				account.setUsername(i.next());
+				System.out.println(account.getUsername());
 				account.setPassword(i.next());
+				System.out.println(account.getPassword());
 				accountList.add(account);
 			}
 			return accountList;
@@ -77,8 +80,9 @@ public class InitialData {
 				Iterator<String> i = tuple.iterator();
 				GroceryList groceryList = new GroceryList();
 				groceryList.setAccountID(Integer.parseInt(i.next()));
+				System.out.println(groceryList.getAccountID());
 				groceryList.setItemID(Integer.parseInt(i.next()));
-				groceryList.setListPrice(Double.parseDouble(i.next()));
+				System.out.println(groceryList.getItemID());
 				list.add(groceryList);
 			}
 			return list;
