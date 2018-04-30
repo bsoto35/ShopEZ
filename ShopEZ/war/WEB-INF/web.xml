@@ -17,6 +17,14 @@
 		<servlet-name>LoginServlet</servlet-name>
 		<servlet-class>edu.ycp.cs320.ShopEZ.servlet.LoginServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>ReviewListServlet</servlet-name>
+		<servlet-class>edu.ycp.cs320.ShopEZ.servlet.ReviewListServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>RouteServlet</servlet-name>
+		<servlet-class>edu.ycp.cs320.ShopEZ.servlet.RouteServlet</servlet-class>
+	</servlet>
 
 	<!-- Servlet mappings -->
 	
@@ -32,8 +40,16 @@
 		<servlet-name>IndexServlet</servlet-name>
 		<url-pattern>/welcome</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RouteServlet</servlet-name>
+		<url-pattern>/route</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ReviewListServlet</servlet-name>
+		<url-pattern>/review</url-pattern>
+	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>welcome</welcome-file>
 	</welcome-file-list>
 </web-app>

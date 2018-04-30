@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 //import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 import edu.ycp.cs320.ShopEZ.model.Account;
+import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
@@ -17,16 +19,18 @@ public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private Account login= new Account();
-	//private GroceryList grocerys;
+	private GroceryList grocerys;
 	private Item item= new Item();
-	//private InsertItemController controller;
+	private InsertItemController controller;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("check1");
 		System.out.println("\nInsertItemServlet: doGet");
-
+		item.setQuantity(1);
+		req.setAttribute("quantityA", item.getQuantity()); 
+		req.setAttribute("quantityR", item.getQuantity()); 
 		String user = (String) req.getSession().getAttribute("user");
 		if (user == null) {
 			System.out.println("   User: <" + user + "> not logged in or session timed out");
@@ -54,44 +58,45 @@ public class InsertItemServlet extends HttpServlet {
 		String errorMessage = null;
 		String successMessage = null;
 		login= new Account();
-		//controller= new InsertItemController();
-		int amount=1;
+		controller= new InsertItemController();
 		boolean passed;
-		//login=controller.getAccountbyUser(user);
 		try {
-			//item=controller.findItemByName(name);
-			login=db.findAccountByUsername(user);
+			item=controller.findItemByName(user);
+			login=controller.getAccountByUser(user);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			errorMessage="Invalid Item";
 		}
-		req.setAttribute("quantityA", amount); 
-		req.setAttribute("quantityR", amount); 
+		item.setQuantity(1);
+		req.setAttribute("quantityA", item.getQuantity()); 
+		req.setAttribute("quantityR", item.getQuantity()); 
 		if(req.getParameter("add") !=null) {
 			if(req.getParameter("itemA")!= null) {				
-				amount = getIntFromParameter(req.getParameter("quantityA"));
+				item.setQuantity(getIntFromParameter(req.getParameter("quantityA")));
 				item.setItemName(req.getParameter("itemA"));
 				try {
-					//item=controller.findItemByName(name);
-					item=db.findItemByItemName(item.getItemName());
+					item=controller.findItemByName(item.getItemName());
 					System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
-					passed=db.insertItemIntoGroceryListTable(login.getAccountID(), item, amount);//use database method
+					passed=controller.removeItem(login.getAccountID(), item, item.getQuantity());
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
 				}
 				System.out.println("item inserted into list: "+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 				double sum=item.getItemPrice();
-			}	
+			}
+			else {
+				
+			}
 		}
 		else if(req.getParameter("rem") !=null) {	
-			amount = getIntFromParameter(req.getParameter("quantityR"));
+			item.setQuantity(getIntFromParameter(req.getParameter("quantityR")));
 			item.setItemName(req.getParameter("itemR"));
 			try {
-				item=db.findItemByItemName(item.getItemName());
+				item=controller.findItemByName(item.getItemName());
 				System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
-				passed=db.removeItemFromGroceryListTable(login.getAccountID(), item, amount);
-				//successMessage=db.removeItemFromTheList(login, remItem, amount);;
+				passed=controller.removeItem(login.getAccountID(), item, item.getQuantity());
+				//successMessage=db.removeItemFromTheList(login, remItem, amount);
 				System.out.println("test1");
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -99,13 +104,11 @@ public class InsertItemServlet extends HttpServlet {
 			}
 			System.out.println("item removed into list: "+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+" ");
 
-			//passed=controller.removeItem(login, item, amount);
 			// Forward to view to render the result HTML document
 		}	
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
-		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 		
 		req.setAttribute("app", item);
 		// Add parameters as request attributes
@@ -113,7 +116,9 @@ public class InsertItemServlet extends HttpServlet {
 
 		// Add result objects as request attributes
 		req.setAttribute("errorMessage", errorMessage);
-		
+		req.setAttribute("quantityA", req.getParameter("quantityA")); 
+		req.setAttribute("quantityR", item.getQuantity());
+		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}
 
 	// Decode form parameters and dispatch to controller

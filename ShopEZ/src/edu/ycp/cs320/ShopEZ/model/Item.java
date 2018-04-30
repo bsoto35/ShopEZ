@@ -7,6 +7,7 @@ public class Item {
 	private String item_name;
 	private double Price;
 	private Location itemLocation = new Location();
+	private int quantity;
 	
 	public Item() {
 		
@@ -51,5 +52,13 @@ public class Item {
 	public int getItemLocationY() {
 		return this.itemLocation.getY();
 	} 
+	
+	public void setQuantity(int quantity) {
+		this.quantity=quantity;
+	}
+	
+	public int getQuantity() {
+		return quantity;
+	}
 	
 }

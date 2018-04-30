@@ -28,8 +28,8 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("\nLoginServlet: doPost");
-
-		String errorMessage = null;
+		
+		String errorMessage = "";
 		boolean validLogin =false;
 		login= new Account();
 		DerbyDatabase db = new DerbyDatabase(); 
@@ -45,7 +45,8 @@ public class LoginServlet extends HttpServlet {
 			} else {
 				try {					
 					validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
-					System.out.print("check if gets here");
+					if(!validLogin)
+						errorMessage = "Username and/or password invalid";
 					
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -81,11 +82,12 @@ public class LoginServlet extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
+				errorMessage = "Passwords do not match";
 			}
 		}
+		req.setAttribute("errorMessage", errorMessage);
 		if (validLogin==true) {
 			System.out.println("   Valid login - starting session, redirecting to /insertItem");
-
 			// store user object in session
 			req.getSession().setAttribute("user", login.getUsername());
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
@@ -95,7 +97,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		else{
-			errorMessage = "Username and/or password invalid";
+			
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 			System.out.println("Invalid login - redirecting to /login");
 		}
@@ -103,9 +105,7 @@ public class LoginServlet extends HttpServlet {
 		req.setAttribute("app", login);
 		// Add parameters as request attributes
 		req.setAttribute("Username", req.getParameter("inUsername"));
-
 		// Add result objects as request attributes
-		req.setAttribute("errorMessage", errorMessage);
 		// if login is valid, start a session	
 		System.out.println("check");
 	}

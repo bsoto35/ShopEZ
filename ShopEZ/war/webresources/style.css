@@ -181,3 +181,8 @@ p{
 .qty, #qty, .item, #add, #remove{
 	float: left;
 	}
+	
+.error{
+	font-size: 15px;
+	color: red;
+}
