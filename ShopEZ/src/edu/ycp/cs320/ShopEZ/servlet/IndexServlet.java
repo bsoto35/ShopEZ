@@ -34,7 +34,7 @@ public class IndexServlet extends HttpServlet {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}			
-			req.getSession().setAttribute("user", guest.getUsername());
+			req.getSession().setAttribute("user", guest);
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
 			}

@@ -13,19 +13,31 @@ public class InsertItemController {
 	private DerbyDatabase db= new DerbyDatabase();
 	private int id; 
 	private Item item;
-	private int amount=1;
+	private double amount=1.0;
 	private String name; 
-	private Account login;
+	private Account login=new Account();
 	private boolean bool=false;
-	private GroceryList list;
+	private GroceryList list=new GroceryList();
 	
 	public InsertItemController() {
-		list=new GroceryList();
+	}
+	
+	public InsertItemController(GroceryList list, Account login) {
+		this.list=list;
+		this.login=login;
 	}
 	
 	public Item findItemByName(String name) throws SQLException{
 		item=db.findItemByItemName(name);
 		return item;
+	}
+	
+	public Account getAccount() {
+		return login;
+	}
+	
+	public void setAccount(Account account) {
+		login=account;
 	}
 	
 	public int getAccountId() {
@@ -39,13 +51,16 @@ public class InsertItemController {
 	
 	public boolean removeItem(int id, Item item, int qty)  throws SQLException{
 		bool= db.removeItemFromGroceryListTable(id, item, qty);
-		list.removeItem(item.getItemName());
+		list.removeItems(item.getItemName(), qty);
 		return bool;
 	}
 	
-	public boolean addItem(int accout, Item item, int qty) throws SQLException{
+	public boolean addItem(int id, Item item, int qty) throws SQLException{
+		name=item.getItemName();
 		bool= db.insertItemIntoGroceryListTable(id, item, qty);
-		list.addItem(item.getItemName());
+		System.out.println("passed");
+		list.insertItems(name, qty);
+		System.out.println("passed3");
 		return bool;
 	}
 	
@@ -56,8 +71,21 @@ public class InsertItemController {
 	public int getListlength() {
 		return list.getLengthofList();
 	}
+	
 	public ArrayList<String> getArrayList(){
 		return list.getList();
 	}
 	
+	public GroceryList getGroceryList() {
+		
+		return list;
+	}
+	
+	public void setTotalPrice(double sum) {
+		amount=sum;
+	}
+	
+	public double getTotalPrice() {
+		return amount;
+	}
 }

@@ -5,11 +5,13 @@ body {
 }
 
 #header {
-	background-color: black;
 	border: 1px solid black;
 	padding: 10px 30px;
 	background-color: white;
 	font-style: italic;
+	height: 90px;
+	margin-left:5px;
+	margin-right:5px;
 }
 
 p {
@@ -24,9 +26,10 @@ p {
 	float: left;
 }
 
-#nav.button {
+#nav{
 	text-align: right;
 	float: right;
+	font-size: 20px;
 }
 
 #content {
