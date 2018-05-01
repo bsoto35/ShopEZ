@@ -10,16 +10,12 @@
 <title>InsertItem</title>
 <link rel="stylesheet" href="webresources/style.css" />
 <script>
-	function addItems() {
+	function addGroceryItems() {
 		var itemList = document.getElementById("itemList");
 		document.getElementById("add").value = itemList.options[itemList.selectedIndex].text;
 	}
 </script>
-<style>
-p {
-	color: red;
-}
-</style>
+
 </head>
 <body>
 	<div id="header">
@@ -40,7 +36,7 @@ p {
 			<div class="addItem">
 				<div class="item">Item to Add:</div>
 
-				<select id="itemList" onChange="addItems()">
+				<select id="itemList" onChange="addGroceryItems()">
 					<option>apple</option>
 					<option>orange</option>
 					<option>grapes</option>
@@ -100,10 +96,10 @@ p {
 		</c:if>
 		<c:forEach items="${list.ArrayList}" var="items" varStatus="iter">
 
-			<div id="itemss">${list.ArrayList[iter.index]}</div>
+			<div id="itemss"> ${list.ArrayList[iter.index]} </div>
 
 		</c:forEach>
-		<div id="items">Total: ${order.totalPrice}</div>
+		<div id="items">Total: ${list.totalPrice}</div>
 
 
 	</div>

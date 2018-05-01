@@ -18,7 +18,8 @@ public class Item {
 	}
 	
 	public String getItemName() {
-		return this.item_name;
+		System.out.println("passed1");
+		return item_name;
 	}
 	
 	public void setItemID(int id) {

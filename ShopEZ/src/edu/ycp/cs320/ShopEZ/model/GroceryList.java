@@ -5,9 +5,10 @@ import java.util.ArrayList;
 public class GroceryList {
 	private int accountID;
 	private int itemID;
-	private ArrayList <String> list= new ArrayList<String>();
+	private ArrayList <String> groceries;
 
 	public GroceryList() {
+		groceries= new ArrayList<>();
 	}
 
 	public int getAccountID() {
@@ -25,25 +26,34 @@ public class GroceryList {
 	public void setItemID(int itemID) {
 		this.itemID = itemID;
 	}
-	
+
 	public int getLengthofList() {
-		return list.size();
+		return groceries.size();
 	}
-	
-	public void addItem(String item) {
-		list.add(item);
+
+	public void insertItems(String item, int qty) {
+		System.out.println("passed2");
+		int i=0;
+		while(i<qty) {
+			groceries.add(item);
+			i++;
+		}
 	}
-	
-	public void removeItem(String item) {
-		list.remove(item);
+
+	public void removeItems(String item, int qty) {
+		int i=0;
+		while(i<qty) {
+			groceries.remove(item);
+			i++;
+		}
 	}
-	
+
 	public String getItem(int index) {
-		return list.get(index);
+		return groceries.get(index);
 	}
-	
+
 	public ArrayList<String> getList(){
-		return list; 
+		return groceries; 
 	}
 
 }

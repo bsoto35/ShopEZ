@@ -14,8 +14,12 @@ public class LoginController {
 		
 	}
 
-	public void setAccount(Account x) {
-		this.model = x;
+	public void setAccount(Account account) {
+		login=account;
+	}
+	
+	public Account getAccount() {
+		return login;
 	}
 	
 	public void newList() {

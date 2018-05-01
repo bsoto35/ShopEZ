@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 //import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
@@ -26,11 +27,13 @@ public class InsertItemServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		HttpSession session=req.getSession(false);
 		System.out.println("check1");
 		System.out.println("\nInsertItemServlet: doGet");
 		req.setAttribute("quantityA", item.getQuantity()); 
 		req.setAttribute("quantityR", item.getQuantity()); 
-		String user = (String) req.getSession().getAttribute("user");
+		login= (Account)session.getAttribute("user");
+		String user = login.getUsername();
 		if (user == null) {
 			System.out.println("   User: <" + user + "> not logged in or session timed out");
 
@@ -51,13 +54,17 @@ public class InsertItemServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("check2");
-		String user = (String) req.getSession().getAttribute("user");
+		HttpSession session=req.getSession(false);
+		login= (Account)session.getAttribute("user");
+		grocerys=(GroceryList)session.getAttribute("grocerylist");
+		controller=new InsertItemController(grocerys, login);
+		String user = login.getUsername();
+		System.out.println("   User: <" + user + "> logged in");
 		//DerbyDatabase db= new DerbyDatabase();
 		System.out.println("\nInsertItemServlet: doPost");		
 		String errorMessage = null;
 		String successMessage = null;
 		login= new Account();
-		controller= new InsertItemController();
 		boolean passed=false;
 		try {
 			//item=controller.findItemByName(user);
@@ -76,6 +83,7 @@ public class InsertItemServlet extends HttpServlet {
 					item.setQuantity(getIntFromParameter(req.getParameter("quantityA")));
 					System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+", "+item.getQuantity());
 					passed=controller.addItem(login.getAccountID(), item, item.getQuantity());
+					System.out.println("passed3");
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
@@ -83,6 +91,7 @@ public class InsertItemServlet extends HttpServlet {
 				if(passed)
 					System.out.println("item inserted into list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
 				double sum=item.getItemPrice();
+				controller.setTotalPrice(sum);
 			}
 			else {
 				
@@ -106,6 +115,7 @@ public class InsertItemServlet extends HttpServlet {
 
 			// Forward to view to render the result HTML document
 		}	
+		InsertItemController cont2=new InsertItemController(controller.getGroceryList(), login);
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
@@ -119,6 +129,9 @@ public class InsertItemServlet extends HttpServlet {
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("quantityA", req.getParameter("quantityA")); 
 		req.setAttribute("quantityR", item.getQuantity());
+		req.getSession().setAttribute("user", login);;
+		req.getSession().setAttribute("grocerylist", cont2.getGroceryList());
+		resp.sendRedirect(req.getContextPath() + "/insertItem");
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}
 

@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("\nLoginServlet: doGet");
-		
+
 		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 
@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("\nLoginServlet: doPost");
-		
+
 		String errorMessage = "";
 		boolean validLogin =false;
 		login= new Account();
@@ -47,24 +47,27 @@ public class LoginServlet extends HttpServlet {
 					validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
 					if(!validLogin)
 						errorMessage = "Username and/or password invalid";
-					
+
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		else if(req.getParameter("forgot") !=null) {			
 			try {
 				login=db.findAccountByUsername("guest");
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}			
+			}	
+			System.out.println("  Name: <" + login.getUsername() + ">  PW: <" + login.getPassword() + ">");
+			req.getSession().setAttribute("user", login.getUsername());
+			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getSession().setAttribute("user", login.getUsername());
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
-			}
-		
+		}
+
 		else if(req.getParameter("SignUp") !=null) {
 			System.out.print("sign up pressed");
 			login.setUsername(req.getParameter("upUsername"));
@@ -89,7 +92,7 @@ public class LoginServlet extends HttpServlet {
 		if (validLogin==true) {
 			System.out.println("   Valid login - starting session, redirecting to /insertItem");
 			// store user object in session
-			req.getSession().setAttribute("user", login.getUsername());
+			req.getSession().setAttribute("user", login);
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 			// redirect to /index page
@@ -97,7 +100,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		else{
-			
+
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 			System.out.println("Invalid login - redirecting to /login");
 		}
