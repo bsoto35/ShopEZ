@@ -10,7 +10,7 @@ public class Item {
 	private int quantity;
 	
 	public Item() {
-		
+		quantity=1;
 	}
 	
 	public void setItemName(String i) {
