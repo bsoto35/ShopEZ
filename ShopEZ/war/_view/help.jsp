@@ -7,7 +7,7 @@
 
 <html>
 <head>
-<title>Login</title>
+<title>Help</title>
 <link rel="stylesheet" href="webresources/style.css" />
 </head>
 <body>
@@ -69,7 +69,7 @@
 					<input type="password" name="ConfirmPassword"
 						value="${confirm_password}" />
 				</div>
-				<input class= "button" type="submit" name="SignUp" value="Sign Up ">
+				<input type="submit" name="SignUp" value="Sign Up ">
 				<c:if test="${! empty errorMessage}">
 					<div class="error">${errorMessage}</div>
 				</c:if>

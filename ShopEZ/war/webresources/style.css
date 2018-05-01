@@ -1,79 +1,81 @@
- body{
-      background-image: url("https://i.imgur.com/7BqARyx.jpg");
-      background-repeat: no-repeat;
-      background-size: cover;
+body {
+	background-image: url("https://i.imgur.com/7BqARyx.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
-#header{
-      background-color: black;
-      border: 1px solid black;
-      padding: 10px 30px;
-      background-color: white;
-      font-style: italic;
+#header {
+	border: 1px solid black;
+	padding: 10px 30px;
+	background-color: white;
+	font-style: italic;
+	height: 90px;
+	margin-left:5px;
+	margin-right:5px;
 }
 
-p{
-    float:top
-    margin-top:50px;
+p {
+	float: top; 
+	margin-top:50px;
 }
 
-#logo{
-      color: black;
-      font-size: 70px;
-      text-align: left;
+#logo {
+	color: black;
+	font-size: 70px;
+	text-align: left;
+	float: left;
 }
 
-#nav, .button{
-      float: right;
+#nav{
+	text-align: right;
+	float: right;
+	font-size: 20px;
 }
 
-#content{
-      padding-top: 5px;
-      text-align: center;
-      font-size: 85px;
-      text-shadow: 2px 2px lightblue;
-      color: black;
-      height: 200px;
-
+#content {
+	padding-top: 5px;
+	text-align: center;
+	font-size: 85px;
+	text-shadow: 2px 2px lightblue;
+	color: black;
+	height: 200px;
 }
 
 #login, #guest {
-    padding: 12px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;    
-    -webkit-transition-duration: 0.4s;
-    transition-duration: 0.4s;
-    cursor: pointer;
-    float: bottom;
+	padding: 12px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	-webkit-transition-duration: 0.4s;
+	transition-duration: 0.4s;
+	cursor: pointer;
+	float: bottom;
 }
 
-#login{
-      background-color: white;
-      border:2px solid lightblue;
-      color:lightblue;
+#login {
+	background-color: white;
+	border: 2px solid lightblue;
+	color: lightblue;
 }
 
-#guest{
-      background-color: lightblue;
-      border:2px solid white;
-      color: white;
+#guest {
+	background-color: lightblue;
+	border: 2px solid white;
+	color: white;
 }
 
-#login:hover{
-    background-color: lightblue;
-    border:2px solid white;
-    color: white;
+#login:hover {
+	background-color: lightblue;
+	border: 2px solid white;
+	color: white;
 }
 
-#guest:hover{
-       background-color: white;
-       border:2px solid lightblue;
-       color: lightblue;
+#guest:hover {
+	background-color: white;
+	border: 2px solid lightblue;
+	color: lightblue;
 }
-
-
 
 #content2 {
 	float: top;
@@ -95,7 +97,7 @@ p{
 	float: left;
 }
 
-#existing .button {
+#existing.button {
 	background-color: white;
 	color: lightblue;
 	margin-left: 25px;
@@ -120,7 +122,7 @@ p{
 	float: right;
 }
 
-#create .button {
+#create.button {
 	background-color: lightblue;
 	color: white;
 	margin-left: 25px;
@@ -151,7 +153,7 @@ p{
 	padding: 40px 200px;
 }
 
-.addItem{
+.addItem {
 	text-align: center;
 	float: top;
 	width: 600px;
@@ -159,14 +161,13 @@ p{
 	background-color: white;
 	border-style: inset;
 	border-width: 5px;
-	border-color: lightblue;	
+	border-color: lightblue;
 	padding: 25px;
 	margin-left: auto;
 	margin-right: auto;
-	
 }
 
-.removeItem{
+.removeItem {
 	width: 600px;
 	height: 50px;
 	background-color: lightblue;
@@ -178,6 +179,12 @@ p{
 	margin-left: auto;
 	margin-right: auto;
 }
-.qty, #qty, .item, #add, #remove{
+
+.qty, #qty, .item, #add, #remove {
 	float: left;
-	}
+}
+
+.error {
+	font-size: 15px;
+	color: red;
+}

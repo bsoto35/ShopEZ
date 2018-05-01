@@ -19,7 +19,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		System.out.println("\nLoginServlet: doGet");
-		
+
 		req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 	}
 
@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
 
 		System.out.println("\nLoginServlet: doPost");
 
-		String errorMessage = null;
+		String errorMessage = "";
 		boolean validLogin =false;
 		login= new Account();
 		DerbyDatabase db = new DerbyDatabase(); 
@@ -45,25 +45,29 @@ public class LoginServlet extends HttpServlet {
 			} else {
 				try {					
 					validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
-					System.out.print("check if gets here");
-					
+					if(!validLogin)
+						errorMessage = "Username and/or password invalid";
+
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		else if(req.getParameter("forgot") !=null) {			
 			try {
 				login=db.findAccountByUsername("guest");
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}			
+			}	
+			System.out.println("  Name: <" + login.getUsername() + ">  PW: <" + login.getPassword() + ">");
+			req.getSession().setAttribute("user", login.getUsername());
+			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getSession().setAttribute("user", login.getUsername());
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
-			}
-		
+		}
+
 		else if(req.getParameter("SignUp") !=null) {
 			System.out.print("sign up pressed");
 			login.setUsername(req.getParameter("upUsername"));
@@ -81,13 +85,14 @@ public class LoginServlet extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
+				errorMessage = "Passwords do not match";
 			}
 		}
+		req.setAttribute("errorMessage", errorMessage);
 		if (validLogin==true) {
 			System.out.println("   Valid login - starting session, redirecting to /insertItem");
-
 			// store user object in session
-			req.getSession().setAttribute("user", login.getUsername());
+			req.getSession().setAttribute("user", login);
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 			// redirect to /index page
@@ -95,7 +100,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		else{
-			errorMessage = "Username and/or password invalid";
+
 			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 			System.out.println("Invalid login - redirecting to /login");
 		}
@@ -103,9 +108,7 @@ public class LoginServlet extends HttpServlet {
 		req.setAttribute("app", login);
 		// Add parameters as request attributes
 		req.setAttribute("Username", req.getParameter("inUsername"));
-
 		// Add result objects as request attributes
-		req.setAttribute("errorMessage", errorMessage);
 		// if login is valid, start a session	
 		System.out.println("check");
 	}
