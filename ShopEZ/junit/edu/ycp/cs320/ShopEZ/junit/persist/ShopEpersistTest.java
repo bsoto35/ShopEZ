@@ -9,13 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
-import edu.ycp.cs320.ShopEZ.model.Aisle;
-import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
-import edu.ycp.cs320.ShopEZ.model.Location;
 import edu.ycp.cs320.ShopEZ.model.Route;
-import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
-import edu.ycp.cs320.ShopEZ.model.History;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
 public class ShopEpersistTest {

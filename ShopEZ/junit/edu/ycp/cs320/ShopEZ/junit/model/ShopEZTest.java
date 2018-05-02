@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
-import edu.ycp.cs320.ShopEZ.model.Aisle;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.model.Location;
@@ -20,7 +19,7 @@ import edu.ycp.cs320.ShopEZ.model.Graph;
 
 public class ShopEZTest {
 	private Account account;
-	private Aisle aisle;
+	
 	private GroceryList list;
 	private Item item;
 	private Route route;
@@ -31,7 +30,7 @@ public class ShopEZTest {
 	@Before
 	public void setUp() throws SQLException {//set up models
 		account = new Account(); 
-		aisle = new Aisle();
+		
 		list = new GroceryList();
 		item = new Item();
 		location = new Location();
@@ -41,24 +40,6 @@ public class ShopEZTest {
 		
 	}
 
-	@Test
-	public void testAisle() {//test isle returns 
-		//set test values
-		aisle.setX1(1);
-		aisle.setX2(1);
-		aisle.setY1(1);
-		aisle.setY2(1);
-		//test that the correct numbers are returned
-		assertEquals(aisle.getX1(), 1);
-		assertEquals(aisle.getX2(), 1);
-		assertEquals(aisle.getY1(), 1);
-		assertEquals(aisle.getY2(), 1);
-		assertNotEquals(aisle.getX1(), 2);
-		assertNotEquals(aisle.getX2(), 2);
-		assertNotEquals(aisle.getY1(), 2);
-		assertNotEquals(aisle.getY2(), 2);
-
-	}
 
 	@Test
 	public void testItem(){//testing the item model
@@ -80,10 +61,9 @@ public class ShopEZTest {
 	@Test
 	public void testGroceryListmethod() {//test the grocery list model
 		//create initial values
-		list.setItemID(0);
+		list.insertItems(item, 2);
 		list.setAccountID(1);
 		//check to see if the correct values are returned
-		assertEquals(list.getItemID(), 0);
 		assertEquals(list.getAccountID(), 1);
 	}
 
@@ -103,14 +83,12 @@ public class ShopEZTest {
 	@Test
 	public void testLocation(){//test for the location model
 		//set initial variables
-		location.setAisleInfo();
-		location.setCurrentAisle(aisle);
+		
 		location.setX(1);
 		location.setY(2);
 		//check that the correct values are returned
 		assertEquals(location.getX(), 1);
 		assertEquals(location.getY(), 2);
-		assertEquals(location.getCurrentAisle(), aisle);
 	}
 
 	@Test
