@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
 				e.printStackTrace();
 			}	
 			System.out.println("  Name: <" + login.getUsername() + ">  PW: <" + login.getPassword() + ">");
-			req.getSession().setAttribute("user", login.getUsername());
+			req.getSession().setAttribute("user", login);
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
 		}

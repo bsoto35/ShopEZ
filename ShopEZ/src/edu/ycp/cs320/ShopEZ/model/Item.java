@@ -18,7 +18,7 @@ public class Item {
 	}
 	
 	public String getItemName() {
-		System.out.println("passed1");
+		System.out.println(""+item_name);
 		return item_name;
 	}
 	
