@@ -1,5 +1,6 @@
 package edu.ycp.cs320.ShopEZ.controller;
 
+import java.sql.SQLException;
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
@@ -8,7 +9,7 @@ import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
  */
 public class LoginController {
 	DerbyDatabase db= new DerbyDatabase();
-	private Account model;
+	private Account login;
 	
 	public LoginController() {
 		
@@ -25,7 +26,13 @@ public class LoginController {
 	public void newList() {
 		
 	}
-	public Account getAccountbyUser(String name) throws SQL Exception{
-		
+	
+	public Account getAccountbyUser(String name) throws SQLException{
+		login=db.findAccountByUsername(name);
+		return login;
+	}
+	
+	public boolean verifyAccount(String name, String password) throws SQLException{
+		return db.verifyAccountFromAccountsTableByUsernameAndPassword(name, password);
 	}
 }

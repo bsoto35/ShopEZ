@@ -81,8 +81,9 @@ public class InitialData {
 				GroceryList groceryList = new GroceryList();
 				groceryList.setAccountID(Integer.parseInt(i.next()));
 				System.out.println(groceryList.getAccountID());
-				groceryList.setItemID(Integer.parseInt(i.next()));
-				System.out.println(groceryList.getItemID());
+				int id = Integer.parseInt(i.next());
+				groceryList.getList().add(id);
+				System.out.println(groceryList.getList().get(id));
 				list.add(groceryList);
 			}
 			return list;

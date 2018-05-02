@@ -20,7 +20,9 @@ public class Route {
 	public GroceryList getGroceryList() {
 		return this.currentList;
 	}
-	
+	public void setDistance(int dist){
+		this.distance = dist;
+	}
 	public int getDistance() {
 		return this.distance;
 	}
