@@ -108,12 +108,9 @@ public class DerbyDatabase {
 		item.setItemLocationY(resultSet.getInt(index++));
 	}
 
-	@SuppressWarnings("unused")
 	private void loadGroceryList(GroceryList groceryList, ResultSet resultSet, int index) throws SQLException{
-		while (resultSet.next()) {
-			groceryList.setAccountID(resultSet.getInt(index++));
-			groceryList.getList().add(resultSet.getInt(index++));
-		}
+		groceryList.setAccountID(resultSet.getInt(index++));
+		groceryList.getList().add(resultSet.getInt(index++));
 	}
 
 	public void dropTables() throws SQLException{
@@ -247,11 +244,9 @@ public class DerbyDatabase {
 					// populate groceryList table (do this after items table)
 					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id) values (?, ?)");
 					for (GroceryList list : groceryList) {
-						for(int i=0; i < list.getList().size(); i++) {
-							insertGroceryList.setInt(1, list.getAccountID());
-							insertGroceryList.setInt(2, list.getList().get(i));
-							insertGroceryList.addBatch();
-						}
+						insertGroceryList.setInt(1, list.getAccountID());
+						insertGroceryList.setInt(2, list.getList().get(0));
+						insertGroceryList.addBatch();
 					}
 					insertGroceryList.executeBatch();
 
@@ -988,18 +983,16 @@ public class DerbyDatabase {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
-					System.out.print("passed11");
 					int item_id = name.getItemID();
 					conn.setAutoCommit(true);
 					stmt = conn.prepareStatement(
 							"select * from groceryLists" +
-							"	where groceryLists.account_id = ?" +
-							"		and groceryLists.item_id = ?"
+									"	where groceryLists.account_id = ?" +
+									"		and groceryLists.item_id = ?"
 							);
 					stmt.setInt(1, id);
 					stmt.setInt(2, item_id);
-					System.out.print("passed12");
-					System.out.print(id+" "+item_id);
+					System.out.print("account: "+id+", item: "+item_id);
 					// execute the query
 					resultSet = stmt.executeQuery();
 					int iter = 0;
@@ -1145,13 +1138,13 @@ public class DerbyDatabase {
 	public Boolean removeItemFromGroceryListTable(final int id, final Item itemName, final int qty) throws SQLException {
 		return executeTransaction(new Transaction<Boolean>() {
 			public Boolean execute(Connection conn) throws SQLException {
-				Account account = findAccountByAccountID(id);
 				Boolean finalResult = false;
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				int item_id = itemName.getItemID();
 				try {
-
+					conn.setAutoCommit(true);
+					System.out.println("");
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"DELETE TOP(?)" +
@@ -1162,7 +1155,7 @@ public class DerbyDatabase {
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
 					stmt.setInt(1, qty);
-					stmt.setInt(2, account.getAccountID());
+					stmt.setInt(2, id);
 					stmt.setInt(3, item_id);
 
 					// execute the query
@@ -1269,7 +1262,7 @@ public class DerbyDatabase {
 		return executeTransaction(new Transaction<List<Item>>() {
 
 			public List<Item> execute(Connection conn) throws SQLException {
-
+				List<GroceryList> lists = new ArrayList<GroceryList>();
 				List<Item> finalResult = new ArrayList<Item>();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
@@ -1278,22 +1271,32 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y" +
-									"	from groceryLists, items" +
-									"	where groceryLists.item_id = items.item_id" +
-									"		and groceryLists.account_id = ?)"
+							"select * from groceryLists" +
+									"	where groceryLists.account_id = ?"
 							);
-
 					stmt.setInt(1, id);
 					// execute the query
 					resultSet = stmt.executeQuery();
-
 					while (resultSet.next()) {
-						Item item = new Item();
-						loadItem(item, resultSet, 1);
-						finalResult.add(item);
+						GroceryList list= new GroceryList();
+						loadGroceryList(list, resultSet, 1);
+						System.out.println("  "+list.getAccountID()+" "+ list.getItemID(0));
+						lists.add(list);
 					}
-
+					System.out.println("list size:"+lists.size());
+					
+					for (int i = 0; i < lists.size(); i++) {;
+						System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
+						Item temp=findItemByItemID(lists.get(i).getItemID(i));
+						finalResult.add(temp);
+						
+						String name=finalResult.get(i).getItemName();
+						
+						System.out.println("Item Name: "+name+", iterated:"+ i+ " size: "+lists.size());
+					}
+					
+					System.out.println(" 1 ");
+					
 					return finalResult;
 				} finally {
 					// close result set, statement, connection

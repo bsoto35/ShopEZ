@@ -6,9 +6,13 @@ public class GroceryList {
 	private int accountID;
 	//private int itemID;
 	private ArrayList <Integer> groceries = new ArrayList<>();
-
+	
 	public GroceryList() {
-		accountID=0;		
+		
+	}
+	public GroceryList(int aID, int iID ) {
+			accountID=aID;
+			groceries.add(iID);
 	}
 
 	public int getAccountID() {
@@ -21,7 +25,6 @@ public class GroceryList {
 
 
 	public void insertItems(Item item, int qty) {
-		System.out.println("passed4");
 		int i=0;
 		while(i<qty) {
 			groceries.add(item.getItemID());

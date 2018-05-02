@@ -1,6 +1,7 @@
 package edu.ycp.cs320.ShopEZ.controller;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
@@ -30,6 +31,25 @@ public class InsertItemController {
 		item=db.findItemByItemName(name);
 		return item;
 	}
+	
+	public boolean isGuest(Account login) {
+		if(login.getUsername().equals("guest"))
+			return true;
+		return false;
+	}
+	
+	public ArrayList<Item> findItemsByID(ArrayList<Integer> list) throws SQLException{
+		ArrayList<Item> items= new ArrayList<Item>();
+		for(int i=0; i < list.size(); i++) {
+		item=db.findItemByItemID(list.get(i));
+		items.add(item);
+		}
+		return items;
+	}
+	
+	public List<Item> findAllItems() throws SQLException{
+		return db.findAllItemsForAccount(login.getAccountID());
+	}
 
 	public Account getAccount() {
 		return login;
@@ -56,10 +76,8 @@ public class InsertItemController {
 
 	public boolean addItem(int id, Item item, int qty) throws SQLException{
 		bool= db.insertItemIntoGroceryListTable(id, item, qty);
-		System.out.println("passed");
 		System.out.println(item.getItemName()+" "+qty);
 		list.insertItems(item, qty);
-		System.out.println("passed2");
 		return bool;
 	}
 
@@ -72,7 +90,7 @@ public class InsertItemController {
 		return list.getList().size();
 	}
 
-	public ArrayList<Integer> getArrayList(){
+	public ArrayList<Integer> getIdList(){
 		return list.getList();
 	}
 

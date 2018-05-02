@@ -24,11 +24,11 @@
 				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
 				style="width: 50px; height: 50px;" /></a>
 		</div>
-		<div id="nav">
-			<button class="button" onclick="myFunction()">Login</button>
-			<button class="button" onclick="myFunction()">About</button>
-			<button class="button" onclick="myFunction()">Help</button>
-		</div>
+		<ul id="nav">
+			<li><a href="${pageContext.servletContext.contextPath}/login">Login</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
+		</ul>
 	</div>
 	<div id="content3">
 		<form action="${pageContext.servletContext.contextPath}/insertItem"
@@ -94,15 +94,11 @@
 		<c:if test="${! empty successMessage}">
 			<div class="error">${successMessage}</div>
 		</c:if>
-	
-		<div id="items">Total: ${list.totalPrice}</div>
-		
-		<c:forEach items="${list.ArrayList}" var="items" varStatus="iter">
-
-			<div id="items"> ${list.ArrayList[iter.index]} </div>
-
-		</c:forEach>
-
+		<table>
+			<c:forEach items="${list}" var="item" varStatus="iter">
+				<div id="items">${item.itemName}-${item.itemPrice}</div>
+			</c:forEach>
+		</table>
 	</div>
 
 </body>

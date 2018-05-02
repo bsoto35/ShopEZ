@@ -17,7 +17,7 @@
 				 	<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
 				 	<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
 				</ul>
-		</div>
+			</div>
 		<div id="content">
 			<p>Find your Fastest Route!</p>
 			<form name="form1" method="GET"
