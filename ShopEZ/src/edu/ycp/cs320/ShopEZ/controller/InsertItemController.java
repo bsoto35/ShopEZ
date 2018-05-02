@@ -7,39 +7,38 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 /**
- * Controller for the guessing game.
+ * Controller for the insertItemServlet.
  */
 public class InsertItemController {
 	private DerbyDatabase db= new DerbyDatabase();
 	private int id; 
 	private Item item;
-	private double amount=1.0;
-	private String name; 
+	private double total=0.0; 
 	private Account login=new Account();
 	private boolean bool=false;
 	private GroceryList list=new GroceryList();
-	
+
 	public InsertItemController() {
 	}
-	
+
 	public InsertItemController(GroceryList list, Account login) {
 		this.list=list;
 		this.login=login;
 	}
-	
+
 	public Item findItemByName(String name) throws SQLException{
 		item=db.findItemByItemName(name);
 		return item;
 	}
-	
+
 	public Account getAccount() {
 		return login;
 	}
-	
+
 	public void setAccount(Account account) {
 		login=account;
 	}
-	
+
 	public int getAccountId() {
 		id=login.getAccountID();
 		return id;
@@ -48,44 +47,49 @@ public class InsertItemController {
 		login= db.findAccountByUsername(name);
 		return login;
 	}
-	
+
 	public boolean removeItem(int id, Item item, int qty)  throws SQLException{
 		bool= db.removeItemFromGroceryListTable(id, item, qty);
-		list.removeItems(item.getItemName(), qty);
+		list.removeItems(item, qty);
 		return bool;
 	}
-	
+
 	public boolean addItem(int id, Item item, int qty) throws SQLException{
-		name=item.getItemName();
 		bool= db.insertItemIntoGroceryListTable(id, item, qty);
 		System.out.println("passed");
-		list.insertItems(name, qty);
-		System.out.println("passed3");
+		System.out.println(item.getItemName()+" "+qty);
+		list.insertItems(item, qty);
+		System.out.println("passed2");
 		return bool;
 	}
-	
-	public String getItemNameatIndex(int index) {
-		return list.getItem(index);
+
+	public String getItemNameatIndex(int index) throws SQLException{
+		item=db.findItemByItemID(list.getItemID(index));
+		return item.getItemName();
 	}
-	
+
 	public int getListlength() {
-		return list.getLengthofList();
+		return list.getList().size();
 	}
-	
-	public ArrayList<String> getArrayList(){
+
+	public ArrayList<Integer> getArrayList(){
 		return list.getList();
 	}
-	
+
 	public GroceryList getGroceryList() {
-		
+
 		return list;
 	}
-	
-	public void setTotalPrice(double sum) {
-		amount=sum;
+	public void setGroceryList(GroceryList list) {
+
+		this.list=list;
 	}
-	
+
+	public void setTotalPrice(double sum) {
+		total=sum;
+	}
+
 	public double getTotalPrice() {
-		return amount;
+		return total;
 	}
 }

@@ -7,11 +7,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import edu.ycp.cs320.ShopEZ.model.Account;
+import edu.ycp.cs320.ShopEZ.model.Graph;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.model.Location;
+import edu.ycp.cs320.ShopEZ.model.Node;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
 public class DerbyDatabase {
@@ -82,6 +89,11 @@ public class DerbyDatabase {
 		return conn;
 	}
 
+	private void loadLocation(Location location, ResultSet resultSet, int index) throws SQLException {
+		location.setX(resultSet.getInt(index++));
+		location.setY(resultSet.getInt(index++));
+	}
+
 	private void loadAccount(Account account, ResultSet resultSet, int index) throws SQLException {
 		account.setAccountID(resultSet.getInt(index++));
 		account.setUsername(resultSet.getString(index++));
@@ -98,8 +110,10 @@ public class DerbyDatabase {
 
 	@SuppressWarnings("unused")
 	private void loadGroceryList(GroceryList groceryList, ResultSet resultSet, int index) throws SQLException{
-		groceryList.setAccountID(resultSet.getInt(index++));
-		groceryList.setItemID(resultSet.getInt(index++));
+		while (resultSet.next()) {
+			groceryList.setAccountID(resultSet.getInt(index++));
+			groceryList.getList().add(resultSet.getInt(index++));
+		}
 	}
 
 	public void dropTables() throws SQLException{
@@ -192,7 +206,7 @@ public class DerbyDatabase {
 				List<Account> accountList;
 				List<Item> itemList;
 				List<GroceryList> groceryList;
-				
+
 				try {
 					accountList = InitialData.getAccounts();
 					itemList = InitialData.getItems();
@@ -233,9 +247,11 @@ public class DerbyDatabase {
 					// populate groceryList table (do this after items table)
 					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id) values (?, ?)");
 					for (GroceryList list : groceryList) {
-						insertGroceryList.setInt(1, list.getAccountID());
-						insertGroceryList.setInt(2, list.getItemID());
-						insertGroceryList.addBatch();
+						for(int i=0; i < list.getList().size(); i++) {
+							insertGroceryList.setInt(1, list.getAccountID());
+							insertGroceryList.setInt(2, list.getList().get(i));
+							insertGroceryList.addBatch();
+						}
 					}
 					insertGroceryList.executeBatch();
 
@@ -308,11 +324,45 @@ public class DerbyDatabase {
 						result.setItemLocationX(resultSet.getInt(4));
 						result.setItemLocationY(resultSet.getInt(5));
 					}
+					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 				}
-				return result;
+			}
+		});
+	}
+
+	public Item findItemByItemID(final int itemID) throws SQLException{
+		return executeTransaction(new Transaction<Item>() {
+
+			public Item execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				Item result = new Item();
+
+				try {
+
+					stmt = conn.prepareStatement(
+							"select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
+									"	from items " +
+									"	where items.item_id =  ? "
+							);
+					stmt.setInt(1, itemID);
+
+					resultSet = stmt.executeQuery();
+					while(resultSet.next()) {
+						result.setItemID(resultSet.getInt(1));
+						result.setItemName(resultSet.getString(2));
+						result.setItemPrice(resultSet.getDouble(3));
+						result.setItemLocationX(resultSet.getInt(4));
+						result.setItemLocationY(resultSet.getInt(5));
+					}
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
 			}
 		});
 	}
@@ -475,7 +525,7 @@ public class DerbyDatabase {
 				return finalResult;
 			}});
 	}
-	
+
 	public Account findAccountByUsername(final String username) throws SQLException{
 		return executeTransaction(new Transaction<Account>() {
 
@@ -523,7 +573,7 @@ public class DerbyDatabase {
 				return finalResult;
 			}});
 	}
-	
+
 	public Boolean insertItemIntoItemsTable(final String name, final double price, final int x, final int y) throws SQLException {
 		return executeTransaction(new Transaction<Boolean>() {
 
@@ -537,7 +587,7 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"insert into items(item_name, item_price, item_location_x, item_location_y) "
+							"INSERT into items(item_name, item_price, item_location_x, item_location_y) "
 									+ "  values (?, ?, ?, ?, ?) "
 							);
 
@@ -561,24 +611,355 @@ public class DerbyDatabase {
 			}});
 	}
 
-	public Boolean insertItemIntoGroceryListTable(final int id, final Item name, final int qty) throws SQLException {
-		return executeTransaction(new Transaction<Boolean>() {
-			public Boolean execute(Connection conn) throws SQLException {
+	public HashMap<Item, Location> findXYMapForItemsInList(List<Item> items) throws SQLException{
+		return executeTransaction(new Transaction<HashMap<Item, Location>>() {
 
-				int item_id = name.getItemID();
-				Boolean finalResult = false;
+			public HashMap<Item, Location> execute(Connection conn) throws SQLException {
+
+				HashMap<Item, Location> finalResult = new HashMap<Item, Location>();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
 					conn.setAutoCommit(true);
+
+					int i = 0;
+
+					while(items.get(i) != null) {
+						// a canned query to find book information (including author name) from title
+						stmt = conn.prepareStatement(
+								"select items.item_location_x, items.item_location_y"+
+										"	from items"+
+										"		where items.item_name = ?"
+								);
+
+						// execute the query
+						resultSet = stmt.executeQuery();
+
+						while (resultSet.next()) {
+							Location location = new Location();
+							loadLocation(location, resultSet, 1);
+							finalResult.put(items.get(i), location);
+
+							System.out.println("Loaded location in the hashmap");
+						}
+					}
+					return finalResult;
+
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}});
+	}
+
+	public List<Item> loadGraphNodesFromGroceryListItems(final int account_id) throws SQLException{
+		Graph graphNodes = new Graph();
+		List<Item> items = new ArrayList<Item>();
+		try {
+			items = findAllItemsForAccount(account_id);
+		} catch (SQLException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Node 'A' represent the starting node; the coordinate (132, 18) on the mocked up map
+		String start = "start";
+		Node A = new Node();
+		Node B = new Node();
+		Node C = new Node();
+		Node D = new Node();
+		Node E = new Node();
+		Node F = new Node();
+		Node G = new Node();
+		Node H = new Node();
+		Node I = new Node();
+		Node J = new Node();
+		Node K = new Node();
+		Node L = new Node();
+		Node M = new Node();
+		Node N = new Node();
+		Node O = new Node();
+		Node P = new Node();
+		Node Q = new Node();
+		Node R = new Node();
+		Node S = new Node();
+		Node T = new Node();
+		Node U = new Node();
+
+		A.setName(start);
+		A.addDestination(B, 18);
+		B.addDestination(A, 18);
+		B.addDestination(C, 24);
+		B.addDestination(K, 24);
+		C.addDestination(D, 24);
+		C.addDestination(B, 24);
+		D.addDestination(E, 24);
+		D.addDestination(C, 24);
+		E.addDestination(F, 24);
+		E.addDestination(D, 24);
+		F.addDestination(G, 24);
+		F.addDestination(E, 24);
+		G.addDestination(P, 24);
+		G.addDestination(H, 24);
+		G.addDestination(F, 24);
+		H.addDestination(G, 24);
+		H.addDestination(I, 24);
+		I.addDestination(H, 24);
+		I.addDestination(J, 24);
+		J.addDestination(I, 24);
+		J.addDestination(K, 24);
+		K.addDestination(L, 24);
+		K.addDestination(J, 24);
+		K.addDestination(B, 24);
+		L.addDestination(U, 24);
+		L.addDestination(M, 24);
+		L.addDestination(K, 24);
+		M.addDestination(N, 24);
+		M.addDestination(L, 24);
+		N.addDestination(O, 24);
+		N.addDestination(M, 24);
+		O.addDestination(P, 24);
+		O.addDestination(N, 24);
+		P.addDestination(Q, 24);
+		P.addDestination(O, 24);
+		P.addDestination(G, 24);
+		Q.addDestination(R, 24);
+		Q.addDestination(P, 24);
+		R.addDestination(Q, 24);
+		R.addDestination(S, 24);
+		S.addDestination(R, 24);
+		S.addDestination(T, 24);
+		T.addDestination(S, 24);
+		T.addDestination(U, 24);
+		U.addDestination(T, 24);
+		U.addDestination(L, 24);
+
+		// this for each loop with go through all the items for the current user's grocery list
+		for (Item item : items) {
+			if ((item.getItemLocationX() == 12 && item.getItemLocationY() >= 78 && item.getItemLocationY() <= 96) || (item.getItemLocationX() >= 12 && item.getItemLocationX() <= 30 && item.getItemLocationY() == 96) || (item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30 && item.getItemLocationY() == 84)) {
+				item.setItemLocationX(18);
+				item.setItemLocationY(90);
+				Q.setName(item.getItemName());
+				Q.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(Q);
+			}
+			else if((item.getItemLocationX() == 12 && item.getItemLocationY() < 78 && item.getItemLocationY() > 54) || (item.getItemLocationY() == 72 && item.getItemLocationX() >= 24 && item.getItemLocationX() < 30) || (item.getItemLocationY() == 60 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
+				item.setItemLocationX(18);
+				item.setItemLocationY(66);
+				P.setName(item.getItemName());
+				P.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(P);
+			}
+			else if((item.getItemLocationX() == 12 && item.getItemLocationY() <= 54 && item.getItemLocationY() > 30) || (item.getItemLocationY() == 48 && item.getItemLocationX() >= 24 && item.getItemLocationX() < 30) || (item.getItemLocationY() == 36 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
+				item.setItemLocationX(18);
+				item.setItemLocationY(42);
+				G.setName(item.getItemName());
+				G.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(G);
+			}
+			else if((item.getItemLocationX() == 12 && item.getItemLocationY() <= 30 && item.getItemLocationY() >= 12) || (item.getItemLocationY() == 12 && item.getItemLocationX() >= 12 && item.getItemLocationX() <= 30) || (item.getItemLocationY() == 24 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
+				item.setItemLocationX(18);
+				item.setItemLocationY(18);
+				F.setName(item.getItemName());
+				F.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(F);
+			}
+
+			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
+				item.setItemLocationX(42);
+				item.setItemLocationY(90);
+				R.setName(item.getItemName());
+				R.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(R);
+			}
+			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
+				item.setItemLocationX(66);
+				item.setItemLocationY(90);
+				S.setName(item.getItemName());
+				S.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(S);
+			}
+			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
+				item.setItemLocationX(90);
+				item.setItemLocationY(90);
+				T.setName(item.getItemName());
+				T.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(T);
+			}
+			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 144) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
+				item.setItemLocationX(114);
+				item.setItemLocationY(90);
+				U.setName(item.getItemName());
+				U.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(U);
+			}
+
+			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
+				item.setItemLocationX(42);
+				item.setItemLocationY(66);
+				O.setName(item.getItemName());
+				O.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(O);
+			}
+			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
+				item.setItemLocationX(66);
+				item.setItemLocationY(66);
+				N.setName(item.getItemName());
+				N.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(N);
+			}
+			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
+				item.setItemLocationX(90);
+				item.setItemLocationY(66);
+				M.setName(item.getItemName());
+				M.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(M);
+			}
+			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
+				item.setItemLocationX(114);
+				item.setItemLocationY(66);
+				L.setName(item.getItemName());
+				L.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(L);
+			}
+
+			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
+				item.setItemLocationX(42);
+				item.setItemLocationY(42);
+				H.setName(item.getItemName());
+				H.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(H);
+			}
+			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
+				item.setItemLocationX(66);
+				item.setItemLocationY(42);
+				I.setName(item.getItemName());
+				I.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(I);
+			}
+			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
+				item.setItemLocationX(90);
+				item.setItemLocationY(42);
+				J.setName(item.getItemName());
+				J.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(J);
+			}
+			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
+				item.setItemLocationX(114);
+				item.setItemLocationY(42);
+				K.setName(item.getItemName());
+				K.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(K);
+			}
+
+			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
+				item.setItemLocationX(42);
+				item.setItemLocationY(18);
+				E.setName(item.getItemName());
+				E.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(E);
+			}
+			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
+				item.setItemLocationX(66);
+				item.setItemLocationY(18);
+				D.setName(item.getItemName());
+				D.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(D);
+			}
+			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
+				item.setItemLocationX(90);
+				item.setItemLocationY(18);
+				C.setName(item.getItemName());
+				C.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(C);
+			}
+			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
+				item.setItemLocationX(114);
+				item.setItemLocationY(18);
+				B.setName(item.getItemName());
+				B.addToItemIdsList(item.getItemID());
+				graphNodes.addNode(B);
+			}
+
+		}
+		List<Item> result = new ArrayList<Item>();
+
+		graphNodes = calculateShortestPathFromSource(graphNodes, A);
+
+		for (Node n : graphNodes.getGraphNodes()) {
+			for (int i = 0; i < n.getItemIds().size(); i++) {
+				result.add(findItemByItemID(n.getItemIds().get(i)));
+			}
+		}
+		return result;
+	}
+
+	public static Graph calculateShortestPathFromSource(Graph graph, Node source) {
+		source.setDistance(0);
+
+		Set<Node> settledNodes = new HashSet<>();
+		Set<Node> unsettledNodes = new HashSet<>();
+
+		unsettledNodes.add(source);
+
+		while (unsettledNodes.size() != 0) {
+			Node currentNode = getLowestDistanceNode(unsettledNodes);
+			unsettledNodes.remove(currentNode);
+			for (java.util.Map.Entry<Node, Integer> adjacencyPair: currentNode.getAdjacentNodes().entrySet()) {
+				Node adjacentNode = adjacencyPair.getKey();
+				Integer edgeWeight = adjacencyPair.getValue();
+				if (!settledNodes.contains(adjacentNode)) {
+					calculateMinimumDistance(adjacentNode, edgeWeight, currentNode);
+					unsettledNodes.add(adjacentNode);
+				}
+			}
+			settledNodes.add(currentNode);
+		}
+		return graph;
+	}
+
+	private static void calculateMinimumDistance(Node evaluationNode, Integer edgeWeigh, Node sourceNode) {
+		Integer sourceDistance = sourceNode.getDistance();
+		if (sourceDistance + edgeWeigh < evaluationNode.getDistance()) {
+			evaluationNode.setDistance(sourceDistance + edgeWeigh);
+			LinkedList<Node> shortestPath = sourceNode.getShortestPath();
+			shortestPath.add(sourceNode);
+			evaluationNode.setShortestPath(shortestPath);
+		}
+	}
+
+	private static Node getLowestDistanceNode(Set<Node> unsettledNodes) {
+		Node lowestDistanceNode = null;
+		int lowestDistance = Integer.MAX_VALUE;
+		for (Node node: unsettledNodes) {
+			int nodeDistance = node.getDistance();
+			if (nodeDistance < lowestDistance) {
+				lowestDistance = nodeDistance;
+				lowestDistanceNode = node;
+			}
+		}
+		return lowestDistanceNode;
+	}
+
+	public Boolean insertItemIntoGroceryListTable(final int id, final Item item, final int qty) throws SQLException {
+		return executeTransaction(new Transaction<Boolean>() {
+
+			public Boolean execute(Connection conn) throws SQLException {
+				Boolean finalResult = false;
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					int item_id = item.getItemID();
+					conn.setAutoCommit(true);
 					int iter = 0;
 					while (iter < qty) {
-						
+
 						stmt = conn.prepareStatement(
 								"insert into groceryLists(account_id, item_id) "
 										+ "  values (?, ?) "
 								);
-						
+
 						stmt.setInt(1, id);
 						stmt.setInt(2, item_id);
 
@@ -586,14 +967,55 @@ public class DerbyDatabase {
 						stmt.executeUpdate();
 						iter++;
 					}
-					finalResult = true;
 
+					if (findItemsInGroceryListTable(id, item, qty) == true) {
+						finalResult = true;
+					}
+
+					return finalResult;
 				} finally {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
 					DBUtil.closeQuietly(stmt);
 				}
-				return finalResult;
+			}});
+	}
+
+	public Boolean findItemsInGroceryListTable(final int id, final Item name, final int qty) throws SQLException{
+		return executeTransaction(new Transaction<Boolean>() {
+			public Boolean execute(Connection conn) throws SQLException {
+				Boolean finalResult = false;
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					System.out.print("passed11");
+					int item_id = name.getItemID();
+					conn.setAutoCommit(true);
+					stmt = conn.prepareStatement(
+							"select * from groceryLists" +
+							"	where groceryLists.account_id = ?" +
+							"		and groceryLists.item_id = ?"
+							);
+					stmt.setInt(1, id);
+					stmt.setInt(2, item_id);
+					System.out.print("passed12");
+					System.out.print(id+" "+item_id);
+					// execute the query
+					resultSet = stmt.executeQuery();
+					int iter = 0;
+					while (resultSet.next()) {
+						iter++;
+					}
+					if((iter/2) == qty) {
+						finalResult = true;
+					}
+
+					return finalResult;
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
 			}});
 	}
 
@@ -806,10 +1228,10 @@ public class DerbyDatabase {
 			}});
 	}
 
-	public ArrayList<Account> findAllAccounts() throws SQLException {
-		return executeTransaction(new Transaction<ArrayList<Account>>() {
+	public List<Account> findAllAccounts() throws SQLException {
+		return executeTransaction(new Transaction<List<Account>>() {
 
-			public ArrayList<Account> execute(Connection conn) throws SQLException {
+			public List<Account> execute(Connection conn) throws SQLException {
 
 				ArrayList<Account> finalResult = new ArrayList<Account>();
 				PreparedStatement stmt = null;
@@ -843,12 +1265,12 @@ public class DerbyDatabase {
 			}});
 	}
 
-	public ArrayList<Item> findAllItemsForAccount(final int id) throws SQLException {
-		return executeTransaction(new Transaction<ArrayList<Item>>() {
+	public List<Item> findAllItemsForAccount(final int id) throws SQLException {
+		return executeTransaction(new Transaction<List<Item>>() {
 
-			public ArrayList<Item> execute(Connection conn) throws SQLException {
+			public List<Item> execute(Connection conn) throws SQLException {
 
-				ArrayList<Item> finalResult = new ArrayList<Item>();
+				List<Item> finalResult = new ArrayList<Item>();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -856,9 +1278,10 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select from groceryLists.account_id, groceryLists.item_id" +
-									"	from groceryLists" +
-									"	where groceryLists.account_id = ?"
+							"select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y" +
+									"	from groceryLists, items" +
+									"	where groceryLists.item_id = items.item_id" +
+									"		and groceryLists.account_id = ?)"
 							);
 
 					stmt.setInt(1, id);
@@ -869,16 +1292,13 @@ public class DerbyDatabase {
 						Item item = new Item();
 						loadItem(item, resultSet, 1);
 						finalResult.add(item);
-
-						System.out.println("Found account in the accounts table");
 					}
 
 					return finalResult;
-
 				} finally {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
+					DBUtil.closeQuietly(stmt);			
 				}
 			}});
 	}
