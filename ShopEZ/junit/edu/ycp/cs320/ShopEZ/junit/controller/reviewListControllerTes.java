@@ -21,5 +21,8 @@
  		controller = new ShopezeViewController();
  		
  	}
- 	
+ 	@Test
+ 	public void reviewTest(){
+ 		
+ 	}
  }
