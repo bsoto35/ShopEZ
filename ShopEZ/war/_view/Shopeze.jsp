@@ -3,7 +3,6 @@
 <head>
 <title>Shopeze</title>
 <link rel="stylesheet" href="webresources/style.css" />
-
 </head>
 <body>
 	<div id="container">
@@ -12,11 +11,22 @@
 				SHOP-EZE <img src="https://i.imgur.com/wtOuyHi.png"
 					alt="SHOPEZE.png" style="width: 50px; height: 50px;">
 			</div>
-				<ul id="nav">
-				 	<li><a href="${pageContext.servletContext.contextPath}/login">Login</a></li>
-				 	<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
-				 	<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
-				</ul>
+			<div id="nav">
+				<form name="form1" method="GET"
+					action="${pageContext.servletContext.contextPath}/login">
+					<input class="button" type="submit" name="login" value="Login">
+				</form>
+
+				<form name="form1" method="GET"
+					action="${pageContext.servletContext.contextPath}/about">
+					<input class="button" type="submit" name="about" value="About">
+				</form>
+
+				<form name="form1" method="GET"
+					action="${pageContext.servletContext.contextPath}/help">
+					<input class="button" type="submit" name="help" value="Help">
+				</form>
+			</div>
 		</div>
 		<div id="content">
 			<p>Find your Fastest Route!</p>
@@ -33,7 +43,6 @@
 		<div id="footer"></div>
 	</div>
 	<script>
-		
-	</script>
+    </script>
 </body>
 </html>

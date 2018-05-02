@@ -94,14 +94,13 @@
 		<c:if test="${! empty successMessage}">
 			<div class="error">${successMessage}</div>
 		</c:if>
-	
-		<div id="items">Total: ${list.totalPrice}</div>
-		
 		<c:forEach items="${list.ArrayList}" var="items" varStatus="iter">
 
-			<div id="items"> ${list.ArrayList[iter.index]} </div>
+			<div id="itemss"> ${list.ArrayList[iter.index]} </div>
 
 		</c:forEach>
+		<div id="items">Total: ${list.totalPrice}</div>
+
 
 	</div>
 

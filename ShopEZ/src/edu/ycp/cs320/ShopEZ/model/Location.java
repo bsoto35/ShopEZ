@@ -3,6 +3,7 @@ package edu.ycp.cs320.ShopEZ.model;
 public class Location {
 	private int coordinateX;
 	private int coordinateY;
+	private Aisle currentAisle;
 	
 	public Location() {
 		
@@ -16,6 +17,13 @@ public class Location {
 		this.coordinateY = number;
 	}
 	
+	public void setCurrentAisle(Aisle current) {
+		this.currentAisle = current;
+	}
+	
+	public Aisle getCurrentAisle() {
+		return this.currentAisle;
+	}
 	
 	public int getX() {
 		return coordinateX;

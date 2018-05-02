@@ -4,7 +4,6 @@ package edu.ycp.cs320.ShopEZ.junit.model;
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;
-import java.util.LinkedList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +14,9 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.model.Location;
 import edu.ycp.cs320.ShopEZ.model.Route;
-import edu.ycp.cs320.ShopEZ.model.Node;
-import edu.ycp.cs320.ShopEZ.model.Graph;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
+import edu.ycp.cs320.ShopEZ.model.History;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
 public class ShopEZTest {
 	private Account account;
@@ -25,8 +25,8 @@ public class ShopEZTest {
 	private Item item;
 	private Route route;
 	private Location location;
-	private Graph graph;
-	private Node node;
+	private History hist;
+	
 	
 	@Before
 	public void setUp() throws SQLException {//set up models
@@ -36,8 +36,7 @@ public class ShopEZTest {
 		item = new Item();
 		location = new Location();
 		route = new Route();
-		node = new Node();
-		graph = new Graph();
+		hist = new History();
 		
 	}
 
@@ -100,6 +99,8 @@ public class ShopEZTest {
 
 	}
 
+
+
 	@Test
 	public void testLocation(){//test for the location model
 		//set initial variables
@@ -112,7 +113,7 @@ public class ShopEZTest {
 		assertEquals(location.getY(), 2);
 		assertEquals(location.getCurrentAisle(), aisle);
 	}
-
+/*
 	@Test
 	public void testRoute(){//tests for the route model
 		//set initial variables
@@ -121,7 +122,13 @@ public class ShopEZTest {
 		//check that starting data is returned
 		route.setCheckoutLocation(checkout);
 		//add multiple items into the list and set order
-		route.setDistance(4);
+		route.setGroceryList(list);
+		Item first = item;
+		route.setRouteOrder(first, 0);
+		Item second = item;
+		route.setRouteOrder(second, 1);
+		Item third = item;
+		route.setRouteOrder(third, 2);
 		route.setStartLocation(start);
 		//check that the information returned is correct
 		assertEquals(route.getCheckoutLocation(), checkout);
@@ -129,26 +136,5 @@ public class ShopEZTest {
 		assertEquals(route.getGroceryList(), list);
 		assertEquals(route.getStartLocation(), start);
 	}
-
-	@Test
-	public void testNode(){//tests for the node model
-		node.setName("test");
-		assertEquals(node.getName(), "test");
-		LinkedList<Node> shortestPath2 = null;
-		node.setShortestPath(shortestPath2);
-		node.setDistance(3);
-		assertEquals(node.getShortestPath(), shortestPath2);
-		assertEquals(node.getDistance(), 3, 0.0001);
-		node.addToItemIdsList(1);
-		node.addToItemIdsList(2);
-		assertTrue(node.getItemIds().contains(1));
-		assertTrue(node.getItemIds().contains(2));
-		assertFalse(node.getItemIds().contains(5));
-	}
-
-	@Test
-	public void testGraph(){
-		graph.addNode(node);
-		assertTrue(graph.getGraphNodes().contains(node));
-	}
+*/
 }

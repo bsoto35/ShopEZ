@@ -8,13 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
-import edu.ycp.cs320.ShopEZ.controller.LoginController;
 import edu.ycp.cs320.ShopEZ.model.Account;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Account login;
-	private LoginController controller;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -34,7 +32,6 @@ public class LoginServlet extends HttpServlet {
 		String errorMessage = "";
 		boolean validLogin =false;
 		login= new Account();
-		controller=new LoginController();
 		DerbyDatabase db = new DerbyDatabase(); 
 		// Decode form parameters and dispatch to controller
 
@@ -46,8 +43,8 @@ public class LoginServlet extends HttpServlet {
 			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
 				errorMessage = "Please specify both user name and password";
 			} else {
-				try {		
-					validLogin=controller.verifyAccount(login.getUsername(), login.getPassword());
+				try {					
+					validLogin= db.verifyAccountFromAccountsTableByUsernameAndPassword(login.getUsername(), login.getPassword());
 					if(!validLogin)
 						errorMessage = "Username and/or password invalid";
 
@@ -64,6 +61,8 @@ public class LoginServlet extends HttpServlet {
 				e.printStackTrace();
 			}	
 			System.out.println("  Name: <" + login.getUsername() + ">  PW: <" + login.getPassword() + ">");
+			req.getSession().setAttribute("user", login.getUsername());
+			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getSession().setAttribute("user", login.getUsername());
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 

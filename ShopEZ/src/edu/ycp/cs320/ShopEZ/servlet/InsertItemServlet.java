@@ -14,12 +14,13 @@ import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 
 public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private Account login= new Account();
-	private GroceryList groceries=new GroceryList();
+	private GroceryList grocerys;
 	private Item item= new Item();
 	private InsertItemController controller;
 
@@ -55,9 +56,8 @@ public class InsertItemServlet extends HttpServlet {
 		System.out.println("check2");
 		HttpSession session=req.getSession(false);
 		login= (Account)session.getAttribute("user");
-		if(session.getAttribute("grocerylist") != null)
-			controller.setGroceryList((GroceryList)session.getAttribute("grocerylist"));
-		controller=new InsertItemController(groceries, login);
+		grocerys=(GroceryList)session.getAttribute("grocerylist");
+		controller=new InsertItemController(grocerys, login);
 		String user = login.getUsername();
 		System.out.println("   User: <" + user + "> logged in");
 		//DerbyDatabase db= new DerbyDatabase();
@@ -77,25 +77,24 @@ public class InsertItemServlet extends HttpServlet {
 		req.setAttribute("quantityR", item.getQuantity()); 
 		if(req.getParameter("add") !=null) {
 			if(req.getParameter("itemA")!= null) {	
+				item.setItemName(req.getParameter("itemA"));
 				try {
-					item=controller.findItemByName(req.getParameter("itemA"));
+					item=controller.findItemByName(item.getItemName());
 					item.setQuantity(getIntFromParameter(req.getParameter("quantityA")));
 					System.out.println(""+item.getItemName()+" "+ item.getItemID()+ " " +item.getItemPrice()+", "+item.getQuantity());
 					passed=controller.addItem(login.getAccountID(), item, item.getQuantity());
-					//groceries.insertItems(item.getItemName(), item.getQuantity());
 					System.out.println("passed3");
 				} catch (SQLException e) {
 					e.printStackTrace();
 					errorMessage="Invalid Item";
 				}
-				if(passed) {
+				if(passed)
 					System.out.println("item inserted into list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
-					double sum=item.getItemPrice();
-					controller.setTotalPrice(sum);
-				}
+				double sum=item.getItemPrice();
+				controller.setTotalPrice(sum);
 			}
 			else {
-
+				
 			}
 		}
 		else if(req.getParameter("rem") !=null) {	
@@ -111,19 +110,16 @@ public class InsertItemServlet extends HttpServlet {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
 			}
-
-			System.out.println("item removed from list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
+			
+			System.out.println("item removed into list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
 
 			// Forward to view to render the result HTML document
-		}
-		else if(req.getParameter("rem") !=null) {
-			
-		}
+		}	
 		InsertItemController cont2=new InsertItemController(controller.getGroceryList(), login);
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
 
-
+		
 		req.setAttribute("app", item);
 		req.setAttribute("list", controller);
 		// Add parameters as request attributes
