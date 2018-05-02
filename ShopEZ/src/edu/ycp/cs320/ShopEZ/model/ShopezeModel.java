@@ -11,8 +11,6 @@ public class ShopezeModel {
 	private GroceryList shopList;
 	private int mapWidth;
 	private int mapHeight;
-	private Aisle upperWalkPath;
-	private Aisle lowerWalkPath;
 	
 	public ShopezeModel() {
 		
@@ -30,13 +28,7 @@ public class ShopezeModel {
 		this.mapHeight = length;
 	}
 	
-	public void setUpperWalkPath(Aisle upper) {
-		this.upperWalkPath = upper;
-	}
 	
-	public void setLowerWalkPath(Aisle lower) {
-		this.lowerWalkPath = lower;
-	}
 	
 	public GroceryList getCurrentGroceryList() {
 		return this.shopList;
@@ -50,13 +42,7 @@ public class ShopezeModel {
 		return this.mapHeight;
 	}
 	
-	public Aisle getUpperWalkPath() {
-		return this.upperWalkPath;
-	}
 	
-	public Aisle getLowerWalkPath() {
-		return this.lowerWalkPath;
-	}
 	
 	public void populateList() {
 		

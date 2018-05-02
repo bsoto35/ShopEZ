@@ -78,11 +78,11 @@ public class InitialData {
 					break;
 				}
 				Iterator<String> i = tuple.iterator();
-				GroceryList groceryList = new GroceryList();
-				groceryList.setAccountID(Integer.parseInt(i.next()));
-				System.out.println(groceryList.getAccountID());
-				groceryList.setItemID(Integer.parseInt(i.next()));
-				System.out.println(groceryList.getItemID());
+				int aID=Integer.parseInt(i.next());
+				int iID=Integer.parseInt(i.next());
+				GroceryList groceryList = new GroceryList(aID, iID);
+				System.out.println(groceryList.getAccountID()+"");
+				//System.out.println("YOOOO: "+groceryList.getList().get(iID));
 				list.add(groceryList);
 			}
 			return list;

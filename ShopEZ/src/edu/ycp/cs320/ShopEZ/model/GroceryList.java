@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 public class GroceryList {
 	private int accountID;
-	private int itemID;
-	private ArrayList <String> groceries;
-
+	//private int itemID;
+	private ArrayList <Integer> groceries = new ArrayList<>();
+	
 	public GroceryList() {
-		groceries= new ArrayList<>();
+		
+	}
+	public GroceryList(int aID, int iID ) {
+			accountID=aID;
+			groceries.add(iID);
 	}
 
 	public int getAccountID() {
@@ -19,41 +23,30 @@ public class GroceryList {
 		accountID = id;
 	}
 
-	public int getItemID() {
-		return itemID;
-	}
 
-	public void setItemID(int itemID) {
-		this.itemID = itemID;
-	}
-
-	public int getLengthofList() {
-		return groceries.size();
-	}
-
-	public void insertItems(String item, int qty) {
-		System.out.println("passed2");
+	public void insertItems(Item item, int qty) {
 		int i=0;
 		while(i<qty) {
-			groceries.add(item);
+			groceries.add(item.getItemID());
 			i++;
 		}
 	}
 
-	public void removeItems(String item, int qty) {
+	public void removeItems(Item item, int qty) {
 		int i=0;
 		while(i<qty) {
-			groceries.remove(item);
+			groceries.remove(item.getItemID());
 			i++;
 		}
 	}
 
-	public String getItem(int index) {
+	public int getItemID(int index) {
 		return groceries.get(index);
 	}
 
-	public ArrayList<String> getList(){
+	public ArrayList<Integer> getList(){
 		return groceries; 
 	}
+	
 
 }

@@ -17,11 +17,11 @@
 				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
 				style="width: 50px; height: 50px;" /></a>
 		</div>
-		<div id="nav">
-			<button class="button" onclick="myFunction()">Login</button>
-			<button class="button" onclick="myFunction()">About</button>
-			<button class="button" onclick="myFunction()">Help</button>
-		</div>
+		<ul id="nav">
+			<li><a href="${pageContext.servletContext.contextPath}/welcome">Home</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
+		</ul>
 	</div>
 	<div id="content2">
 		<div id="existing">
@@ -51,7 +51,7 @@
 		<div id="create">
 			<form id="new" name="form1" method="POST"
 				action="${pageContext.servletContext.contextPath}/login">
-				
+
 				<h3>Create an Account</h3>
 
 				<div class="label">Username:</div>
@@ -69,7 +69,7 @@
 					<input type="password" name="ConfirmPassword"
 						value="${confirm_password}" />
 				</div>
-				<input class= "button" type="submit" name="SignUp" value="Sign Up ">
+				<input class="button" type="submit" name="SignUp" value="Sign Up ">
 				<c:if test="${! empty errorMessage}">
 					<div class="error">${errorMessage}</div>
 				</c:if>
@@ -79,8 +79,7 @@
 			</form>
 		</div>
 	</div>
-	<div id="footer">
-				</div>
+	<div id="footer"></div>
 
 
 </body>

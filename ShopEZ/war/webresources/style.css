@@ -26,10 +26,29 @@ p {
 	float: left;
 }
 
-#nav{
-	text-align: right;
-	float: right;
-	font-size: 20px;
+ul #nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: white;
+}
+
+li {
+    float: right;
+}
+
+li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+}
+
+li a:hover {
+	color:white;
+    background-color: lightblue;
 }
 
 #content {
