@@ -993,8 +993,8 @@ public class DerbyDatabase {
 					conn.setAutoCommit(true);
 					stmt = conn.prepareStatement(
 							"select * from groceryLists" +
-							"	where groceryLists.account_id = ?" +
-							"		and groceryLists.item_id = ?"
+									"	where groceryLists.account_id = ?" +
+									"		and groceryLists.item_id = ?"
 							);
 					stmt.setInt(1, id);
 					stmt.setInt(2, item_id);
