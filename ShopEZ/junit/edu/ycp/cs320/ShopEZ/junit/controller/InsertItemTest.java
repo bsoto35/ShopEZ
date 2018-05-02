@@ -35,5 +35,11 @@
  		assertEquals(iteminsert.getAccountId(), 0, 0.0);
  		iteminsert.setTotalPrice(5);
  		assertEquals(iteminsert.getTotalPrice(), 5, 0.1);
+ 		
+ 	}
+ 	
+ 	@Test
+ 	public void testGroceryList(){
+ 		
  	}
  }
