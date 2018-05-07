@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
 import edu.ycp.cs320.ShopEZ.model.Account;
@@ -24,8 +25,10 @@ public class RouteServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("Index Servlet: doGet");
-		String user = (String) req.getSession().getAttribute("user");
+		HttpSession session=req.getSession(false);
+		System.out.println("Review List Servlet: doGet");
+		login= (Account)session.getAttribute("user");
+		String user = login.getUsername();
 		if (user == null) {
 			System.out.println("   User: <" + user + "> not logged in or session timed out");
 
@@ -38,11 +41,14 @@ public class RouteServlet extends HttpServlet {
 		// proceed to handle request...
 
 		System.out.println("   User: <" + user + "> logged in");
+
 		req.getRequestDispatcher("/_view/Route.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-}
+		HttpSession session=req.getSession(false);
+		login= (Account)session.getAttribute("user");
+	}
 }

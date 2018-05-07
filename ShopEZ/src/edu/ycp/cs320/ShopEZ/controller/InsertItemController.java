@@ -47,6 +47,11 @@ public class InsertItemController {
 		return items;
 	}
 	
+	public Item findItemByID(int num) throws SQLException{
+		item=db.findItemByItemID(num);
+		return item;
+	}
+	
 	public List<Item> findAllItems() throws SQLException{
 		return db.findAllItemsForAccount(login.getAccountID());
 	}

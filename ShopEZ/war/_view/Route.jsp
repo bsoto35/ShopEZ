@@ -11,27 +11,23 @@
 <link rel="stylesheet" href="webresources/style.css" />
 </head>
 
-	<body>
-		<c:if test="${! empty errorMessage}">
-			<div class="error">${errorMessage}</div>
-		</c:if>
+<body>
+	<div id="header">
+		<div id="logo">
+			SHOP-EZE <a href="https://imgur.com/wtOuyHi"> <img
+				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
+				style="width: 50px; height: 50px;" /></a>
+		</div>
+		<ul id="nav">
+			<li><a href="${pageContext.servletContext.contextPath}/welcome">Login</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
+		</ul>
+	</div>
 	
-		<form action="${pageContext.servletContext.contextPath}/addNumbers" method="post">
-			<table>
-				<tr>
-					<td class="label">First number:</td>
-					<td><input type="text" name="first" size="12" value="${first}" /></td>
-				</tr>
-				<tr>
-					<td class="label">Second number:</td>
-					<td><input type="text" name="second" size="12" value="${second}" /></td>
-				</tr>
-				<tr>
-					<td class="label">Result:</td>
-					<td>${result}</td>
-				</tr>
-			</table>
-			<input type="Submit" name="submit" value="Add Numbers!">
-		</form>
-	</body>
+	<div id=content>
+		<a href="https://imgur.com/eLuk04R"><img src="https://i.imgur.com/eLuk04R.jpg" title="source: imgur.com" style="width: 600px; height: 400px; float:left;" /></a>
+		<a href="https://imgur.com/LaLvWZX"><img src="https://i.imgur.com/LaLvWZX.jpg" title="source: imgur.com"  style="width: 600px; height: 400px; float:right;"/></a>
+	</div>
+</body>
 </html>

@@ -14,6 +14,10 @@
 		var itemList = document.getElementById("itemList");
 		document.getElementById("add").value = itemList.options[itemList.selectedIndex].text;
 	}
+	function removeGroceryItems() {
+		var removeList = document.getElementById("removeList");
+		document.getElementById("remove").value = removeList.options[itemList.selectedIndex].text;
+	}
 </script>
 
 </head>
@@ -35,7 +39,6 @@
 			method="post">
 			<div class="addItem">
 				<div class="item">Item to Add:</div>
-
 				<select id="itemList" onChange="addGroceryItems()">
 					<option>apple</option>
 					<option>orange</option>
@@ -72,6 +75,11 @@
 			</div>
 			<div class="removeItem">
 				<div class="item">Remove Item:</div>
+				<select id="removeList" onChange="removeGroceryItems()">
+					<c:forEach items="${list}" var="item" varStatus="iter">
+						<option>${item.itemName}</option>
+					</c:forEach>
+				</select>
 				<div>
 					<input id="remove" type="text" name="itemR" value="${app.ItemName}" />
 				</div>
@@ -81,24 +89,30 @@
 					<input id="qty" type="text" name="quantityR"
 						value="${app.Quantity}" />
 				</div>
+
 				<input class="button" type="submit" name="rem" value="Remove">
+
 			</div>
+			<c:if test="${! empty errorMessage}">
+				<div class="error">${errorMessage}</div>
+			</c:if>
+			<c:if test="${! empty successMessage}">
+				<div class="error" style="font-size: 10px; color: green;">${successMessage}</div>
+			</c:if>
 		</form>
+
 		<form name="form1" method="GET"
 			action="${pageContext.servletContext.contextPath}/review">
 			<input class="button" type="submit" name="submit" value="Submit List">
 		</form>
-		<c:if test="${! empty errorMessage}">
-			<div class="error">${errorMessage}</div>
-		</c:if>
-		<c:if test="${! empty successMessage}">
-			<div class="error">${successMessage}</div>
-		</c:if>
-		<table>
+
+
+		<div id=itemList>
 			<c:forEach items="${list}" var="item" varStatus="iter">
 				<div id="items">${item.itemName}-${item.itemPrice}</div>
 			</c:forEach>
-		</table>
+		</div>
+
 	</div>
 
 </body>

@@ -51,29 +51,24 @@ public class InsertItemServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("check2");
 		HttpSession session=req.getSession(false);
-		login= (Account)session.getAttribute("user");
-		if(session.getAttribute("grocerylist") != null)
-			controller.setGroceryList((GroceryList)session.getAttribute("grocerylist"));
-		controller=new InsertItemController(groceries, login);
-		String user = login.getUsername();
-		System.out.println("   User: <" + user + "> logged in");
-		//DerbyDatabase db= new DerbyDatabase();
-		System.out.println("\nInsertItemServlet: doPost");		
 		String errorMessage = null;
 		String successMessage = null;
-		login= new Account();
+		login= (Account)session.getAttribute("user");
+		if(session.getAttribute("list") != null)
+			groceries=((GroceryList)session.getAttribute("grocerylist"));
+		controller=new InsertItemController(groceries, login);
+		String user = login.getUsername();
+		successMessage = "logged in as " +user;
+		System.out.println("   User: <" + user + "> logged in");
+		System.out.println("\nInsertItemServlet: doPost");		
 		boolean passed=false;
-		try {
-			//item=controller.findItemByName(user);
-			login=controller.getAccountByUser(user);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			errorMessage="Invalid Item";
-		}
+
 		req.setAttribute("quantityA", item.getQuantity()); 
-		req.setAttribute("quantityR", item.getQuantity()); 
+		req.setAttribute("quantityR", item.getQuantity());
+		req.setAttribute("errorMessage", errorMessage);
+		req.setAttribute("successMessage", successMessage);
+
 		if(req.getParameter("add") !=null) {
 			if(req.getParameter("itemA")!= null) {	
 				try {
@@ -95,7 +90,7 @@ public class InsertItemServlet extends HttpServlet {
 				}
 			}
 			else {
-
+				errorMessage="invalid item";
 			}
 		}
 		else if(req.getParameter("rem") !=null) {	
@@ -124,11 +119,9 @@ public class InsertItemServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			req.getSession().setAttribute("user", login);
-			resp.sendRedirect(req.getContextPath() + "/insertItem");
-			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
+			resp.sendRedirect(req.getContextPath() + "/review");
+			req.getRequestDispatcher("/_view/reviewList.jsp").forward(req, resp);
 		}
-		req.setAttribute("errorMessage", errorMessage);
-		req.setAttribute("successMessage", successMessage);
 
 
 		req.setAttribute("app", item);
@@ -145,7 +138,11 @@ public class InsertItemServlet extends HttpServlet {
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("quantityA", req.getParameter("quantityA")); 
 		req.setAttribute("quantityR", item.getQuantity());
-		req.getSession().setAttribute("user", login);;
+		req.getSession().setAttribute("user", login);
+		req.getSession().setAttribute("cont", controller);
+		req.setAttribute("errorMessage", errorMessage);
+		req.setAttribute("successMessage", successMessage);
+		//req.getSession().setAttribute("grocerylist", controller.getGroceryList());
 		resp.sendRedirect(req.getContextPath() + "/insertItem");
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}
