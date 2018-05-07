@@ -2,15 +2,18 @@
  
 
  import static org.junit.Assert.*;
- 
- import org.junit.Before;
+
+import java.sql.SQLException;
+
+import org.junit.Before;
  import org.junit.Test;
  
 
  import edu.ycp.cs320.ShopEZ.controller.ShopezeViewController;
  import edu.ycp.cs320.ShopEZ.model.ShopezeModel;
  import edu.ycp.cs320.ShopEZ.model.Account;
- import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
+import edu.ycp.cs320.ShopEZ.model.Item;
+import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
  
  public class InsertItemTest {
 
@@ -39,7 +42,12 @@
  	}
  	
  	@Test
- 	public void testGroceryList(){
- 		
+ 	public void testGroceryList() throws SQLException{
+ 		Item apple = new Item();
+ 		apple.setItemName("apple");
+ 		iteminsert.addItem(4, apple, 1);
+ 		assertEquals(iteminsert.getItemNameatIndex(0), "apple");
+ 		assertEquals(iteminsert.getListlength(), 1);
+ 		assertTrue(iteminsert.getIdList().contains(apple));
  	}
  }
