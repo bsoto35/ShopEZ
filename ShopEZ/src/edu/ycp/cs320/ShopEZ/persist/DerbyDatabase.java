@@ -155,7 +155,7 @@ public class DerbyDatabase {
 
 				try {
 					stmt1 = conn.prepareStatement(
-							"create table accounts (" +
+							"CREATE table accounts (" +
 									"	account_id integer primary key " +
 									"		generated always as identity (start with 1, increment by 1), " +									
 									"	account_username varchar(40)," +
@@ -166,7 +166,7 @@ public class DerbyDatabase {
 					stmt1.executeUpdate();
 
 					stmt2 = conn.prepareStatement(
-							"create table items (" +
+							"CREATE table items (" +
 									"	item_id integer primary key " +
 									"		generated always as identity (start with 1, increment by 1), " +
 									"	item_name varchar(70), " +
@@ -178,8 +178,8 @@ public class DerbyDatabase {
 					stmt2.executeUpdate();
 
 					stmt3 = conn.prepareStatement(
-							"create table groceryLists (" +
-									"	account_id   integer constraint account_id references accounts, " +
+							"CREATE table groceryLists (" +
+									"	account_id integer constraint account_id references accounts, " +
 									"	item_id integer constraint item_id references items" +
 									")"
 							);
@@ -218,7 +218,7 @@ public class DerbyDatabase {
 
 				try {
 					// populate accounts table (do accounts first, since account_id is foreign key in history table)
-					insertAccount = conn.prepareStatement("insert into accounts (account_username, account_password) values (?, ?)");
+					insertAccount = conn.prepareStatement("INSERT into accounts (account_username, account_password) values (?, ?)");
 					for (Account account : accountList) {
 						insertAccount.setString(1, account.getUsername());
 						insertAccount.setString(2, account.getPassword());
@@ -229,7 +229,7 @@ public class DerbyDatabase {
 					System.out.println("Accounts table populated ");
 
 					// populate items table (do this after accounts table)
-					insertItem = conn.prepareStatement("insert into items (item_name, item_price, item_location_x, item_location_y) values (?, ?, ?, ?)");
+					insertItem = conn.prepareStatement("INSERT into items (item_name, item_price, item_location_x, item_location_y) values (?, ?, ?, ?)");
 					for (Item item : itemList) {
 						insertItem.setString(1, item.getItemName());
 						insertItem.setDouble(2, item.getItemPrice());
@@ -242,7 +242,7 @@ public class DerbyDatabase {
 					System.out.println("Items table populated");
 
 					// populate groceryList table (do this after items table)
-					insertGroceryList = conn.prepareStatement("insert into groceryLists (account_id, item_id) values (?, ?)");
+					insertGroceryList = conn.prepareStatement("INSERT into groceryLists (account_id, item_id) values (?, ?)");
 					for (GroceryList list : groceryList) {
 						insertGroceryList.setInt(1, list.getAccountID());
 						insertGroceryList.setInt(2, list.getList().get(0));
@@ -275,7 +275,7 @@ public class DerbyDatabase {
 					stmt = conn.prepareStatement(
 							"UPDATE items " +
 									"set items.item_price = '?' " +
-									"where items.item_name =  ? "
+									"WHERE items.item_name =  ? "
 							);
 					stmt.setDouble(1, price);
 					stmt.setString(2, name);
@@ -305,9 +305,9 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"Select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"from items " +
-									"where items.item_name =  ? "
+							"SELECT items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
+									"FROM items " +
+									"WHERE items.item_name =  ? "
 							);
 					stmt.setString(1, itemName);
 
@@ -339,9 +339,9 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"select items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"	from items " +
-									"	where items.item_id =  ? "
+							"SELECT items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
+									"	FROM items " +
+									"	WHERE items.item_id =  ? "
 							);
 					stmt.setInt(1, itemID);
 
@@ -374,8 +374,8 @@ public class DerbyDatabase {
 
 					stmt = conn.prepareStatement(
 							"UPDATE items " +
-									" set items.item_location_x = '?', items.item_location_y = '?' " +
-									" where items.item_name = ? "
+									" set item_location_x = ?, item_location_y = ? " +
+									" WHERE item_name = ? "
 							);
 					stmt.setInt(1, x);
 					stmt.setInt(2, y);
@@ -404,9 +404,9 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"select items.item_price " +
-									"  from items " +
-									" where items.item_name = ? "
+							"SELECT items.item_price " +
+									"  FROM items " +
+									" WHERE items.item_name = ? "
 							);
 					stmt.setString(1, name);
 
@@ -453,9 +453,9 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select accounts.account_id " +
-									"from accounts " +
-									"	   where accounts.account_username = ? " +
+							"SELECT accounts.account_id " +
+									"	FROM accounts " +
+									"	   WHERE accounts.account_username = ? " +
 									"	   AND accounts.account_password = ? "	
 							);
 
@@ -500,8 +500,8 @@ public class DerbyDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"DELETE " +
-									"	from items " +
-									"	where items.item_id = ? "
+									"	FROM items " +
+									"	WHERE items.item_id = ? "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -533,9 +533,9 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select accounts.account_id, accounts.account_username, accounts.account_password " +
-									"	from accounts " +
-									"	   where accounts.account_username = ? "	
+							"SELECT accounts.account_id, accounts.account_username, accounts.account_password " +
+									"	FROM accounts " +
+									"	   WHERE accounts.account_username = ? "	
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -583,7 +583,7 @@ public class DerbyDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"INSERT into items(item_name, item_price, item_location_x, item_location_y) "
-									+ "  values (?, ?, ?, ?, ?) "
+									+ "  values (?, ?, ?, ?) "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -622,9 +622,9 @@ public class DerbyDatabase {
 					while(items.get(i) != null) {
 						// a canned query to find book information (including author name) from title
 						stmt = conn.prepareStatement(
-								"select items.item_location_x, items.item_location_y"+
-										"	from items"+
-										"		where items.item_name = ?"
+								"SELECT items.item_location_x, items.item_location_y"+
+										"	FROM items"+
+										"		WHERE items.item_name = ?"
 								);
 
 						// execute the query
@@ -937,11 +937,11 @@ public class DerbyDatabase {
 		return lowestDistanceNode;
 	}
 
-	public Boolean insertItemIntoGroceryListTable(final int id, final Item item, final int qty) throws SQLException {
+	public boolean insertItemIntoGroceryListTable(final int id, final Item item, final int qty) throws SQLException {
 		return executeTransaction(new Transaction<Boolean>() {
 
 			public Boolean execute(Connection conn) throws SQLException {
-				Boolean finalResult = false;
+				boolean finalResult = false;
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -951,8 +951,8 @@ public class DerbyDatabase {
 					while (iter < qty) {
 
 						stmt = conn.prepareStatement(
-								"insert into groceryLists(account_id, item_id) "
-										+ "  values (?, ?) "
+								"INSERT into groceryLists (account_id, item_id) "
+										+ "  values(?, ?) "
 								);
 
 						stmt.setInt(1, id);
@@ -963,9 +963,8 @@ public class DerbyDatabase {
 						iter++;
 					}
 
-					if (findItemsInGroceryListTable(id, item, qty) == true) {
-						finalResult = true;
-					}
+					System.out.println("Item <" + item.getItemName() + "> has been added to the groceryLists table <" + qty + "> times.");
+					finalResult = true;
 
 					return finalResult;
 				} finally {
@@ -986,20 +985,20 @@ public class DerbyDatabase {
 					int item_id = name.getItemID();
 					conn.setAutoCommit(true);
 					stmt = conn.prepareStatement(
-							"select * from groceryLists" +
-									"	where groceryLists.account_id = ?" +
-									"		and groceryLists.item_id = ?"
+							"SELECT * FROM groceryLists" +
+									"	WHERE groceryLists.account_id = ?" +
+									"		AND groceryLists.item_id = ?"
 							);
 					stmt.setInt(1, id);
 					stmt.setInt(2, item_id);
 					System.out.print("account: "+id+", item: "+item_id);
 					// execute the query
 					resultSet = stmt.executeQuery();
-					int iter = 0;
+					int count = 0;
 					while (resultSet.next()) {
-						iter++;
+						count++;
 					}
-					if((iter/2) == qty) {
+					if((count/2) == qty) {
 						finalResult = true;
 					}
 
@@ -1025,7 +1024,7 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"insert into accounts(account_username, account_password) "
+							"INSERT into accounts(account_username, account_password) "
 									+ "  values (?, ?) "
 							);
 
@@ -1049,58 +1048,16 @@ public class DerbyDatabase {
 	}
 
 	public int findAccountIDbyUsernameAndPassword(final String username, final String password) throws SQLException {
-		return executeTransaction(new Transaction<Integer>() {
+		Account account = findAccountByUsername(username);
+		int finalResult = 0;
 
-			public Integer execute(Connection conn) throws SQLException {
-
-				int finalResult = -1;
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				try {
-					conn.setAutoCommit(true);
-
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"select accounts.account_id " +
-									"from accounts " +
-									"	   where accounts.account_username = ? " +
-									"	   AND accounts.account_password = ? "	
-							);
-
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, username);
-					stmt.setString(2, password);
-
-					// execute the query
-					resultSet = stmt.executeQuery();
-
-					// for testing that a result was returned
-					Boolean found = false;
-
-					while (resultSet.next()) {
-						found = true;
-
-						// create new item object
-						// retrieve attributes from resultSet starting at index
-						Account account = new Account();
-						loadAccount(account, resultSet, account.getAccountID());
-
-						finalResult = account.getAccountID();
-						System.out.println("Found account in the accounts table");
-					}
-
-					// check if the item was found
-					if (!found) {
-						System.out.println("Either <" + username + "or" + password +"> is not valid");
-					}
-
-				} finally {
-					// close result set, statement, connection
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-				return finalResult;
-			}});
+		if (account.getPassword().equals(password)){
+			finalResult = account.getAccountID();
+			System.out.println("Found account <" + username + "> in the accounts table");
+		}else{
+			System.out.println("Either <" + username + "> or <" + password +"> is not valid");
+		}
+		return finalResult;
 	}
 
 	public Boolean clearGroceryListForAccount(final int id) throws SQLException {
@@ -1114,8 +1071,8 @@ public class DerbyDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"DELETE" +
-									"	from groceryLists " +
-									"	where groceryLists.account_id = ? "
+									"	FROM groceryLists " +
+									"	WHERE groceryLists.account_id = ? "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -1148,8 +1105,8 @@ public class DerbyDatabase {
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
 							"DELETE TOP(?)" +
-									"	from groceryLists " +
-									"	where groceryLists.account_id = ? " +
+									"	FROM groceryLists " +
+									"	WHERE groceryLists.account_id = ? " +
 									"		and groceryLists.item_id = ? "
 							);
 
@@ -1184,9 +1141,9 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select accounts.account_id, accounts.account_username, accounts.account_password " +
-									"	from accounts " +
-									"	   where accounts.account_id = ? "	
+							"SELECT accounts.account_id, accounts.account_username, accounts.account_password " +
+									"	FROM accounts " +
+									"	   WHERE accounts.account_id = ? "	
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
@@ -1226,7 +1183,7 @@ public class DerbyDatabase {
 
 			public List<Account> execute(Connection conn) throws SQLException {
 
-				ArrayList<Account> finalResult = new ArrayList<Account>();
+				List<Account> finalResult = new ArrayList<Account>();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				try {
@@ -1234,7 +1191,7 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select * from accounts"
+							"SELECT * FROM accounts"
 							);
 
 					// execute the query
@@ -1271,8 +1228,8 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"select * from groceryLists" +
-									"	where groceryLists.account_id = ?"
+							"SELECT * FROM groceryLists" +
+									"	WHERE groceryLists.account_id = ?"
 							);
 					stmt.setInt(1, id);
 					// execute the query
@@ -1280,23 +1237,25 @@ public class DerbyDatabase {
 					while (resultSet.next()) {
 						GroceryList list= new GroceryList();
 						loadGroceryList(list, resultSet, 1);
-						System.out.println("  "+list.getAccountID()+" "+ list.getItemID(0));
-						lists.add(list);
+						if (list.getAccountID() == id){
+							System.out.println("  "+list.getAccountID()+" "+ list.getItemID(0));
+							lists.add(list);
+						}
 					}
 					System.out.println("list size:"+lists.size());
-					
+
 					for (int i = 0; i < lists.size(); i++) {;
-						System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
-						Item temp=findItemByItemID(lists.get(i).getItemID(i));
-						finalResult.add(temp);
-						
-						String name=finalResult.get(i).getItemName();
-						
-						System.out.println("Item Name: "+name+", iterated:"+ i+ " size: "+lists.size());
+					System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
+					Item temp=findItemByItemID(lists.get(i).getItemID(i));
+					finalResult.add(temp);
+
+					String name=finalResult.get(i).getItemName();
+
+					System.out.println("Item Name: "+name+", iterated:"+ i+ " size: "+lists.size());
 					}
-					
+
 					System.out.println(" 1 ");
-					
+
 					return finalResult;
 				} finally {
 					// close result set, statement, connection
