@@ -16,7 +16,7 @@
 	}
 	function removeGroceryItems() {
 		var removeList = document.getElementById("removeList");
-		document.getElementById("remove").value = removeList.options[itemList.selectedIndex].text;
+		document.getElementById("remove").value = removeList.options[removeList.selectedIndex].text;
 	}
 </script>
 
@@ -107,7 +107,7 @@
 		</form>
 
 
-		<div id=itemList>
+		<div id=groceryList>
 			<c:forEach items="${list}" var="item" varStatus="iter">
 				<div id="items">${item.itemName}-${item.itemPrice}</div>
 			</c:forEach>

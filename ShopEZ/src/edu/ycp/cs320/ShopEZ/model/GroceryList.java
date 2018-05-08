@@ -5,14 +5,14 @@ import java.util.ArrayList;
 public class GroceryList {
 	private int accountID;
 	//private int itemID;
-	private ArrayList <Integer> groceries = new ArrayList<>();
+	private ArrayList <Integer> groceries = new ArrayList<Integer>();
 	
 	public GroceryList() {
 		
 	}
-	public GroceryList(int aID, int iID ) {
+	public GroceryList(int aID, ArrayList <Integer> iID ) {
 			accountID=aID;
-			groceries.add(iID);
+			groceries=iID;
 	}
 
 	public int getAccountID() {
@@ -24,18 +24,19 @@ public class GroceryList {
 	}
 
 
-	public void insertItems(Item item, int qty) {
+	public void insertItems(int itemID, int qty) {
+		System.out.println("qty: "+qty+" itemID: "+itemID);
 		int i=0;
 		while(i<qty) {
-			groceries.add(item.getItemID());
+			groceries.add(itemID);
 			i++;
 		}
 	}
 
-	public void removeItems(Item item, int qty) {
+	public void removeItems(int itemID, int qty) {
 		int i=0;
 		while(i<qty) {
-			groceries.remove(item.getItemID());
+			groceries.remove(itemID);
 			i++;
 		}
 	}
