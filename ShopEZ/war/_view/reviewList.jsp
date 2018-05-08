@@ -7,10 +7,9 @@
 
 <html>
 <head>
-<title>Route</title>
+<title>Review</title>
 <link rel="stylesheet" href="webresources/style.css" />
 </head>
-
 <body>
 	<div id="header">
 		<div id="logo">
@@ -19,15 +18,28 @@
 				style="width: 50px; height: 50px;" /></a>
 		</div>
 		<ul id="nav">
-			<li><a href="${pageContext.servletContext.contextPath}/welcome">Login</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/welcome">Home</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
 		</ul>
 	</div>
-	
-	<div id=content>
-		<a href="https://imgur.com/eLuk04R"><img src="https://i.imgur.com/eLuk04R.jpg" title="source: imgur.com" style="width: 720px; height: 540px; float:center;" /></a>
+	<div id=content2>
+		<div id=itemList>
+			<c:forEach items="${list}" var="item" varStatus="iter">
+				<div id="items">${item.itemName}-${item.itemPrice}</div>
+				<form name="form1" method="Post"
+					action="${pageContext.servletContext.contextPath}/review">
+					<input class="button" type="submit" name="${item.itemID}"
+						value="Remove">
+				</form>
+			</c:forEach>
+		</div>
 		
+		<form name="form1" method="GET"
+			action="${pageContext.servletContext.contextPath}/route">
+			<input class="button" type="submit" name="create"
+				value="Create Route">
+		</form>
 	</div>
 </body>
 </html>
