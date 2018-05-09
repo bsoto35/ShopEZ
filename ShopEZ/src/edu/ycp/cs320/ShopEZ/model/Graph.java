@@ -25,6 +25,10 @@ public class Graph {
 	public Route getTheRoute() {
 		return theRoute;
 	}
+	
+	public void setTheRoute(Route x) {
+		theRoute = x;
+	}
 
 	public void addNodeToRoute(Node n) {
 		this.theRoute.addNode(n);
