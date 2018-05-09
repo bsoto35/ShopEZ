@@ -1,56 +1,121 @@
 package edu.ycp.cs320.ShopEZ.model;
 
-import java.util.HashMap;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-public class Route {
-	private int distance;
-	private GroceryList currentList;
-	private Location startLocation;
-	private Location checkoutLocation;
-	private HashMap<Item, Integer> routeOrder;
-	
+public class Route extends JFrame{
+	private static final long serialVersionUID = 1L;
+	private int[][] path = new int[720][540];
+	private Set<Item> items = new HashSet<>();
+	private Set<Node> graphNodes = new HashSet<>();
+
+
 	public Route() {
+		setTitle("Route");
+		setSize(720, 540);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	public void setPath(int[][] route) {
+		this.path = route;
+	}
+
+	public int[][] getPath(){
+		return path;
+	}
+
+	public void addNode(Node n) {
+		graphNodes.add(n);
+	}
+
+	public Set<Node> getGraphNodes() {
+		return graphNodes;
+	}
+
+	public void setGraphNodes(Set<Node> graphNodes) {
+		this.graphNodes = graphNodes;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
 		
+		g.translate(660, 90);
+
+		ArrayList<Node> arr = new ArrayList<Node>();
+
+		int iter = 0;
+		for (Node n : graphNodes) {
+			if (n.getOrder() == iter++) {
+				arr.add(n);
+				if (n.getItemIds() != null) {
+					path[n.getCoordinates().getX()][n.getCoordinates().getY()] = 9;
+				}else {
+					path[n.getCoordinates().getX()][n.getCoordinates().getY()] = 1;
+				}
+				if (n.getOrder() == graphNodes.size()) {
+					path[n.getCoordinates().getX()][n.getCoordinates().getY()] = 5;
+				}
+			}
+		}
+
+		for(int row = 0; row < 540; row++) {
+			for (int col = 0; col < 720; col++) {
+				Color color = Color.WHITE;
+				if (path[col][row]==1) {
+					color = Color.CYAN;
+				}
+				else if (path[col][row]==9) {
+					color = Color.RED;
+				}
+				else if (path[col][row]==5){
+					color = Color.YELLOW;
+				}
+				if (col == 660 && row == 90) {
+					color = Color.GREEN;
+				}
+				g.setColor(color);
+				if (color != Color.WHITE) {
+					g.drawOval(col-10, row+10, 20, 20);
+				}
+
+				for (int i = 0; i < arr.size()-1; i++) {
+					int x1 = arr.get(i).getCoordinates().getX();
+					int y1 = arr.get(i).getCoordinates().getY();
+					int x2 = arr.get(i+1).getCoordinates().getX();
+					int y2 = arr.get(i+1).getCoordinates().getY();
+					g.setColor(Color.ORANGE);
+					g.drawLine(x1, y1, x2, y2);
+				}
+			}
+		}
 	}
 	
-	public void setGroceryList(GroceryList items) {
-		this.currentList = items;
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Route route = new Route();
+				route.setVisible(true);
+			}
+		});
 	}
-	
-	public GroceryList getGroceryList() {
-		return this.currentList;
+
+	public Set<Item> getItems() {
+		return items;
 	}
-	public void setDistance(int dist){
-		this.distance = dist;
+
+	public void setItems(Set<Item> items) {
+		this.items = items;
 	}
-	public int getDistance() {
-		return this.distance;
-	}
-	
-	public void setStartLocation(Location start) {
-		this.startLocation = start;
-	}
-	
-	public Location getStartLocation() {
-		return this.startLocation;
-	}
-	
-	public void setCheckoutLocation(Location checkout) {
-		this.checkoutLocation = checkout;
-	}
-	
-	public Location getCheckoutLocation() {
-		return this.checkoutLocation;
-	}
-	
-	public void setRouteOrder(Item name, int order) {
-		this.routeOrder.put(name, order);
-	}
-	
-	public void computeDistance(Location start, Location end) {
-		
-	}
-	
-	
-	
+
+
+
+
 }
