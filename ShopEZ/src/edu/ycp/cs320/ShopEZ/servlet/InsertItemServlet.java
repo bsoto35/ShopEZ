@@ -19,19 +19,23 @@ public class InsertItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private Account login= new Account();
-	private GroceryList groceries=new GroceryList();
 	private Item item= new Item();
-	private InsertItemController controller;
+	private InsertItemController controller= new InsertItemController();
+	String errorMessage = null;
+	String successMessage = null;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		HttpSession session=req.getSession(false);
 		System.out.println("\nInsertItemServlet: doGet");
-		req.setAttribute("quantityA", item.getQuantity()); 
-		req.setAttribute("quantityR", item.getQuantity()); 
-		login= (Account)session.getAttribute("user");
-		String user = login.getUsername();
+		String user=null;
+		errorMessage=(String)session.getAttribute("errorMessage");
+		successMessage=(String)session.getAttribute("successMessage");
+		if(session.getAttribute("user") != null) {
+			login= (Account)session.getAttribute("user");
+			user = login.getUsername();
+		}
 		if (user == null) {
 			System.out.println("   User: <" + user + "> not logged in or session timed out");
 
@@ -44,7 +48,12 @@ public class InsertItemServlet extends HttpServlet {
 		// proceed to handle request...
 
 		System.out.println("   User: <" + user + "> logged in");
-
+		try {
+			req.getSession().setAttribute("entireList", controller.getAllItems());
+		} catch (SQLException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}
 
@@ -52,62 +61,66 @@ public class InsertItemServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		HttpSession session=req.getSession(false);
-		String errorMessage = null;
-		String successMessage = null;
-		login= (Account)session.getAttribute("user");
-		if(session.getAttribute("list") != null)
-		groceries=((GroceryList)session.getAttribute("grocerylist"));
-		controller=new InsertItemController(groceries, login);
+		login = (Account)session.getAttribute("user");
+		if(session.getAttribute("groceryList") != null) {
+			System.out.print("Grocery List is not empty");
+			controller=new InsertItemController((GroceryList)session.getAttribute("groceryList"), login);
+		}
 		String user = login.getUsername();
+		int userID=login.getAccountID();
 		successMessage = "logged in as " +user;
-		System.out.println("   User: <" + user + "> logged in");
+		System.out.println("   User: <"+userID + ", "+user + "> logged in");
 		System.out.println("\nInsertItemServlet: doPost");		
 		boolean passed=false;
 
-		req.setAttribute("quantityA", item.getQuantity()); 
-		req.setAttribute("quantityR", item.getQuantity());
-		req.setAttribute("errorMessage", errorMessage);
-		req.setAttribute("successMessage", successMessage);
 
-		if(req.getParameter("add") !=null) {
-			if(req.getParameter("itemA")!= null) {	
-				try {
-					item=controller.findItemByName(req.getParameter("itemA"));
-					if(getIntFromParameter(req.getParameter("quantityA"))<10 && getIntFromParameter(req.getParameter("quantityA"))>0)
-						item.setQuantity(getIntFromParameter(req.getParameter("quantityA")));
-					else 
-						item.setQuantity(1);
-					System.out.println("Name: "+item.getItemName()+" Item ID: "+ item.getItemID()+ " price: " +item.getItemPrice()+" ");
-					passed=controller.addItem(login.getAccountID(), item, item.getQuantity());
-				} catch (SQLException e) {
-					e.printStackTrace();
-					errorMessage="Invalid Item";
+		errorMessage=(String)session.getAttribute("errorMessage");
+		successMessage=(String)session.getAttribute("successMessage");
+
+		//if the add button is pressed
+		if(req.getParameter("add") !=null && req.getParameter("itemA")!= null) {	
+			try {
+				//gets the item by name and saves it
+				item=controller.findItemByName(req.getParameter("itemA"));
+				if(getIntFromParameter(req.getParameter("quantityA"))<10 && getIntFromParameter(req.getParameter("quantityA"))>0) {
+					controller.setQuantity(getIntFromParameter(req.getParameter("quantityA")));
 				}
-				if(passed) {
-					System.out.println("item inserted into list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
-					double sum=item.getItemPrice();
-					controller.setTotalPrice(sum);
+				else {
+					errorMessage="More than 10 items are being added or less than 0 items. Defaulted to 1";
+					controller.setQuantity(1);
 				}
+				System.out.println("Name: "+item.getItemName()+" Item ID: "+ item.getItemID()+ " price: " +item.getItemPrice()+" ");
+				passed=controller.addItem(login.getAccountID(), item, controller.getQuantity());
+				successMessage="Added "+controller.getQuantity()+" "+item.getItemName();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				errorMessage="Invalid Item";
+			}
+			if(passed) {
+				System.out.println("item inserted into list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+controller.getQuantity());
+				double sum=item.getItemPrice();
+				controller.setTotalPrice(sum);
 			}
 			else {
 				errorMessage="invalid item";
 			}
 		}
-		else if(req.getParameter("rem") !=null) {	
+		else if(req.getParameter("rem") !=null && req.getParameter("itemR")!= null) {	
 			try {
-			//if(getIntFromParameter(req.getParameter("quantityR"))<controller.getIdList().size() && getIntFromParameter(req.getParameter("quantityR"))>0)
-				item.setQuantity(getIntFromParameter(req.getParameter("quantityR")));
-			//else 
-				//item.setQuantity(1);
-				item=controller.findItemByName(item.getItemName());
+				if(getIntFromParameter(req.getParameter("quantityR"))<controller.getIdList().size() && getIntFromParameter(req.getParameter("quantityR"))>0)
+					controller.setQuantity(getIntFromParameter(req.getParameter("quantityR")));
+				else 
+					controller.setQuantity(1);
+				item=controller.findItemByName(req.getParameter("itemR"));
 				System.out.println("Name: "+item.getItemName()+" Item ID: "+ item.getItemID()+ " price: " +item.getItemPrice()+" ");
-				passed=controller.removeItem(login.getAccountID(), item, item.getQuantity());
+				passed=controller.removeItem(login.getAccountID(), item, controller.getQuantity());
+				successMessage="Removed "+controller.getQuantity()+" "+item.getItemName();
 			} catch (SQLException e) {
 				e.printStackTrace();
 				errorMessage="Invalid Item";
 			}
 
-			System.out.println("item removed from list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item.getQuantity());
+			//System.out.println("item removed from list: "+item.getItemName()+", "+ item.getItemID()+ ", " +item.getItemPrice()+", "+item\\.getQuantity());
 
 			// Forward to view to render the result HTML document
 		}
@@ -118,6 +131,7 @@ public class InsertItemServlet extends HttpServlet {
 				// Auto-generated catch block
 				e.printStackTrace();
 			}
+			req.getSession().setAttribute("groceryList", controller.getGroceryList());
 			req.getSession().setAttribute("user", login);
 			resp.sendRedirect(req.getContextPath() + "/review");
 			req.getRequestDispatcher("/_view/reviewList.jsp").forward(req, resp);
@@ -126,6 +140,7 @@ public class InsertItemServlet extends HttpServlet {
 
 		req.setAttribute("app", item);
 		try {
+			req.getSession().setAttribute("entireList", controller.getAllItems());
 			req.getSession().setAttribute("list", controller.findItemsByID(controller.getIdList()));
 		} catch (SQLException e) {
 			// Auto-generated catch block
@@ -135,15 +150,11 @@ public class InsertItemServlet extends HttpServlet {
 		req.setAttribute("Username", req.getParameter("inUsername"));
 
 		// Add result objects as request attributes
-		req.setAttribute("errorMessage", errorMessage);
-		req.setAttribute("quantityA", req.getParameter("quantityA")); 
-		req.setAttribute("quantityR", item.getQuantity());
 		req.getSession().setAttribute("user", login);
 		req.getSession().setAttribute("groceryList", controller.getGroceryList());
 		req.getSession().setAttribute("cont", controller);
-		req.setAttribute("errorMessage", errorMessage);
-		req.setAttribute("successMessage", successMessage);
-		//req.getSession().setAttribute("grocerylist", controller.getGroceryList());
+		req.getSession().setAttribute("errorMessage", errorMessage);
+		req.getSession().setAttribute("successMessage", successMessage);
 		resp.sendRedirect(req.getContextPath() + "/insertItem");
 		req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp);
 	}

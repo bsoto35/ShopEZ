@@ -24,7 +24,7 @@
 				action="${pageContext.servletContext.contextPath}/login">
 				<input id="login" type="submit" name="login" value="Login">
 			</form>
-			<form name="form2" method="POST"
+			<form name="form2" method="GET"
 				action="${pageContext.servletContext.contextPath}/">
 				<input id="guest" type="submit" name="guest"
 					value="Continue as Guest">

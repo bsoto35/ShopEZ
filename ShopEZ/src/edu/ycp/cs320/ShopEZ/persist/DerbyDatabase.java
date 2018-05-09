@@ -111,6 +111,7 @@ public class DerbyDatabase {
 	private void loadGroceryList(GroceryList groceryList, ResultSet resultSet, int index) throws SQLException{
 		groceryList.setAccountID(resultSet.getInt(index++));
 		groceryList.getList().add(resultSet.getInt(index++));
+
 	}
 
 	public void dropTables() throws SQLException{
@@ -202,19 +203,19 @@ public class DerbyDatabase {
 			public Boolean execute(Connection conn) throws SQLException {
 				List<Account> accountList;
 				List<Item> itemList;
-				List<GroceryList> groceryList;
+				//List<GroceryList> groceryList;
 
 				try {
 					accountList = InitialData.getAccounts();
 					itemList = InitialData.getItems();
-					groceryList = InitialData.getGroceryLists();
+					//groceryList = InitialData.getGroceryLists();
 				} catch (IOException e) {
 					throw new SQLException("Couldn't read initial data", e);
 				}
 
 				PreparedStatement insertAccount = null;
 				PreparedStatement insertItem   = null;
-				PreparedStatement insertGroceryList = null;
+				//PreparedStatement insertGroceryList = null;
 
 				try {
 					// populate accounts table (do accounts first, since account_id is foreign key in history table)
@@ -242,7 +243,7 @@ public class DerbyDatabase {
 					System.out.println("Items table populated");
 
 					// populate groceryList table (do this after items table)
-					insertGroceryList = conn.prepareStatement("INSERT into groceryLists (account_id, item_id) values (?, ?)");
+					/*insertGroceryList = conn.prepareStatement("INSERT into groceryLists (account_id, item_id) values (?, ?)");
 					for (GroceryList list : groceryList) {
 						insertGroceryList.setInt(1, list.getAccountID());
 						insertGroceryList.setInt(2, list.getList().get(0));
@@ -250,13 +251,13 @@ public class DerbyDatabase {
 					}
 					insertGroceryList.executeBatch();
 
-					System.out.println("Grocery List table populated");
+					System.out.println("Grocery List table populated");*/
 
 					return true;
 				} finally {
 					DBUtil.closeQuietly(insertItem);
 					DBUtil.closeQuietly(insertAccount);
-					DBUtil.closeQuietly(insertGroceryList);
+					//DBUtil.closeQuietly(insertGroceryList);
 				}
 			}
 		});
@@ -305,19 +306,14 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"SELECT items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"FROM items " +
+							"SELECT * FROM items " +
 									"WHERE items.item_name =  ? "
 							);
 					stmt.setString(1, itemName);
 
 					resultSet = stmt.executeQuery();
 					while(resultSet.next()) {
-						result.setItemID(resultSet.getInt(1));
-						result.setItemName(resultSet.getString(2));
-						result.setItemPrice(resultSet.getDouble(3));
-						result.setItemLocationX(resultSet.getInt(4));
-						result.setItemLocationY(resultSet.getInt(5));
+						loadItem(result, resultSet, 1);
 					}
 					return result;
 				} finally {
@@ -339,19 +335,14 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"SELECT items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"	FROM items " +
+							"SELECT * FROM items " +
 									"	WHERE items.item_id =  ? "
 							);
 					stmt.setInt(1, itemID);
 
 					resultSet = stmt.executeQuery();
 					while(resultSet.next()) {
-						result.setItemID(resultSet.getInt(1));
-						result.setItemName(resultSet.getString(2));
-						result.setItemPrice(resultSet.getDouble(3));
-						result.setItemLocationX(resultSet.getInt(4));
-						result.setItemLocationY(resultSet.getInt(5));
+						loadItem(result, resultSet, 1);
 					}
 					return result;
 				} finally {
@@ -533,8 +524,7 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"SELECT accounts.account_id, accounts.account_username, accounts.account_password " +
-									"	FROM accounts " +
+							"SELECT * FROM accounts " +
 									"	   WHERE accounts.account_username = ? "	
 							);
 
@@ -949,7 +939,6 @@ public class DerbyDatabase {
 					conn.setAutoCommit(true);
 					int iter = 0;
 					while (iter < qty) {
-
 						stmt = conn.prepareStatement(
 								"INSERT into groceryLists (account_id, item_id) "
 										+ "  values(?, ?) "
@@ -1096,28 +1085,31 @@ public class DerbyDatabase {
 		return executeTransaction(new Transaction<Boolean>() {
 			public Boolean execute(Connection conn) throws SQLException {
 				Boolean finalResult = false;
+				GroceryList list= new GroceryList();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				int item_id = itemName.getItemID();
 				try {
 					conn.setAutoCommit(true);
-					System.out.println("");
-					// a canned query to find book information (including author name) from title
-					stmt = conn.prepareStatement(
-							"DELETE TOP(?)" +
-									"	FROM groceryLists " +
-									"	WHERE groceryLists.account_id = ? " +
-									"		and groceryLists.item_id = ? "
-							);
+					int i=0;
+					while(i<qty) {
+						stmt = conn.prepareStatement(
+								"DELETE FROM groceryLists " +
+										"	WHERE groceryLists.account_id = ? " +
+										"		and groceryLists.item_id = ? "
+								);
 
-					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setInt(1, qty);
-					stmt.setInt(2, id);
-					stmt.setInt(3, item_id);
+						// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
+						stmt.setInt(1, id);
+						stmt.setInt(2, item_id);
 
-					// execute the query
-					stmt.executeQuery();
-
+						/*resultSet=stmt.executeQuery();
+						while(resultSet.next()) {
+							loadGroceryList(list, resultSet, 1);
+						}
+						System.out.println("item removed: "+ list.getAccountID()+" "+ list.getItemID(i));*/
+						i++;						
+					}
 					finalResult = true;
 
 				} finally {
@@ -1244,19 +1236,53 @@ public class DerbyDatabase {
 					}
 					System.out.println("list size:"+lists.size());
 
-					for (int i = 0; i < lists.size(); i++) {;
-					System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
-					Item temp=findItemByItemID(lists.get(i).getItemID(i));
-					finalResult.add(temp);
+					for (int i = 0; i < lists.size(); i++) {
+						System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
+						Item temp=findItemByItemID(lists.get(i).getItemID(i));
+						finalResult.add(temp);
 
-					String name=finalResult.get(i).getItemName();
+						String name=finalResult.get(i).getItemName();
 
-					System.out.println("Item Name: "+name+", iterated:"+ i+ " size: "+lists.size());
+						System.out.println("Item Name: "+name+", iterated:"+ i+ " size: "+lists.size());
 					}
 
-					System.out.println(" 1 ");
+					System.out.println(" find all items for Account ");
 
 					return finalResult;
+				} finally {
+					// close result set, statement, connection
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);			
+				}
+			}});
+	}
+
+	public List<Item> findAllItems() throws SQLException {
+		return executeTransaction(new Transaction<List<Item>>() {
+
+			public List<Item> execute(Connection conn) throws SQLException {
+				List<Item> itemList = new ArrayList<Item>();
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				try {
+					conn.setAutoCommit(true);
+
+					// a canned query to find book information (including author name) from title
+					stmt = conn.prepareStatement(
+							"SELECT * FROM Items"
+							);
+					// execute the query
+					resultSet = stmt.executeQuery();
+					int index=1;
+					while (resultSet.next()) {
+						Item item= new Item();
+						loadItem(item, resultSet, index);
+						System.out.println("Find all Items method, item being added to the list: "+ item.getItemID()+" "+item.getItemName());
+						itemList.add(item);
+					}
+
+
+					return itemList;
 				} finally {
 					// close result set, statement, connection
 					DBUtil.closeQuietly(resultSet);
