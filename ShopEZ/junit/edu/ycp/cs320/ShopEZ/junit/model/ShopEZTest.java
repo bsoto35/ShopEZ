@@ -61,7 +61,7 @@ public class ShopEZTest {
 	@Test
 	public void testGroceryListmethod() {//test the grocery list model
 		//create initial values
-		list.insertItems(item, 2);
+		list.insertItems(1, 1);;
 		list.setAccountID(1);
 		//check to see if the correct values are returned
 		assertEquals(list.getAccountID(), 1);
