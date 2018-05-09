@@ -2,6 +2,7 @@ body {
 	background-image: url("https://i.imgur.com/7BqARyx.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-attachment: scroll;
 }
 
 #header {
@@ -204,6 +205,14 @@ li a:hover {
 }
 
 .error {
+	background-color: white;
+	background-width: 100px;
 	font-size: 15px;
 	color: red;
+}
+.success{
+	background-color: white;
+	background-width: 100px;
+	font-size: 15px;
+	color: green;
 }

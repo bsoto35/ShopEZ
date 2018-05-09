@@ -29,7 +29,10 @@ public class ReviewListServlet extends HttpServlet {
 		HttpSession session=req.getSession(false);
 		System.out.println("Review List Servlet: doGet");
 		login= (Account)session.getAttribute("user");
-		controller=(InsertItemController)session.getAttribute("cont");
+		if(session.getAttribute("groceryList") != null) {
+			System.out.print("Grocery List is not empty");
+			controller=new InsertItemController((GroceryList)session.getAttribute("groceryList"), login);
+		}
 		String user = login.getUsername();
 		if (user == null) {
 			System.out.println("   User: <" + user + "> not logged in or session timed out");
@@ -57,8 +60,14 @@ public class ReviewListServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		HttpSession session=req.getSession(false);
-		login= (Account)session.getAttribute("user");
-		controller=(InsertItemController)session.getAttribute("cont");
+		String errorMessage = null;
+		String successMessage = null;
+		login = (Account)session.getAttribute("user");
+		if(session.getAttribute("groceryList") != null) {
+			System.out.print("Grocery List is not empty");
+			controller=new InsertItemController((GroceryList)session.getAttribute("groceryList"), login);
+		}
+
 		if(req.getParameter("create") !=null) {
 			try {
 				req.getSession().setAttribute("list", controller.findAllItems());
@@ -70,17 +79,34 @@ public class ReviewListServlet extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/route");
 			req.getRequestDispatcher("/_view/Route.jsp").forward(req, resp);
 		}
-		for(int i=0; i<controller.getIdList().size(); i++)
+		
+		int i=0;
+		boolean removed=false;
+		while(i< controller.getIdList().size() && !removed) {
+			System.out.println("ID: "+controller.getIdList().get(i)+" i: "+i);
 			if(req.getParameter(""+controller.getIdList().get(i)) !=null) {
 				try {
-					
 					controller.removeItem(login.getAccountID(), controller.findItemByID(controller.getIdList().get(i)), 1);
+					successMessage="removed item "+controller.findItemByID(controller.getIdList().get(i));
+					removed=true;
+					System.out.println("remove has been set to true ");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				req.getRequestDispatcher("/_view/reviewList.jsp").forward(req, resp);
+				if(!removed) {
+					System.out.println("remove is false ");
+					i++;
+				}
 			}
 
+		}
+		req.setAttribute("errorMessage", errorMessage);
+		req.setAttribute("successMessage", successMessage);
+		if(removed) {
+			req.getSession().setAttribute("groceryList", controller.getGroceryList());
+			req.getSession().setAttribute("user", login);
+			resp.sendRedirect(req.getContextPath() + "/review");
+			req.getRequestDispatcher("/_view/reviewList.jsp").forward(req, resp);
+		}
 	}
-
 }

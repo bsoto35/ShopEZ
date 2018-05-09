@@ -74,7 +74,7 @@
 					<div class="error">${errorMessage}</div>
 				</c:if>
 				<c:if test="${! empty successMessage}">
-					<div class="error">${successMessage}</div>
+					<div class="success">${successMessage}</div>
 				</c:if>
 			</form>
 		</div>
