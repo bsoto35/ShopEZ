@@ -32,6 +32,7 @@ public class LoginServlet extends HttpServlet {
 		System.out.println("\nLoginServlet: doPost");
 
 		String errorMessage = "";
+		String successMessage="";
 		boolean validLogin =false;
 		login= new Account();
 		controller=new LoginController();
@@ -43,11 +44,13 @@ public class LoginServlet extends HttpServlet {
 			login.setUsername(req.getParameter("inUsername"));
 			login.setPassword(req.getParameter("inPassword"));
 			System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");			
-			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
+			if (login.getUsername() == null || login.getPassword() == null) {
 				errorMessage = "Please specify both user name and password";
 			} else {
 				try {		
 					validLogin=controller.verifyAccount(login.getUsername(), login.getPassword());
+					login=controller.getAccountbyUser(login.getUsername());
+					successMessage="Successfully logged in as "+login.getUsername();
 					if(!validLogin)
 						errorMessage = "Username and/or password invalid";
 
@@ -64,6 +67,7 @@ public class LoginServlet extends HttpServlet {
 				e.printStackTrace();
 			}	
 			System.out.println("  Name: <" + login.getUsername() + ">  PW: <" + login.getPassword() + ">");
+			successMessage="Successfully logged in as "+login.getUsername();
 			req.getSession().setAttribute("user", login);
 			resp.sendRedirect(req.getContextPath() + "/insertItem");
 			req.getRequestDispatcher("/_view/insertItem.jsp").forward(req, resp); 
@@ -89,7 +93,8 @@ public class LoginServlet extends HttpServlet {
 				errorMessage = "Passwords do not match";
 			}
 		}
-		req.setAttribute("errorMessage", errorMessage);
+		req.getSession().setAttribute("errorMessage", errorMessage);
+		req.getSession().setAttribute("successMessage", successMessage);
 		if (validLogin==true) {
 			System.out.println("   Valid login - starting session, redirecting to /insertItem");
 			// store user object in session

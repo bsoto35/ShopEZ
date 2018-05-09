@@ -1,18 +1,20 @@
 package edu.ycp.cs320.ShopEZ.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GroceryList {
 	private int accountID;
-	//private int itemID;
-	private ArrayList <Integer> groceries = new ArrayList<Integer>();
-	
+	private List <Integer> groceries = new ArrayList<Integer>();
 	public GroceryList() {
-		
+
 	}
-	public GroceryList(int aID, ArrayList <Integer> iID ) {
-			accountID=aID;
-			groceries=iID;
+	public GroceryList(int aID, List <Integer> iID ) {
+		accountID=aID;
+		int i=0;
+		while(i< iID.size()) {
+			groceries.add(iID.get(i));
+		}
 	}
 
 	public int getAccountID() {
@@ -35,9 +37,16 @@ public class GroceryList {
 
 	public void removeItems(int itemID, int qty) {
 		int i=0;
-		while(i<qty) {
-			groceries.remove(itemID);
-			i++;
+		int ct=0;
+		while(i < groceries.size() && ct < qty) {
+			if(groceries.get(i) == itemID) {
+				System.out.print("itemID to be removed: "+ itemID +" ID being removed: "+groceries.get(i));
+				groceries.remove(i);
+				ct++;
+			}
+			else {
+				i++;
+			}
 		}
 	}
 
@@ -45,9 +54,13 @@ public class GroceryList {
 		return groceries.get(index);
 	}
 
-	public ArrayList<Integer> getList(){
+	public List<Integer> getList(){
 		return groceries; 
 	}
-	
+
+	public void setList(List<Integer> iIDs) {
+		groceries=iIDs; 
+	}
+
 
 }
