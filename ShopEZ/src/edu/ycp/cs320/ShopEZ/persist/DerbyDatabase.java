@@ -311,14 +311,13 @@ public class DerbyDatabase {
 							);
 					stmt.setString(1, itemName);
 
-					resultSet = stmt.executeQuery();
-					while(resultSet.next()) {
+					resultSet = stmt.executeQuery(); 
 						result.setItemID(resultSet.getInt(1));
 						result.setItemName(resultSet.getString(2));
 						result.setItemPrice(resultSet.getDouble(3));
 						result.setItemLocationX(resultSet.getInt(4));
 						result.setItemLocationY(resultSet.getInt(5));
-					}
+					
 					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
@@ -1220,6 +1219,7 @@ public class DerbyDatabase {
 
 			public List<Item> execute(Connection conn) throws SQLException {
 				List<GroceryList> lists = new ArrayList<GroceryList>();
+				List<Integer> idlist = new ArrayList<Integer>();
 				List<Item> finalResult = new ArrayList<Item>();
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
@@ -1228,25 +1228,22 @@ public class DerbyDatabase {
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"SELECT * FROM groceryLists" +
+							"SELECT item_id FROM groceryLists" +
 									"	WHERE groceryLists.account_id = ?"
 							);
 					stmt.setInt(1, id);
 					// execute the query
 					resultSet = stmt.executeQuery();
+					int index = 1;
 					while (resultSet.next()) {
-						GroceryList list= new GroceryList();
-						loadGroceryList(list, resultSet, 1);
-						if (list.getAccountID() == id){
-							System.out.println("  "+list.getAccountID()+" "+ list.getItemID(0));
-							lists.add(list);
-						}
+						idlist.add(resultSet.getInt(index));
+						
 					}
 					System.out.println("list size:"+lists.size());
 
-					for (int i = 0; i < lists.size(); i++) {;
-					System.out.println("Check Item ID: "+ lists.get(i).getItemID(i));
-					Item temp=findItemByItemID(lists.get(i).getItemID(i));
+					for (int i = 0; i < idlist.size(); i++) {;
+					System.out.println("Check Item ID: "+ idlist.get(i));
+					Item temp=findItemByItemID(idlist.get(i));
 					finalResult.add(temp);
 
 					String name=finalResult.get(i).getItemName();

@@ -4,6 +4,7 @@ package edu.ycp.cs320.ShopEZ.junit.persist;
 import static org.junit.Assert.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -76,8 +77,9 @@ public class ShopEpersistTest {
 		item.setItemLocationY(17);
 		item.setItemName("apple");
 		item.setItemPrice(1.5);
-		assertTrue(derby.insertItemIntoGroceryListTable(3, item, 2));
-		assertTrue(derby.findAllItemsForAccount(3).contains(item));
+		assertTrue(derby.insertItemIntoGroceryListTable(4, item, 2));
+		List<Item> tmp = new ArrayList<Item>(derby.findAllItemsForAccount(4));
+		assertTrue(tmp.contains(item));
 		derby.removeItemFromGroceryListTable(3, item, 2);
 		assertNotEquals(derby.findAllItemsForAccount(1), item);
 		derby.insertItemIntoGroceryListTable(1, item, 2);
