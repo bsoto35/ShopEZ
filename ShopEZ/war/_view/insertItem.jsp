@@ -40,27 +40,11 @@
 			<div class="addItem">
 				<div class="item">Item to Add:</div>
 				<select id="itemList" onChange="addGroceryItems()">
-					<option>apple</option>
-					<option>orange</option>
-					<option>grapes</option>
-					<option>celery</option>
-					<option>carrots</option>
-					<option>lettuce</option>
-					<option>tomatoes</option>
-					<option>peppers</option>
-					<option>avocados</option>
-					<option>milk</option>
-					<option>eggs</option>
-					<option>cheese</option>
-					<option>yogurt</option>
-					<option>butter</option>
-					<option>salmon</option>
-					<option>ground beef</option>
-					<option>tenderloin steak</option>
-					<option>ribeye steak</option>
-					<option>sausage</option>
-					<option>shrimp</option>
+					<c:forEach items="${entireList}" var="item" varStatus="iter">
+						<option>${item.itemName}</option>
+					</c:forEach>
 				</select>
+
 
 				<div>
 					<input id="add" type="text" name="itemA" value="${app.ItemName}" />
@@ -97,7 +81,7 @@
 				<div class="error">${errorMessage}</div>
 			</c:if>
 			<c:if test="${! empty successMessage}">
-				<div class="error" style="font-size: 10px; color: green;">${successMessage}</div>
+				<div class="success">${successMessage}</div>
 			</c:if>
 		</form>
 

@@ -46,7 +46,7 @@ public class InitialData {
 		ReadCSV readAccounts = new ReadCSV("accounts.csv");
 		try {
 			// auto-generated primary key for books table
-			Integer accountId = 1;
+			int accountId = 1;
 			while (true) {
 				List<String> tuple = readAccounts.next();
 				if (tuple == null) {
@@ -67,8 +67,8 @@ public class InitialData {
 			readAccounts.close();
 		}
 	}
-
-	public static List<GroceryList> getGroceryLists() throws IOException{
+	//realized our problem all along was that we had nothing in groceryList and we were trying to load it
+	/*public static List<GroceryList> getGroceryLists() throws IOException{
 		List<GroceryList> list = new ArrayList<GroceryList>();
 		ReadCSV readGroceryLists = new ReadCSV("groceryLists.csv");
 		try {
@@ -91,5 +91,5 @@ public class InitialData {
 		} finally {
 			readGroceryLists.close();
 		}
-	}
+	}*/
 }

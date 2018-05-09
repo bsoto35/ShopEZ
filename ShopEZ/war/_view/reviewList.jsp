@@ -25,21 +25,29 @@
 	</div>
 	<div id=content2>
 		<div id=itemList>
+			<script>var num=1
+			</script>
 			<c:forEach items="${list}" var="item" varStatus="iter">
 				<div id="items">${item.itemName}-${item.itemPrice}</div>
 				<form name="form1" method="Post"
 					action="${pageContext.servletContext.contextPath}/review">
-					<input class="button" type="submit" name="${item.itemID}"
+					<input class="button" type="submit" name="${item.itemID} "
 						value="Remove">
 				</form>
 			</c:forEach>
 		</div>
-		
+
 		<form name="form1" method="GET"
 			action="${pageContext.servletContext.contextPath}/route">
 			<input class="button" type="submit" name="create"
 				value="Create Route">
 		</form>
+		<c:if test="${! empty errorMessage}">
+			<div class="error">${errorMessage}</div>
+		</c:if>
+		<c:if test="${! empty successMessage}">
+			<div class="success">${successMessage}</div>
+		</c:if>
 	</div>
 </body>
 </html>

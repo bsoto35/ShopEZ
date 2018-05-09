@@ -7,19 +7,23 @@ import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
+import java.util.List;
 /**
  * Controller for the insertItemServlet.
  */
 public class InsertItemController {
 	private DerbyDatabase db= new DerbyDatabase();
 	private int id; 
+	private int quantity;
 	private Item item = new Item();
-	private double total=0.0; 
-	private Account login=new Account();
-	private boolean bool=false;
-	private GroceryList list=new GroceryList();
+	private double total = 0.0; 
+	private Account login = new Account();
+	private boolean bool = false;
+	private List<Integer> itemIDs = new ArrayList<Integer>();
+	private GroceryList list = new GroceryList(id, itemIDs);
 
 	public InsertItemController() {
+
 	}
 
 	public InsertItemController(GroceryList list, Account login) {
@@ -31,27 +35,31 @@ public class InsertItemController {
 		item=db.findItemByItemName(name);
 		return item;
 	}
-	
+
 	public boolean isGuest(Account login) {
 		if(login.getUsername().equals("guest"))
 			return true;
 		return false;
 	}
-	
-	public ArrayList<Item> findItemsByID(ArrayList<Integer> list) throws SQLException{
-		ArrayList<Item> items= new ArrayList<Item>();
-		for(int i=0; i < list.size(); i++) {
-		item=db.findItemByItemID(list.get(i));
-		items.add(item);
+
+	public List<Item> findItemsByID(List<Integer> itemList) throws SQLException{
+		List<Item> items= new ArrayList<Item>();
+		for(int i=0; i < itemList.size(); i++) {
+			item=db.findItemByItemID(itemList.get(i));
+			items.add(item);
 		}
 		return items;
 	}
 	
+	public List<Item> getAllItems() throws SQLException{
+		return db.findAllItems();
+	}
+
 	public Item findItemByID(int num) throws SQLException{
 		item=db.findItemByItemID(num);
 		return item;
 	}
-	
+
 	public List<Item> findAllItems() throws SQLException{
 		return db.findAllItemsForAccount(login.getAccountID());
 	}
@@ -82,6 +90,9 @@ public class InsertItemController {
 	public boolean addItem(int id, Item item, int qty) throws SQLException{
 		bool= db.insertItemIntoGroceryListTable(id, item, qty);
 		System.out.println(item.getItemID()+" "+item.getItemName()+" qty:"+qty);
+		/*for(int i=0; i< qty; i++) {
+			list.getList().add(item.getItemID());
+		}*/
 		list.insertItems(item.getItemID(), qty);
 		return bool;
 	}
@@ -95,9 +106,14 @@ public class InsertItemController {
 		return list.getList().size();
 	}
 
-	public ArrayList<Integer> getIdList(){
-		System.out.print(""+list.getList().size());
-		return list.getList();
+	public List<Integer> getIdList(){
+		System.out.println(""+list.getList().size());
+		itemIDs=list.getList();
+		return itemIDs;
+	}
+
+	public void setIdList(List<Integer> iIDs){		
+		list.setList(iIDs);
 	}
 
 	public GroceryList getGroceryList() {
@@ -114,6 +130,15 @@ public class InsertItemController {
 	}
 
 	public double getTotalPrice() {
+		list.getList();
 		return total;
+	}
+	
+	public void setQuantity(int quantity) {
+		this.quantity=quantity;
+	}
+	
+	public int getQuantity() {
+		return quantity;
 	}
 }
