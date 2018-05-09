@@ -33,30 +33,31 @@ public class ShopEpersistTest {
 	public void testItemList() throws SQLException{//tests for the Item tables inputs and outputs
 		//setting up the test item
 		Item tmp = new Item();
-		tmp.setItemLocationX(0);
+		tmp.setItemLocationX(1);
 		tmp.setItemLocationY(1);
 		tmp.setItemName("tmp");
 		tmp.setItemPrice(1.5);
-		assertTrue(derby.insertItemIntoItemsTable("tmp", 1.5, 0, 1));
+		assertTrue(derby.insertItemIntoItemsTable("tmp", 1.5, 1, 1));
 		Item tmp2 = derby.findItemByItemName("tmp");
-		assertEquals(tmp2.getItemLocationX(), 0);
-		assertEquals(tmp2.getItemLocationY(), 1);
-		assertEquals(tmp2.getItemPrice(), 1.5, 0.01);
+		assertEquals(1, tmp2.getItemLocationX());
+		assertEquals(1, tmp2.getItemLocationY());
+		assertEquals(1.5, tmp2.getItemPrice(), 0.01);
 		derby.updateItemLocationByItemNameAndXYCoords("tmp", 2, 3);
 		tmp = derby.findItemByItemName("tmp");
-		assertEquals(tmp.getItemLocationX(), 2);
-		assertEquals(tmp.getItemLocationY(), 3);
-		assertEquals(derby.findItemPriceByItemName("tmp"), 1.5, 0.1);
+		assertEquals(2, tmp.getItemLocationX());
+		assertEquals(3, tmp.getItemLocationY());
+		assertEquals(1.5, derby.findItemPriceByItemName("tmp"), 0.1);
 		assertTrue(derby.removeItemFromItemsTable(tmp));
+		
 	}
 
 	@Test
 	public void testAccounts() throws SQLException{
 		derby.addAccountIntoAccountsTable("test", "pass");
-		assertEquals(derby.findAccountByUsername("test").getPassword(), "pass");
+		assertEquals("pass", derby.findAccountByUsername("test").getPassword());
 		assertTrue(derby.verifyAccountFromAccountsTableByUsernameAndPassword("test", "pass"));
-		assertEquals(derby.findAccountByAccountID(4).getUsername(), "dhenry");
-		assertEquals(derby.findAccountIDbyUsernameAndPassword("dhenry", "Wallace"), 4);
+		assertEquals("dhenry", derby.findAccountByAccountID(4).getUsername());
+		assertEquals(4, derby.findAccountIDbyUsernameAndPassword("dhenry", "Wallace"));
 		Account tmp = new Account();
 		tmp.setUsername("test");
 		tmp.setPassword("pass");
@@ -79,9 +80,12 @@ public class ShopEpersistTest {
 		item.setItemPrice(1.5);
 		assertTrue(derby.insertItemIntoGroceryListTable(4, item, 2));
 		List<Item> tmp = new ArrayList<Item>(derby.findAllItemsForAccount(4));
-		assertTrue(tmp.contains(item));
+		if(tmp.isEmpty()){
+			System.out.println("find all items failed");
+		}
+		assertEquals("apple", tmp.get(1).getItemName());
 		derby.removeItemFromGroceryListTable(3, item, 2);
-		assertNotEquals(derby.findAllItemsForAccount(1), item);
+		assertTrue(derby.findAllItemsForAccount(1).isEmpty());
 		derby.insertItemIntoGroceryListTable(1, item, 2);
 		assertTrue(derby.clearGroceryListForAccount(1));
 		
@@ -94,8 +98,8 @@ public class ShopEpersistTest {
 		tmp = derby.findItemByItemName("grapes");
 		derby.insertItemIntoGroceryListTable(4, tmp, 1);
 		List<Item> test = derby.loadGraphNodesFromGroceryListItems(4);
-		assertEquals(test.get(0).getItemName(), "apples");
-		assertEquals(test.get(1).getItemName(), "grapes");
+		assertEquals("apples", test.get(0).getItemName());
+		assertEquals("grapes", test.get(1).getItemName());
 	}
 }
 

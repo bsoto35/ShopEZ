@@ -305,18 +305,26 @@ public class DerbyDatabase {
 				try {
 
 					stmt = conn.prepareStatement(
-							"SELECT items.item_id, items.item_name, items.item_price, items.item_location_x, items.item_location_y " +
-									"FROM items " +
+							"SELECT * FROM items " +
 									"WHERE items.item_name =  ? "
 							);
 					stmt.setString(1, itemName);
 
-					resultSet = stmt.executeQuery(); 
-						result.setItemID(resultSet.getInt(1));
-						result.setItemName(resultSet.getString(2));
-						result.setItemPrice(resultSet.getDouble(3));
-						result.setItemLocationX(resultSet.getInt(4));
-						result.setItemLocationY(resultSet.getInt(5));
+					resultSet = stmt.executeQuery();
+					resultSet.next();
+					int id = resultSet.getInt(1);
+					String name = resultSet.getString(2);
+					double price = resultSet.getDouble(3);
+					int x = resultSet.getInt(4);
+					int y = resultSet.getInt(5);
+					System.out.println("next row in result set  ||" + id + "||" + name + "||" + price + "||" + x + "||" + y);
+					
+					
+					result.setItemID(id);
+					result.setItemName(name);
+					result.setItemPrice(price);
+					result.setItemLocationX(x);
+					result.setItemLocationY(y);
 					
 					return result;
 				} finally {
@@ -1237,7 +1245,7 @@ public class DerbyDatabase {
 					int index = 1;
 					while (resultSet.next()) {
 						idlist.add(resultSet.getInt(index));
-						
+
 					}
 					System.out.println("list size:"+lists.size());
 
