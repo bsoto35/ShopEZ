@@ -24,10 +24,10 @@
 <body>
 	<div id="header">
 		<div id="logo">
-			SHOP-EZE <a href="https://imgur.com/wtOuyHi"> <img
-				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
-				style="width: 50px; height: 50px;" /></a>
-		</div>
+				<a href="https://imgur.com/6aJkmKH"><img
+					src="https://i.imgur.com/6aJkmKH.png" title="source: imgur.com"
+					style="width: 400px; height: 70px; padding-top: 10px;" /></a>
+			</div>
 		<ul id="nav">
 			<li><a href="${pageContext.servletContext.contextPath}/login">Login</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>

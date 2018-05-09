@@ -1,28 +1,19 @@
- package edu.ycp.cs320.ShopEZ.junit.controller;
- 
+package edu.ycp.cs320.ShopEZ.junit.controller;
 
- import static org.junit.Assert.*;
- 
- import org.junit.Before;
- import org.junit.Test;
- 
 
- import edu.ycp.cs320.ShopEZ.controller.ShopezeViewController;
- import edu.ycp.cs320.ShopEZ.model.ShopezeModel;
- 
- public class reviewListControllerTes {
+import static org.junit.Assert.*;
 
- 	private  ShopezeModel model;
- 	private ShopezeViewController controller;
- 	
- 	@Before
- 	public void setUp() {
- 		model = new ShopezeModel();
- 		controller = new ShopezeViewController();
- 		
- 	}
- 	@Test
- 	public void reviewTest(){
- 		
- 	}
- }
+import org.junit.Before;
+import org.junit.Test;
+
+public class reviewListControllerTes {
+
+
+	@Before
+	public void setUp() {
+	}
+	@Test
+	public void reviewTest(){
+
+	}
+}

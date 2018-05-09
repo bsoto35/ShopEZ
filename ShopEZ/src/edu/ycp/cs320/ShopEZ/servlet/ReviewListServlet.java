@@ -79,10 +79,10 @@ public class ReviewListServlet extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/route");
 			req.getRequestDispatcher("/_view/Route.jsp").forward(req, resp);
 		}
-		
+
 		int i=0;
 		boolean removed=false;
-		while(i< controller.getIdList().size() && !removed) {
+		while(i< controller.getIdList().size() && removed==false) {
 			System.out.println("ID: "+controller.getIdList().get(i)+" i: "+i);
 			if(req.getParameter(""+controller.getIdList().get(i)) !=null) {
 				try {
@@ -93,10 +93,10 @@ public class ReviewListServlet extends HttpServlet {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				if(!removed) {
-					System.out.println("remove is false ");
-					i++;
-				}
+			}
+			if(!removed) {
+				System.out.println("remove is false ");
+				i++;
 			}
 
 		}

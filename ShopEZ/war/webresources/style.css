@@ -15,15 +15,16 @@ body {
 	margin-right:5px;
 }
 
-p {
+h4 {
 	float: top; 
 	margin-top:50px;
 }
-
+p{
+	background-color: white;
+	float: top; 
+	margin-top:50px;
+}
 #logo {
-	color: black;
-	font-size: 70px;
-	text-align: left;
 	float: left;
 }
 
@@ -102,7 +103,7 @@ li a:hover {
 	text-align: center;
 	font-size: 25px;
 	color: black;
-	width: 500;
+	width: 800px;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 50px 200px;

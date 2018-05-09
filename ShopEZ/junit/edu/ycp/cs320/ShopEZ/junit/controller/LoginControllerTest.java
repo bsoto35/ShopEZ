@@ -9,23 +9,17 @@ import org.junit.Before;
  import org.junit.Test;
  
 
- import edu.ycp.cs320.ShopEZ.controller.ShopezeViewController;
- import edu.ycp.cs320.ShopEZ.model.ShopezeModel;
  import edu.ycp.cs320.ShopEZ.controller.LoginController;
  import edu.ycp.cs320.ShopEZ.model.Account;
 
  
  public class LoginControllerTest {
 
- 	private  ShopezeModel model;
- 	private ShopezeViewController controller;
  	private LoginController logCon;
  	private Account account;
  	
  	@Before
  	public void setUp() {
- 		model = new ShopezeModel();
- 		controller = new ShopezeViewController();
  		logCon = new LoginController();
  		account = new Account();
  	}

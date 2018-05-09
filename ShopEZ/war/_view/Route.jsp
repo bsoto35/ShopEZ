@@ -14,20 +14,23 @@
 <body>
 	<div id="header">
 		<div id="logo">
-			SHOP-EZE <a href="https://imgur.com/wtOuyHi"> <img
-				src="https://i.imgur.com/wtOuyHi.png" title="source: imgur.com"
-				style="width: 50px; height: 50px;" /></a>
+			<a href="https://imgur.com/6aJkmKH"><img
+				src="https://i.imgur.com/6aJkmKH.png" title="source: imgur.com"
+				style="width: 400px; height: 70px; padding-top: 10px;" /></a>
 		</div>
 		<ul id="nav">
-			<li><a href="${pageContext.servletContext.contextPath}/welcome">Sign Out</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/welcome">Sign
+					Out</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
 		</ul>
 	</div>
-	
+
 	<div id=content>
-		<a href="https://imgur.com/eLuk04R"><img src="https://i.imgur.com/eLuk04R.jpg" title="source: imgur.com" style="width: 720px; height: 540px; float:center;" /></a>
-		
+		<a href="https://imgur.com/eLuk04R"><img
+			src="https://i.imgur.com/eLuk04R.jpg" title="source: imgur.com"
+			style="width: 720px; height: 540px; float: center;" /></a>
+
 	</div>
 </body>
 </html>

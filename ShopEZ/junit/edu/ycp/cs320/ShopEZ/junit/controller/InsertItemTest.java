@@ -9,23 +9,19 @@ import org.junit.Before;
  import org.junit.Test;
  
 
- import edu.ycp.cs320.ShopEZ.controller.ShopezeViewController;
- import edu.ycp.cs320.ShopEZ.model.ShopezeModel;
  import edu.ycp.cs320.ShopEZ.model.Account;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.controller.InsertItemController;
  
  public class InsertItemTest {
 
- 	private  ShopezeModel model;
- 	private ShopezeViewController controller;
+ 	
  	private InsertItemController iteminsert;
  	private Account account;
  	
  	@Before
  	public void setUp() {
- 		model = new ShopezeModel();
- 		controller = new ShopezeViewController();
+ 		
  		iteminsert = new InsertItemController();
  		account = new Account();
  	}

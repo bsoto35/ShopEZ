@@ -8,7 +8,7 @@ import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
  * Controller for the guessing game.
  */
 public class LoginController {
-	DerbyDatabase db= new DerbyDatabase();
+	private DerbyDatabase db= new DerbyDatabase();
 	private Account login;
 	
 	public LoginController() {
