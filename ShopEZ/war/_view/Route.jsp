@@ -19,7 +19,7 @@
 				style="width: 50px; height: 50px;" /></a>
 		</div>
 		<ul id="nav">
-			<li><a href="${pageContext.servletContext.contextPath}/welcome">Login</a></li>
+			<li><a href="${pageContext.servletContext.contextPath}/welcome">Sign Out</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/help">Help</a></li>
 			<li><a href="${pageContext.servletContext.contextPath}/about">About</a></li>
 		</ul>
