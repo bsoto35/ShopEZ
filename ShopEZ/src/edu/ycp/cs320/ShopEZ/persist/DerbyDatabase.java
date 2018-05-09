@@ -640,8 +640,8 @@ public class DerbyDatabase {
 
 
 
-	public List<Item> loadGraphNodesFromGroceryListItems(final int account_id) throws SQLException{
-		Graph graphNodes = new Graph();
+	public List<Item> loadGraphNodesFromGroceryListItems(final int account_id, Graph gNodes) throws SQLException{
+		Graph graphNodes = gNodes;
 		List<Item> items = new ArrayList<Item>();
 		try {
 			items = findAllItemsForAccount(account_id);
