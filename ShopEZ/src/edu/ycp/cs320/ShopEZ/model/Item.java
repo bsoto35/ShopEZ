@@ -6,11 +6,11 @@ public class Item {
 	private int item_id;
 	private String item_name;
 	private double Price;
+	private int orderNumber;
 	private Location itemLocation = new Location();
-	private int quantity;
 	
 	public Item() {
-		quantity=1;
+		
 	}
 	
 	public void setItemName(String i) {
@@ -53,13 +53,13 @@ public class Item {
 	public int getItemLocationY() {
 		return this.itemLocation.getY();
 	} 
-	
-	public void setQuantity(int quantity) {
-		this.quantity=quantity;
+
+	public int getOrderNumber() {
+		return orderNumber;
 	}
-	
-	public int getQuantity() {
-		return quantity;
+
+	public void setOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 	
 }
