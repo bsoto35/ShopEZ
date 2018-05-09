@@ -50,11 +50,11 @@ public class ShopEZTest {
 		item.setItemName("Test");
 		item.setItemPrice(1.5);
 		//check to see if the correct values re returned when fetched
-		assertEquals(item.getItemPrice(), 1.5, 0.01);
-		assertEquals(item.getItemID(), 0);
-		assertEquals(item.getItemName(), "Test");
-		assertEquals(item.getItemLocationX(), 1);
-		assertEquals(item.getItemLocationY(), 2);
+		assertEquals(1.5, item.getItemPrice(), 0.01);
+		assertEquals(0, item.getItemID());
+		assertEquals("Test", item.getItemName());
+		assertEquals(1, item.getItemLocationX());
+		assertEquals(2, item.getItemLocationY());
 
 	}
 
@@ -64,7 +64,7 @@ public class ShopEZTest {
 		list.insertItems(1, 1);;
 		list.setAccountID(1);
 		//check to see if the correct values are returned
-		assertEquals(list.getAccountID(), 1);
+		assertEquals(1, list.getAccountID());
 	}
 
 	@Test
@@ -74,9 +74,9 @@ public class ShopEZTest {
 		account.setPassword("password");
 		account.setUsername("username");
 		//check to make sure the correct values are returned
-		assertEquals(account.getAccountID(), 0);
-		assertEquals(account.getPassword(), "password");
-		assertEquals(account.getUsername(), "username");
+		assertEquals(0, account.getAccountID());
+		assertEquals("password", account.getPassword());
+		assertEquals("username", account.getUsername());
 
 	}
 
@@ -87,8 +87,8 @@ public class ShopEZTest {
 		location.setX(1);
 		location.setY(2);
 		//check that the correct values are returned
-		assertEquals(location.getX(), 1);
-		assertEquals(location.getY(), 2);
+		assertEquals(1, location.getX());
+		assertEquals(2, location.getY());
 	}
 
 	@Test
@@ -102,10 +102,10 @@ public class ShopEZTest {
 		route.setDistance(4);
 		route.setStartLocation(start);
 		//check that the information returned is correct
-		assertEquals(route.getCheckoutLocation(), checkout);
-		assertEquals(route.getDistance(), 4);
-		assertEquals(route.getGroceryList(), list);
-		assertEquals(route.getStartLocation(), start);
+		assertEquals(checkout, route.getCheckoutLocation());
+		assertEquals(4, route.getDistance());
+		assertEquals(list, route.getGroceryList());
+		assertEquals(start, route.getStartLocation());
 	}
 
 	@Test
@@ -115,8 +115,8 @@ public class ShopEZTest {
 		LinkedList<Node> shortestPath2 = null;
 		node.setShortestPath(shortestPath2);
 		node.setDistance(3);
-		assertEquals(node.getShortestPath(), shortestPath2);
-		assertEquals(node.getDistance(), 3, 0.0001);
+		assertEquals(shortestPath2, node.getShortestPath());
+		assertEquals(3, node.getDistance(), 0.0001);
 		node.addToItemIdsList(1);
 		node.addToItemIdsList(2);
 		assertTrue(node.getItemIds().contains(1));

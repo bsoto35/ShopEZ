@@ -48,7 +48,6 @@ public class ShopEpersistTest {
 		assertEquals(3, tmp.getItemLocationY());
 		assertEquals(1.5, derby.findItemPriceByItemName("tmp"), 0.1);
 		assertTrue(derby.removeItemFromItemsTable(tmp));
-		
 	}
 
 	@Test
