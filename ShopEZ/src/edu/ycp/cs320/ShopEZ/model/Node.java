@@ -5,29 +5,28 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import edu.ycp.cs320.ShopEZ.model.Location;
+
 
 public class Node {
 	private List<Integer> itemIds = new ArrayList<Integer>();
-    private String name;
+    private int orderNumber;
     private List<Node> shortestPath = new LinkedList<>();
     private Integer distance = Integer.MAX_VALUE;
     private Map<Node, Integer> adjacentNodes = new HashMap<>();
- 
+    private Location coordinates = new Location();
+    
     public void addDestination(Node destination, int distance) {
         adjacentNodes.put(destination, distance);
     }
     
     // getters and setters
-    public void setName(String name) {
-        this.name = name;
+    public void setOrder(int num) {
+        this.orderNumber = num;
     }
 
-    public String getName() {
-    	return name;
-    }
-    
-    public List<Node> getNodesList() {
-    	return shortestPath;
+    public int getOrder() {
+    	return orderNumber;
     }
 
 	public Integer getDistance() {
@@ -57,6 +56,14 @@ public class Node {
 	public void addToItemIdsList(int item_id) {
 		this.itemIds.add(item_id);
 	}
-    
 
+	public Location getCoordinates() {
+		return coordinates;
+	}
+
+	public void setCoordinates(int x, int y) {
+		coordinates.setX(x);
+		coordinates.setY(y);
+	}
+    
 }

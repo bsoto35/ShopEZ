@@ -6,6 +6,7 @@ public class Item {
 	private int item_id;
 	private String item_name;
 	private double Price;
+	private int orderNumber;
 	private Location itemLocation = new Location();
 	
 	public Item() {
@@ -52,6 +53,13 @@ public class Item {
 	public int getItemLocationY() {
 		return this.itemLocation.getY();
 	} 
-	
+
+	public int getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 	
 }

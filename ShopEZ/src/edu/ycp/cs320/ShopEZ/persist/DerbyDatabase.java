@@ -19,6 +19,7 @@ import edu.ycp.cs320.ShopEZ.model.GroceryList;
 import edu.ycp.cs320.ShopEZ.model.Item;
 import edu.ycp.cs320.ShopEZ.model.Location;
 import edu.ycp.cs320.ShopEZ.model.Node;
+import edu.ycp.cs320.ShopEZ.model.Route;
 import edu.ycp.cs320.sqldemo.DBUtil;
 
 public class DerbyDatabase {
@@ -302,16 +303,14 @@ public class DerbyDatabase {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
 				Item result = new Item();
-
 				try {
-
 					stmt = conn.prepareStatement(
 							"SELECT * FROM items " +
 									"WHERE items.item_name =  ? "
 							);
 					stmt.setString(1, itemName);
-
 					resultSet = stmt.executeQuery();
+					int index = 0;
 					while(resultSet.next()) {
 						loadItem(result, resultSet, 1);
 					}
@@ -638,6 +637,9 @@ public class DerbyDatabase {
 			}});
 	}
 
+
+
+
 	public List<Item> loadGraphNodesFromGroceryListItems(final int account_id) throws SQLException{
 		Graph graphNodes = new Graph();
 		List<Item> items = new ArrayList<Item>();
@@ -645,11 +647,11 @@ public class DerbyDatabase {
 			items = findAllItemsForAccount(account_id);
 		} catch (SQLException e) {
 			// Auto-generated catch block
+			System.out.println("NO ITEMS FOUND");
 			e.printStackTrace();
 		}
 
-		// Node 'A' represent the starting node; the coordinate (132, 18) on the mocked up map
-		String start = "start";
+		// Node 'A' represent the starting node; the coordinate (660, 90) on the map
 		Node A = new Node();
 		Node B = new Node();
 		Node C = new Node();
@@ -672,212 +674,248 @@ public class DerbyDatabase {
 		Node T = new Node();
 		Node U = new Node();
 
-		A.setName(start);
-		A.addDestination(B, 18);
-		B.addDestination(A, 18);
-		B.addDestination(C, 24);
-		B.addDestination(K, 24);
-		C.addDestination(D, 24);
-		C.addDestination(B, 24);
-		D.addDestination(E, 24);
-		D.addDestination(C, 24);
-		E.addDestination(F, 24);
-		E.addDestination(D, 24);
-		F.addDestination(G, 24);
-		F.addDestination(E, 24);
-		G.addDestination(P, 24);
-		G.addDestination(H, 24);
-		G.addDestination(F, 24);
-		H.addDestination(G, 24);
-		H.addDestination(I, 24);
-		I.addDestination(H, 24);
-		I.addDestination(J, 24);
-		J.addDestination(I, 24);
-		J.addDestination(K, 24);
-		K.addDestination(L, 24);
-		K.addDestination(J, 24);
-		K.addDestination(B, 24);
-		L.addDestination(U, 24);
-		L.addDestination(M, 24);
-		L.addDestination(K, 24);
-		M.addDestination(N, 24);
-		M.addDestination(L, 24);
-		N.addDestination(O, 24);
-		N.addDestination(M, 24);
-		O.addDestination(P, 24);
-		O.addDestination(N, 24);
-		P.addDestination(Q, 24);
-		P.addDestination(O, 24);
-		P.addDestination(G, 24);
-		Q.addDestination(R, 24);
-		Q.addDestination(P, 24);
-		R.addDestination(Q, 24);
-		R.addDestination(S, 24);
-		S.addDestination(R, 24);
-		S.addDestination(T, 24);
-		T.addDestination(S, 24);
-		T.addDestination(U, 24);
-		U.addDestination(T, 24);
-		U.addDestination(L, 24);
+		A.setOrder(1);
+		B.setOrder(2);
+		A.addDestination(B, 90);
+		B.addDestination(A, 90);
+		B.addDestination(C, 120);
+		B.addDestination(K, 120);
+		C.addDestination(D, 120);
+		C.addDestination(B, 120);
+		D.addDestination(E, 120);
+		D.addDestination(C, 120);
+		E.addDestination(F, 120);
+		E.addDestination(D, 120);
+		F.addDestination(G, 120);
+		F.addDestination(E, 120);
+		G.addDestination(P, 120);
+		G.addDestination(H, 120);
+		G.addDestination(F, 120);
+		H.addDestination(G, 120);
+		H.addDestination(I, 120);
+		I.addDestination(H, 120);
+		I.addDestination(J, 120);
+		J.addDestination(I, 120);
+		J.addDestination(K, 120);
+		K.addDestination(L, 120);
+		K.addDestination(J, 120);
+		K.addDestination(B, 120);
+		L.addDestination(U, 120);
+		L.addDestination(M, 120);
+		L.addDestination(K, 120);
+		M.addDestination(N, 120);
+		M.addDestination(L, 120);
+		N.addDestination(O, 120);
+		N.addDestination(M, 120);
+		O.addDestination(P, 120);
+		O.addDestination(N, 120);
+		P.addDestination(Q, 120);
+		P.addDestination(O, 120);
+		P.addDestination(G, 120);
+		Q.addDestination(R, 120);
+		Q.addDestination(P, 120);
+		R.addDestination(Q, 120);
+		R.addDestination(S, 120);
+		S.addDestination(R, 120);
+		S.addDestination(T, 120);
+		T.addDestination(S, 120);
+		T.addDestination(U, 120);
+		U.addDestination(T, 120);
+		U.addDestination(L, 120);
+
+		A.setCoordinates(660, 90);
+		B.setCoordinates(570, 90);
+		C.setCoordinates(450, 90);
+		D.setCoordinates(330, 90);
+		E.setCoordinates(210, 90);
+		F.setCoordinates(90, 90);
+		G.setCoordinates(90, 210);
+		H.setCoordinates(210, 210);
+		I.setCoordinates(330, 210);
+		J.setCoordinates(450, 210);
+		K.setCoordinates(570, 210);
+		L.setCoordinates(570, 330);
+		M.setCoordinates(450, 330);
+		N.setCoordinates(330, 330);
+		O.setCoordinates(210, 330);
+		P.setCoordinates(90, 330);
+		Q.setCoordinates(90, 450);
+		R.setCoordinates(210, 450);
+		S.setCoordinates(330, 450);
+		T.setCoordinates(450, 450);
+		U.setCoordinates(570, 90);
+
+		graphNodes.addNode(A);
+		graphNodes.addNode(B);
+		graphNodes.addNode(C);
+		graphNodes.addNode(D);
+		graphNodes.addNode(E);
+		graphNodes.addNode(F);
+		graphNodes.addNode(G);
+		graphNodes.addNode(H);
+		graphNodes.addNode(I);
+		graphNodes.addNode(J);
+		graphNodes.addNode(K);
+		graphNodes.addNode(L);
+		graphNodes.addNode(M);
+		graphNodes.addNode(N);
+		graphNodes.addNode(O);
+		graphNodes.addNode(P);
+		graphNodes.addNode(Q);
+		graphNodes.addNode(R);
+		graphNodes.addNode(S);
+		graphNodes.addNode(T);
+		graphNodes.addNode(U);
+
+
+
+		LinkedList<Node> groceryListNodes = new LinkedList<Node>();
 
 		// this for each loop with go through all the items for the current user's grocery list
 		for (Item item : items) {
 			if ((item.getItemLocationX() == 12 && item.getItemLocationY() >= 78 && item.getItemLocationY() <= 96) || (item.getItemLocationX() >= 12 && item.getItemLocationX() <= 30 && item.getItemLocationY() == 96) || (item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30 && item.getItemLocationY() == 84)) {
-				item.setItemLocationX(18);
-				item.setItemLocationY(90);
-				Q.setName(item.getItemName());
+				item.setItemLocationX(90);
+				item.setItemLocationY(450);
 				Q.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(Q);
+				groceryListNodes.add(Q);
 			}
 			else if((item.getItemLocationX() == 12 && item.getItemLocationY() < 78 && item.getItemLocationY() > 54) || (item.getItemLocationY() == 72 && item.getItemLocationX() >= 24 && item.getItemLocationX() < 30) || (item.getItemLocationY() == 60 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
-				item.setItemLocationX(18);
-				item.setItemLocationY(66);
-				P.setName(item.getItemName());
+				item.setItemLocationX(90);
+				item.setItemLocationY(330);
 				P.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(P);
+				groceryListNodes.add(P);
 			}
 			else if((item.getItemLocationX() == 12 && item.getItemLocationY() <= 54 && item.getItemLocationY() > 30) || (item.getItemLocationY() == 48 && item.getItemLocationX() >= 24 && item.getItemLocationX() < 30) || (item.getItemLocationY() == 36 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
-				item.setItemLocationX(18);
-				item.setItemLocationY(42);
-				G.setName(item.getItemName());
+				item.setItemLocationX(90);
+				item.setItemLocationY(210);
 				G.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(G);
+				groceryListNodes.add(G);
 			}
 			else if((item.getItemLocationX() == 12 && item.getItemLocationY() <= 30 && item.getItemLocationY() >= 12) || (item.getItemLocationY() == 12 && item.getItemLocationX() >= 12 && item.getItemLocationX() <= 30) || (item.getItemLocationY() == 24 && item.getItemLocationX() >= 24 && item.getItemLocationX() <= 30)) {
-				item.setItemLocationX(18);
-				item.setItemLocationY(18);
-				F.setName(item.getItemName());
+				item.setItemLocationX(90);
+				item.setItemLocationY(90);
 				F.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(F);
+				groceryListNodes.add(F);
 			}
 
 			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
-				item.setItemLocationX(42);
-				item.setItemLocationY(90);
-				R.setName(item.getItemName());
+				item.setItemLocationX(210);
+				item.setItemLocationY(450);
 				R.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(R);
+				groceryListNodes.add(R);
 			}
 			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
-				item.setItemLocationX(66);
-				item.setItemLocationY(90);
-				S.setName(item.getItemName());
+				item.setItemLocationX(330);
+				item.setItemLocationY(450);
 				S.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(S);
+				groceryListNodes.add(S);
 			}
 			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
-				item.setItemLocationX(90);
-				item.setItemLocationY(90);
-				T.setName(item.getItemName());
+				item.setItemLocationX(450);
+				item.setItemLocationY(450);
 				T.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(T);
+				groceryListNodes.add(T);
 			}
 			else if((item.getItemLocationY() == 96 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 144) || (item.getItemLocationY() == 84 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
-				item.setItemLocationX(114);
-				item.setItemLocationY(90);
-				U.setName(item.getItemName());
+				item.setItemLocationX(570);
+				item.setItemLocationY(450);
 				U.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(U);
+				groceryListNodes.add(U);
 			}
 
 			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
-				item.setItemLocationX(42);
-				item.setItemLocationY(66);
-				O.setName(item.getItemName());
+				item.setItemLocationX(210);
+				item.setItemLocationY(330);
 				O.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(O);
+				groceryListNodes.add(O);
 			}
 			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
-				item.setItemLocationX(66);
-				item.setItemLocationY(66);
-				N.setName(item.getItemName());
+				item.setItemLocationX(330);
+				item.setItemLocationY(330);
 				N.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(N);
+				groceryListNodes.add(N);
 			}
 			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
-				item.setItemLocationX(90);
-				item.setItemLocationY(66);
-				M.setName(item.getItemName());
+				item.setItemLocationX(450);
+				item.setItemLocationY(330);
 				M.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(M);
+				groceryListNodes.add(M);
 			}
 			else if((item.getItemLocationY() == 72 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 60 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
-				item.setItemLocationX(114);
-				item.setItemLocationY(66);
-				L.setName(item.getItemName());
+				item.setItemLocationX(570);
+				item.setItemLocationY(330);
 				L.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(L);
+				groceryListNodes.add(L);
 			}
 
 			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
-				item.setItemLocationX(42);
-				item.setItemLocationY(42);
-				H.setName(item.getItemName());
+				item.setItemLocationX(210);
+				item.setItemLocationY(210);
 				H.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(H);
+				groceryListNodes.add(H);
 			}
 			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
-				item.setItemLocationX(66);
-				item.setItemLocationY(42);
-				I.setName(item.getItemName());
+				item.setItemLocationX(330);
+				item.setItemLocationY(210);
 				I.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(I);
+				groceryListNodes.add(I);
 			}
 			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
-				item.setItemLocationX(90);
-				item.setItemLocationY(42);
-				J.setName(item.getItemName());
+				item.setItemLocationX(450);
+				item.setItemLocationY(210);
 				J.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(J);
+				groceryListNodes.add(J);
 			}
 			else if((item.getItemLocationY() == 48 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 36 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
-				item.setItemLocationX(114);
-				item.setItemLocationY(42);
-				K.setName(item.getItemName());
+				item.setItemLocationX(570);
+				item.setItemLocationY(210);
 				K.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(K);
+				groceryListNodes.add(K);
 			}
 
 			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 30 && item.getItemLocationX() <= 54)) {
-				item.setItemLocationX(42);
-				item.setItemLocationY(18);
-				E.setName(item.getItemName());
+				item.setItemLocationX(210);
+				item.setItemLocationY(90);
 				E.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(E);
+				groceryListNodes.add(E);
 			}
 			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 54 && item.getItemLocationX() <= 78)) {
-				item.setItemLocationX(66);
-				item.setItemLocationY(18);
-				D.setName(item.getItemName());
+				item.setItemLocationX(330);
+				item.setItemLocationY(90);
 				D.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(D);
+				groceryListNodes.add(D);
 			}
 			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 78 && item.getItemLocationX() <= 102)) {
-				item.setItemLocationX(90);
-				item.setItemLocationY(18);
-				C.setName(item.getItemName());
+				item.setItemLocationX(450);
+				item.setItemLocationY(90);
 				C.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(C);
+				groceryListNodes.add(C);
 			}
 			else if((item.getItemLocationY() == 24 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108) || (item.getItemLocationY() == 12 && item.getItemLocationX() > 102 && item.getItemLocationX() <= 108)) {
-				item.setItemLocationX(114);
-				item.setItemLocationY(18);
-				B.setName(item.getItemName());
+				item.setItemLocationX(570);
+				item.setItemLocationY(90);
 				B.addToItemIdsList(item.getItemID());
-				graphNodes.addNode(B);
+				groceryListNodes.add(B);
 			}
-
 		}
-		List<Item> result = new ArrayList<Item>();
+		List<Item> orderedItems = new ArrayList<Item>();
+
+		A.setShortestPath(groceryListNodes);
 
 		graphNodes = calculateShortestPathFromSource(graphNodes, A);
 
+		int numOrder = 1;
 		for (Node n : graphNodes.getGraphNodes()) {
-			for (int i = 0; i < n.getItemIds().size(); i++) {
-				result.add(findItemByItemID(n.getItemIds().get(i)));
+			for (int i = 1; i < n.getItemIds().size(); i++) {
+				if (n.getOrder() == numOrder) {
+					Item item = findItemByItemID(n.getItemIds().get(i));
+					item.setOrderNumber(numOrder++);
+					orderedItems.add(item);
+					numOrder++;
+				}
 			}
 		}
-		return result;
+		return orderedItems;
 	}
 
 	public static Graph calculateShortestPathFromSource(Graph graph, Node source) {
@@ -888,6 +926,7 @@ public class DerbyDatabase {
 
 		unsettledNodes.add(source);
 
+		int order = 0;
 		while (unsettledNodes.size() != 0) {
 			Node currentNode = getLowestDistanceNode(unsettledNodes);
 			unsettledNodes.remove(currentNode);
@@ -899,7 +938,12 @@ public class DerbyDatabase {
 					unsettledNodes.add(adjacentNode);
 				}
 			}
+			currentNode.setOrder(order++);
+			graph.addNodeToRoute(currentNode);
 			settledNodes.add(currentNode);
+		}
+		for (Node n : settledNodes) {
+			graph.addNodeToRoute(n);
 		}
 		return graph;
 	}
