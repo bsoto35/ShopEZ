@@ -1,17 +1,14 @@
 package edu.ycp.cs320.ShopEZ.model;
 
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.awt.Color;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Route extends JFrame{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int[][] path = new int[720][540];
 	private Set<Item> items = new HashSet<>();
@@ -21,7 +18,7 @@ public class Route extends JFrame{
 	public Route() {
 		setTitle("Route");
 		setSize(720, 540);
-		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint());
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
@@ -48,6 +45,8 @@ public class Route extends JFrame{
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
+		
+		g.translate(660, 90);
 
 		ArrayList<Node> arr = new ArrayList<Node>();
 
@@ -96,6 +95,16 @@ public class Route extends JFrame{
 				}
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Route route = new Route();
+				route.setVisible(true);
+			}
+		});
 	}
 
 	public Set<Item> getItems() {
