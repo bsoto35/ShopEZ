@@ -49,6 +49,15 @@ public class RouteServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		HttpSession session=req.getSession(false);
+		System.out.println("Review List Servlet: doGet");
 		login= (Account)session.getAttribute("user");
+		if(session.getAttribute("groceryList") != null) {
+			System.out.print("Grocery List is not empty");
+			controller=new InsertItemController((GroceryList)session.getAttribute("groceryList"), login);
+		}
+		req.getSession().setAttribute("groceryList", controller.getGroceryList());
+		req.getSession().setAttribute("user", login);
+		resp.sendRedirect(req.getContextPath() + "/review");
+		req.getRequestDispatcher("/_view/reviewList.jsp").forward(req, resp);
 	}
 }

@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
 
 		else if(req.getParameter("forgot") !=null) {			
 			try {
-				login=db.findAccountByUsername("guest");
+				login=controller.findAccountByName("guest");
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}	
@@ -77,15 +77,14 @@ public class LoginServlet extends HttpServlet {
 			System.out.print("sign up pressed");
 			login.setUsername(req.getParameter("upUsername"));
 			login.setPassword(req.getParameter("upPassword"));
-			if (login.getUsername() == null || login.getPassword() == null || login.getUsername().equals("") || login.getPassword().equals("")) {
+			if (login.getUsername() == null || login.getPassword() == null) {
 				errorMessage = "Please specify both user name and password";
 			} else{
 				System.out.println("   Name: <" + login.getUsername() + "> PW: <" + login.getPassword() + ">");	
 				if(login.getPassword().equals(req.getParameter("ConfirmPassword"))){
-					db = new DerbyDatabase();
 					try {
-						db.addAccountIntoAccountsTable(login.getUsername(), login.getPassword());
-						validLogin=true; 
+						validLogin= controller.addNewAccount(login.getUsername(), login.getPassword());
+
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -106,9 +105,8 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		else{
-
-			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 			System.out.println("Invalid login - redirecting to /login");
+			req.getRequestDispatcher("/_view/login.jsp").forward(req, resp);
 		}
 
 		req.setAttribute("app", login);

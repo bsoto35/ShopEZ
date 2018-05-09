@@ -23,8 +23,8 @@ public class LoginController {
 		return login;
 	}
 	
-	public void newList() {
-		
+	public Account findAccountByName(String name) throws SQLException{
+		return db.findAccountByUsername(name);
 	}
 	
 	public Account getAccountbyUser(String name) throws SQLException{
@@ -34,5 +34,9 @@ public class LoginController {
 	
 	public boolean verifyAccount(String name, String password) throws SQLException{
 		return db.verifyAccountFromAccountsTableByUsernameAndPassword(name, password);
+	}
+	
+	public boolean addNewAccount(String name, String password) throws SQLException{
+		return db.addAccountIntoAccountsTable(name, password);
 	}
 }

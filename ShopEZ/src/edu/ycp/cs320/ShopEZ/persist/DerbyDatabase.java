@@ -1052,18 +1052,20 @@ public class DerbyDatabase {
 				Boolean finalResult = false;
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
+				List <Account> accList= findAllAccounts();
 				try {
 					conn.setAutoCommit(true);
 
 					// a canned query to find book information (including author name) from title
 					stmt = conn.prepareStatement(
-							"INSERT into accounts(account_username, account_password) "
-									+ "  values (?, ?) "
+							"INSERT into accounts(account_id, account_username, account_password) "
+									+ "  values (?, ?, ?) "
 							);
 
 					// substitute the last name and first name of the existing author entered by the user for the placeholder in the query
-					stmt.setString(1, username);
-					stmt.setString(2, password);
+					stmt.setInt(1, accList.size()+1);
+					stmt.setString(2, username);
+					stmt.setString(3, password);
 
 					// execute the query
 					stmt.executeUpdate();
@@ -1232,10 +1234,10 @@ public class DerbyDatabase {
 
 					// execute the query
 					resultSet = stmt.executeQuery();
-
+					int index=1;
 					while (resultSet.next()) {
 						Account account = new Account();
-						loadAccount(account, resultSet, 1);
+						loadAccount(account, resultSet, index);
 						finalResult.add(account);
 
 						System.out.println("Found account in the accounts table");
