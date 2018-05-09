@@ -80,7 +80,9 @@ public class InitialData {
 				Iterator<String> i = tuple.iterator();
 				int aID=Integer.parseInt(i.next());
 				int iID=Integer.parseInt(i.next());
-				GroceryList groceryList = new GroceryList(aID, iID);
+				ArrayList <Integer> iIDList= new ArrayList<Integer>();
+				iIDList.add(iID);
+				GroceryList groceryList = new GroceryList(aID, iIDList);
 				System.out.println(groceryList.getAccountID()+"");
 				//System.out.println("YOOOO: "+groceryList.getList().get(iID));
 				list.add(groceryList);

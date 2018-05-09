@@ -13,7 +13,7 @@ import edu.ycp.cs320.ShopEZ.persist.DerbyDatabase;
 public class InsertItemController {
 	private DerbyDatabase db= new DerbyDatabase();
 	private int id; 
-	private Item item;
+	private Item item = new Item();
 	private double total=0.0; 
 	private Account login=new Account();
 	private boolean bool=false;
@@ -75,14 +75,14 @@ public class InsertItemController {
 
 	public boolean removeItem(int id, Item item, int qty)  throws SQLException{
 		bool= db.removeItemFromGroceryListTable(id, item, qty);
-		list.removeItems(item, qty);
+		list.removeItems(item.getItemID(), qty);
 		return bool;
 	}
 
 	public boolean addItem(int id, Item item, int qty) throws SQLException{
 		bool= db.insertItemIntoGroceryListTable(id, item, qty);
-		System.out.println(item.getItemName()+" "+qty);
-		list.insertItems(item, qty);
+		System.out.println(item.getItemID()+" "+item.getItemName()+" qty:"+qty);
+		list.insertItems(item.getItemID(), qty);
 		return bool;
 	}
 
@@ -96,6 +96,7 @@ public class InsertItemController {
 	}
 
 	public ArrayList<Integer> getIdList(){
+		System.out.print(""+list.getList().size());
 		return list.getList();
 	}
 

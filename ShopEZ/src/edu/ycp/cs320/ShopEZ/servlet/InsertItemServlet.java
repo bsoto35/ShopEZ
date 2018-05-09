@@ -56,7 +56,7 @@ public class InsertItemServlet extends HttpServlet {
 		String successMessage = null;
 		login= (Account)session.getAttribute("user");
 		if(session.getAttribute("list") != null)
-			groceries=((GroceryList)session.getAttribute("grocerylist"));
+		groceries=((GroceryList)session.getAttribute("grocerylist"));
 		controller=new InsertItemController(groceries, login);
 		String user = login.getUsername();
 		successMessage = "logged in as " +user;
@@ -95,10 +95,10 @@ public class InsertItemServlet extends HttpServlet {
 		}
 		else if(req.getParameter("rem") !=null) {	
 			try {
-			if(getIntFromParameter(req.getParameter("quantityR"))<controller.getIdList().size() && getIntFromParameter(req.getParameter("quantityR"))>0)
+			//if(getIntFromParameter(req.getParameter("quantityR"))<controller.getIdList().size() && getIntFromParameter(req.getParameter("quantityR"))>0)
 				item.setQuantity(getIntFromParameter(req.getParameter("quantityR")));
-			else 
-				item.setQuantity(1);
+			//else 
+				//item.setQuantity(1);
 				item=controller.findItemByName(item.getItemName());
 				System.out.println("Name: "+item.getItemName()+" Item ID: "+ item.getItemID()+ " price: " +item.getItemPrice()+" ");
 				passed=controller.removeItem(login.getAccountID(), item, item.getQuantity());
@@ -139,6 +139,7 @@ public class InsertItemServlet extends HttpServlet {
 		req.setAttribute("quantityA", req.getParameter("quantityA")); 
 		req.setAttribute("quantityR", item.getQuantity());
 		req.getSession().setAttribute("user", login);
+		req.getSession().setAttribute("groceryList", controller.getGroceryList());
 		req.getSession().setAttribute("cont", controller);
 		req.setAttribute("errorMessage", errorMessage);
 		req.setAttribute("successMessage", successMessage);
